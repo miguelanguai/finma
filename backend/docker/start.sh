@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y postgresql-server-dev-all
 
 # Esperar a que la base de datos esté lista
 echo "Esperando a que PostgreSQL inicie..."
-until nc -z -v -w30 postgis 5432
+until nc -z -v -w30 postgres 5432
 do
   echo "Esperando a la base de datos..."
   sleep 1
@@ -21,4 +21,4 @@ python manage.py migrate
 
 # Iniciar Gunicorn para servir Django
 echo "Iniciando el servidor..."
-exec gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --access-logfile - --error-logfile -
+exec gunicorn root.wsgi:application --bind 0.0.0.0:8000 --access-logfile - --error-logfile -
