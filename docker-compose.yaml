@@ -12,6 +12,8 @@ services:
       - "8000:8000"
     environment:
       - DJANGO_SECRET_KEY=${SECRET_KEY}
+    env_file:
+      - .env
     depends_on:
       - database
 
@@ -42,6 +44,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - .env
 
 volumes:
   db_data:
