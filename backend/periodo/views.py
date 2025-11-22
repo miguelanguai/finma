@@ -19,10 +19,11 @@ class PeriodoView(APIView):
     Returns:
         _type_: _description_
     """
+
     service = PeriodoService()
 
     def get(self, request: Request, periodo_id: int = None) -> Response:
-        """GET. Devuelve uno o muchos periodos, dependiendo de si se pasa periodo_id como 
+        """GET. Devuelve uno o muchos periodos, dependiendo de si se pasa periodo_id como
         parámetro
 
         Args:
@@ -54,10 +55,32 @@ class PeriodoView(APIView):
             Response: _description_
         """
         serializer = PeriodoWriteSerializer(data=request.data)
-        print(serializer)
         if serializer.is_valid():
             self.service.save(serializer.validated_data)
             return Response(
                 PeriodoWriteSerializer(None).data, status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request: Request, periodo_id: int) -> Response:
+        """PUT. Edita un periodo
+
+        Args:
+            request (Request): _description_
+            periodo_id (int): id de periodo
+
+        Returns:
+            Response: _description_
+        """
+        serializer = PeriodoWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            periodo = self.service.update(
+                updated_period=serializer.validated_data,
+                periodo_to_update_id=periodo_id,
+            )
+            if periodo:
+                return Response(PeriodoWriteSerializer(periodo).data)
+            return Response(
+                {"error": "periodo no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
