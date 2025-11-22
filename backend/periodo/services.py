@@ -15,7 +15,7 @@ class PeriodoService:
         """
         return self.repo.find_all()
 
-    def find_by_id(self, periodo_id: int) -> Periodo:
+    def find_by_id(self, periodo_id: int) -> Periodo | None:
         """Retorna un periodo cuya id se ha pasado como parámetro
         Llama a PeriodoRepository.find_by_id
 
@@ -23,7 +23,7 @@ class PeriodoService:
             periodo_id (int): id del Periodo
 
         Returns:
-            Periodo: periodo si existe
+            Periodo | None: periodo si existe
         """
         return self.repo.find_by_id(periodo_id=periodo_id)
 
@@ -62,3 +62,15 @@ class PeriodoService:
             periodo = self.repo.save(periodo=periodo_to_update)
             return periodo
         raise Periodo.DoesNotExist
+
+    def delete(self, periodo_to_delete_id: int) -> Periodo:
+        """Elimina un periodo y lo retorna
+
+        Args:
+            periodo_to_delete_id (int): id del periodo a eliminar
+
+        Returns:
+            Periodo: periodo eliminado
+        """
+        periodo_to_delete = self.find_by_id(periodo_id=periodo_to_delete_id)
+        return self.repo.delete(periodo_to_delete=periodo_to_delete)

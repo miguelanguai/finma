@@ -56,9 +56,9 @@ class PeriodoView(APIView):
         """
         serializer = PeriodoWriteSerializer(data=request.data)
         if serializer.is_valid():
-            self.service.save(serializer.validated_data)
+            periodo = self.service.save(serializer.validated_data)
             return Response(
-                PeriodoWriteSerializer(None).data, status=status.HTTP_201_CREATED
+                PeriodoWriteSerializer(periodo).data, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -84,3 +84,21 @@ class PeriodoView(APIView):
                 {"error": "periodo no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: Request, periodo_id: int) -> Response:
+        """DELETE. Elimina un periodo
+
+        Args:
+            request (Request): _description_
+            periodo_id (int): id del periodo a eliminar
+
+        Returns:
+            Response: _description_
+        """
+        periodo = self.service.delete(periodo_to_delete_id=periodo_id)
+        if periodo:
+            serializer = PeriodoReadSerializer(periodo, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Periodo no encontrado"}, status=status.HTTP_404_NOT_FOUND
+        )
