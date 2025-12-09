@@ -1,4 +1,4 @@
-from .models import Periodo
+from .models import MapPeriodoCategoria, Periodo
 
 
 class PeriodoRepository:
@@ -53,3 +53,57 @@ class PeriodoRepository:
         """
         periodo_to_delete.delete()
         return periodo_to_delete
+
+
+class MapPeriodoCategoriaRepository:
+    """Reporitorio de MapPeriodoCategoria"""
+
+    def __init__(self):
+        pass
+
+    def find_all(self) -> list[MapPeriodoCategoria]:
+        """Retorna todos los mapeos existentes
+
+        Returns:
+            list[MapPeriodoCategoria]: todos los mapeos existente
+        """
+        return MapPeriodoCategoria.objects.all()
+
+    def find_by_id(self, mapeo_id: int) -> MapPeriodoCategoria | None:
+        """Retorna un mapeo cuya id ha sido pasada por parámetro
+
+        Args:
+            mapeo_id (int): id del mapeo
+
+        Returns:
+            MapPeriodoCategoria | None : mapeo si existe
+        """
+        try:
+            return MapPeriodoCategoria.objects.get(pk=mapeo_id)
+        except MapPeriodoCategoria.DoesNotExist as error:
+            print(error)
+            return None
+
+    def save(self, mapeo: MapPeriodoCategoria) -> MapPeriodoCategoria:
+        """Guarda un mapeo
+
+        Args:
+            mapeo (MapPeriodoCategoria): mapeo a guardar
+
+        Returns:
+            Periodo: mapeo guardado
+        """
+        mapeo.save()
+        return mapeo
+
+    def delete(self, mapeo_to_delete: MapPeriodoCategoria) -> MapPeriodoCategoria:
+        """Elimina un mapeo
+
+        Args:
+            periodo_id (MapPeriodoCategoria): mapeo a eliminar
+
+        Returns:
+            MapPeriodoCategoria: mapeo eliminado
+        """
+        mapeo_to_delete.delete()
+        return mapeo_to_delete

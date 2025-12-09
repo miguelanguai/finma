@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Periodo
-
+from .models import MapPeriodoCategoria, Periodo
+from categoria.models import Categoria
 
 class PeriodoReadSerializer(serializers.ModelSerializer):
     """Serializador de lectura de Periodo
@@ -8,8 +8,10 @@ class PeriodoReadSerializer(serializers.ModelSerializer):
     Args:
         serializers (_type_): _description_
     """
+
     class Meta:
         """Meta"""
+
         model = Periodo
         fields = [
             "id",
@@ -24,10 +26,59 @@ class PeriodoWriteSerializer(serializers.ModelSerializer):
     Args:
         serializers (_type_): _description_
     """
+
     class Meta:
         """Meta"""
+
         model = Periodo
         fields = [
             "nombre",
             "fecha",
+        ]
+
+
+class MapPeriodoCategoriaReadSerializer(serializers.ModelSerializer):
+    """Serializador de lectura de MapPeriodoCategoria
+
+    Args:
+        serializers (_type_): _description_
+    """
+
+    periodo = serializers.PrimaryKeyRelatedField(queryset=Periodo.objects.all())
+    categoria = serializers.PrimaryKeyRelatedField(queryset=Categoria.objects.all())
+
+    class Meta:
+        """Meta"""
+
+        model = MapPeriodoCategoria
+        fields = [
+            "id",
+            "porc_ideal_fijo",
+            "porc_ideal_estimado",
+            "porc_ideal_obtenido",
+            "periodo",
+            "categoria",
+        ]
+
+
+class MapPeriodoCategoriaWriteSerializer(serializers.ModelSerializer):
+    """Serializador de escritura de MapPeriodoCategoria
+
+    Args:
+        serializers (_type_): _description_
+    """
+
+    periodo = serializers.PrimaryKeyRelatedField(queryset=Periodo.objects.all())
+    categoria = serializers.PrimaryKeyRelatedField(queryset=Categoria.objects.all())
+
+    class Meta:
+        """Meta"""
+
+        model = MapPeriodoCategoria
+        fields = [
+            "porc_ideal_fijo",
+            "porc_ideal_estimado",
+            "porc_ideal_obtenido",
+            "periodo",
+            "categoria",
         ]
