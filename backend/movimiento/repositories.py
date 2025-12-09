@@ -52,3 +52,15 @@ class MovimientoRepository:
         """
         movimiento.save()
         return movimiento
+
+    def delete(self, movimiento_to_delete: Movimiento) -> Movimiento:
+        """Elimina un movimiento
+
+        Args:
+            movimiento_to_delete (Movimiento): movimiento a eliminar
+
+        Returns:
+            Movimiento: movimiento eliminado
+        """
+        movimiento_to_delete.delete()
+        return movimiento_to_delete

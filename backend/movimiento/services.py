@@ -58,3 +58,41 @@ class MovimientoService:
             periodo=movimiento["periodo"],
         )
         return self.repo.save(movimiento=movimiento_to_save)
+
+    def update(self, movimiento: dict, movimiento_to_update_id: int) -> Movimiento:
+        """Actualiza un movimiento y lo retorna
+
+        Args:
+            movimiento (dict): diccionario con los nuevos valores de la entidad
+            movimiento_to_update_id (int): id de la entidad a actualizar
+
+        Raises:
+            Movimiento.DoesNotExist: la entidad no existe en la bd
+
+        Returns:
+            Movimiento: entidad actualizada
+        """
+        movimiento_to_update = self.find_by_id(movimiento_id=movimiento_to_update_id)
+        if movimiento_to_update:
+            movimiento_to_update.concepto = movimiento["concepto"]
+            movimiento_to_update.monto = movimiento["monto"]
+            movimiento_to_update.fecha = movimiento["fecha"]
+            movimiento_to_update.recurrente = movimiento["recurrente"]
+            movimiento_to_update.notas = movimiento["notas"]
+            movimiento_to_update.periodo = movimiento["periodo"]
+            return movimiento_to_update
+        raise Movimiento.DoesNotExist
+
+    def delete(self, movimiento_to_delete_id: int) -> Movimiento | None:
+        """Elimina un mapeo y lo retorna si existe
+
+        Args:
+            movimiento_to_delete_id (int): id del movimiento a eliminar
+
+        Returns:
+            Movimiento | None: movimiento eliminado. Si el movimiento no se ha encontrado, se
+            retorna None
+        """
+        movimiento_to_delete = self.find_by_id(movimiento_id=movimiento_to_delete_id)
+        if movimiento_to_delete:
+            return self.repo.delete(movimiento_to_delete=movimiento_to_delete)

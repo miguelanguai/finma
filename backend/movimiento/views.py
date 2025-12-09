@@ -62,3 +62,44 @@ class MovimientoView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request: Request, movimiento_id: int) -> Response:
+        """PUT. Edita un movimiento
+
+        Args:
+            request (Request): _description_
+            movimiento_id (int): id del movimiento
+
+        Returns:
+            Response: _description_
+        """
+        serializer = MovimientoWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            movimiento = self.service.update(
+                movimiento=serializer.validated_data,
+                movimiento_to_update_id=movimiento_id,
+            )
+            if movimiento:
+                return Response(MovimientoWriteSerializer(movimiento).data)
+            return Response(
+                {"error": "movimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: Request, movimiento_id: int) -> Response:
+        """DELETE. Elimina un movimiento
+
+        Args:
+            request (Request): _description_
+            mapeo_id (int): id del movimiento a eliminar
+
+        Returns:
+            Response: _description_
+        """
+        movimiento = self.service.delete(movimiento_to_delete_id=movimiento_id)
+        if movimiento:
+            serializer = MovimientoReadSerializer(movimiento, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "movimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND
+        )
