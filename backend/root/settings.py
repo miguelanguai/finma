@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "categoria",
     "movimiento",
+    "objetivo",
     "periodo",
 ]
 
