@@ -1,4 +1,4 @@
-from .models import Objetivo
+from .models import MapCategoriaObjetivo, Objetivo
 
 
 class ObjetivoRepository:
@@ -22,3 +22,26 @@ class ObjetivoRepository:
     def delete(self, objetivo_to_delete: Objetivo) -> Objetivo:
         objetivo_to_delete.delete()
         return objetivo_to_delete
+
+
+class MapCategoriaObjetivoRepository:
+    def __init__(self):
+        pass
+
+    def find_all(self) -> list[MapCategoriaObjetivo]:
+        return MapCategoriaObjetivo.objects.all()
+
+    def find_by_id(self, mapeo_id: int) -> MapCategoriaObjetivo | None:
+        try:
+            return MapCategoriaObjetivo.objects.get(pk=mapeo_id)
+        except MapCategoriaObjetivo.DoesNotExist as error:
+            print(error)
+            return None
+
+    def save(self, mapeo: MapCategoriaObjetivo) -> MapCategoriaObjetivo:
+        mapeo.save()
+        return mapeo
+
+    def delete(self, mapeo_to_delete: MapCategoriaObjetivo) -> MapCategoriaObjetivo:
+        mapeo_to_delete.delete()
+        return mapeo_to_delete

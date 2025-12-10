@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Objetivo
+from .models import MapCategoriaObjetivo, Objetivo
 
 
 class ObjetivoReadSerializer(serializers.ModelSerializer):
@@ -28,3 +28,15 @@ class ObjetivoWriteSerializer(serializers.ModelSerializer):
 
         model = Objetivo
         fields = ["nombre", "monto", "prioridad", "fecha"]
+
+
+class MapCategoriaObjetivoReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MapCategoriaObjetivo
+        fields = ["id", "fecha_inicio", "fecha_fin", "categoria", "objetivo"]
+
+
+class MapCategoriaObjetivoWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MapCategoriaObjetivo
+        fields = ["fecha_inicio", "fecha_fin", "categoria", "objetivo"]
