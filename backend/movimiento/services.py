@@ -94,7 +94,8 @@ class MovimientoService:
             movimiento_to_update.notas = movimiento["notas"]
             movimiento_to_update.periodo = movimiento["periodo"]
             movimiento_to_update.categoria = movimiento["categoria"]
-            return movimiento_to_update
+            movimiento = self.repo.save(movimiento=movimiento_to_update)
+            return movimiento
         raise Movimiento.DoesNotExist
 
     def delete(self, movimiento_to_delete_id: int) -> Movimiento | None:
