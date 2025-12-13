@@ -2,6 +2,7 @@ from datetime import datetime
 from django.db import models
 
 
+from categoria.models import Categoria
 from periodo.models import Periodo
 
 
@@ -17,7 +18,8 @@ class Movimiento(models.Model):
     notas (text): Si hay alguna nota que poner, de aclaración del movimiento. Ejemplo: este
     movimiento se realiza en el bar chino Manolo
     periodo (Periodo): Periodo al que es asignado el movimiento.
-    Al eliminar el periodo, el movimiento no se elimina
+    categoria (Categoria): Categoria al que es asignado el movimiento.
+    Al eliminar el periodo, el movimiento ni la categoria se eliminan
 
     Args:
         models (Model): clase nativa Model
@@ -29,11 +31,12 @@ class Movimiento(models.Model):
     recurrente = models.BooleanField(null=False)
     notas = models.TextField(null=True)
     periodo = models.ForeignKey(Periodo, on_delete=models.SET_NULL, null=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"""
         movimiento con concepto:{self.concepto} en fecha {self.fecha}.
-        Perteneciente al periodo {self.periodo}
+        Perteneciente al periodo {self.periodo}. Perteneciente a la categoria {self.categoria.nombre}
         """
 
 

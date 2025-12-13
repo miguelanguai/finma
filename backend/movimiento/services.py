@@ -68,6 +68,7 @@ class MovimientoService:
             recurrente=movimiento["recurrente"],
             notas=movimiento["notas"],
             periodo=movimiento["periodo"],
+            categoria=movimiento["categoria"],
         )
         return self.repo.save(movimiento=movimiento_to_save)
 
@@ -92,6 +93,7 @@ class MovimientoService:
             movimiento_to_update.recurrente = movimiento["recurrente"]
             movimiento_to_update.notas = movimiento["notas"]
             movimiento_to_update.periodo = movimiento["periodo"]
+            movimiento_to_update.categoria = movimiento["categoria"]
             return movimiento_to_update
         raise Movimiento.DoesNotExist
 
