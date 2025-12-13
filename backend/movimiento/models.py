@@ -33,6 +33,19 @@ class Movimiento(models.Model):
     periodo = models.ForeignKey(Periodo, on_delete=models.SET_NULL, null=True)
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        """Constrainsts para Movimiento
+
+        unique_concepto_fecha_monto: No puede guardarse un movimiento igual en concepto, fecha y monto
+        """
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["concepto", "fecha", "monto"],
+                name="unique_concepto_fecha_monto",
+            )
+        ]
+
     def __str__(self):
         return f"""
         movimiento con concepto:{self.concepto} en fecha {self.fecha}.
