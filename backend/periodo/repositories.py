@@ -1,3 +1,5 @@
+import datetime
+
 from .models import MapPeriodoCategoria, Periodo
 
 
@@ -26,6 +28,21 @@ class PeriodoRepository:
         """
         try:
             return Periodo.objects.get(pk=periodo_id)
+        except Periodo.DoesNotExist as error:
+            print(error)
+            return None
+
+    def find_periodo_by_datetime(self, periodo_datetime: datetime) -> Periodo | None:
+        """Encuentra un periodo pasando su fecha
+
+        Args:
+            periodo_datetime (datetime): fecha del periodo
+
+        Returns:
+            Periodo | None: Periodo si existe
+        """
+        try:
+            return Periodo.objects.filter(fecha=periodo_datetime)[0]
         except Periodo.DoesNotExist as error:
             print(error)
             return None

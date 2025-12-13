@@ -1,4 +1,7 @@
+from datetime import datetime
 from django.db import models
+
+
 from periodo.models import Periodo
 
 
@@ -32,3 +35,19 @@ class Movimiento(models.Model):
         movimiento con concepto:{self.concepto} en fecha {self.fecha}.
         Perteneciente al periodo {self.periodo}
         """
+
+
+class MovimientoExcel:
+    """clase MovimientoExcel
+
+    Se instancia esta clase para realizar el guardado de un batch de forma más rápida en bd
+    """
+
+    def __init__(self, fecha: str, concepto: str, importe: str, periodo: Periodo):
+        self.fecha: datetime = datetime.strptime(fecha, "%d/%m/%Y")
+        self.concepto: str = concepto
+        self.importe: float = float(importe)
+        self.periodo: Periodo = periodo
+
+    def __str__(self):
+        return f"Movimiento: {self.concepto} con un importe de {self.importe} en fecha {self.fecha}, del periodo {self.periodo.nombre}"

@@ -1,3 +1,5 @@
+import datetime
+
 from .models import MapPeriodoCategoria, Periodo
 from .repositories import MapPeriodoCategoriaRepository, PeriodoRepository
 
@@ -26,6 +28,19 @@ class PeriodoService:
             Periodo | None: periodo si existe
         """
         return self.repo.find_by_id(periodo_id=periodo_id)
+
+    def find_periodo_by_datetime(self, periodo_datetime: datetime) -> Periodo | None:
+        """Encuentra un periodo pasando su fecha
+
+        Llama a repo.find_periodo_by_datetime
+
+        Args:
+            periodo_datetime (datetime): fecha del periodo
+
+        Returns:
+            Periodo | None: Periodo si existe
+        """
+        return self.repo.find_periodo_by_datetime(periodo_datetime=periodo_datetime)
 
     def save(self, periodo: dict) -> Periodo:
         """Guarda un periodo y lo retorna
@@ -154,7 +169,7 @@ class MapPeriodoCategoriaService:
             mapeo_to_delete_id (int): id del mapeo a eliminar
 
         Returns:
-            MapPeriodoCategoria | None: mapeo eliminado. Si el mapeo no se ha encontrado, se 
+            MapPeriodoCategoria | None: mapeo eliminado. Si el mapeo no se ha encontrado, se
             retorna None
         """
         mapeo_to_delete = self.find_by_id(mapeo_id=mapeo_to_delete_id)

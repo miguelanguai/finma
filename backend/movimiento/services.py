@@ -1,5 +1,17 @@
+import datetime
+import re
+
+from datetime import datetime
+
 from .repositories import MovimientoRepository
-from .models import Movimiento
+
+from periodo.models import Periodo
+from periodo.services import PeriodoService
+from .models import Movimiento, MovimientoExcel
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import pandas as pd
+
+from pandas import DataFrame
 
 
 class MovimientoService:
@@ -96,3 +108,86 @@ class MovimientoService:
         movimiento_to_delete = self.find_by_id(movimiento_id=movimiento_to_delete_id)
         if movimiento_to_delete:
             return self.repo.delete(movimiento_to_delete=movimiento_to_delete)
+
+
+class ExcelService:
+    def __init__(self):
+        self.excel_file_name: str = None
+        self.excel_periodo: Periodo = None
+
+    def main(self, excel_file):
+        """Método main
+
+        Args:
+            excel_file (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        self.excel_file_name = excel_file.name
+        print("excel file name: " + self.excel_file_name)
+        self.excel_periodo = self.find_periodo_from_file_name(
+            file_name=self.excel_file_name
+        )
+        print(self.excel_periodo)
+        df = self.get_df(excel_file=excel_file)
+        data_batch = self.process_dataframe(df=df)
+        # TODO: pasar data_batch como arg para un metodo del repositorio que suba el batch entero
+        return True
+
+    def find_periodo_from_file_name(self, file_name: str) -> Periodo:
+        """Recupera el periodo desde el string que se pasa como parámetro
+
+        Args:
+            file_name (str): nombre del archivo
+
+        Returns:
+            Periodo: _description_
+        """
+        periodo_service = PeriodoService()
+        pattern = r"\d{2}-\d{2}"
+        result = re.match(pattern=pattern, string=file_name)
+        if result:
+            datetime_result = datetime.strptime(result.group(), "%y-%m")
+            periodo = periodo_service.find_periodo_by_datetime(
+                periodo_datetime=datetime_result
+            )
+            if not periodo:
+                raise Exception("No se ha encontrado el periodo")
+        return periodo
+
+    def get_df(self, excel_file: InMemoryUploadedFile) -> DataFrame:
+        """Genera un DataFrame a partir del excel
+
+        Args:
+            excel_file (InMemoryUploadedFile): Archivo xlsx en memoria
+
+        Returns:
+            DataFrame: dataframe a partir del excel
+        """
+        return pd.read_excel(excel_file, header=7)
+
+    def process_dataframe(self, df: DataFrame) -> list[MovimientoExcel]:
+        """Procesa el dataframe y devuelve una lista de movimientos para guardar con el repositorio
+
+        Args:
+            df (DataFrame): dataframe de movimientos
+
+        Returns:
+            list[MovimientoExcel]: lista de instanciaciones para guardar en la bd.
+        """
+        mini_df = df.head()
+        for i in range(len(mini_df)):
+            row = df.iloc[i]
+            # print(row)
+            # print(row["Concepto"])
+            movimiento = MovimientoExcel(
+                fecha=row["Fecha operación"],
+                concepto=row["Concepto"],
+                importe=row["Importe"],
+                periodo=self.excel_periodo,
+            )
+            # no imprime el periodo en este string
+            print(movimiento)
+
+        return []

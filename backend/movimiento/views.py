@@ -7,7 +7,7 @@ from rest_framework import status
 
 from .models import Movimiento
 from .serializers import MovimientoReadSerializer, MovimientoWriteSerializer
-from .services import MovimientoService
+from .services import ExcelService, MovimientoService
 
 
 class MovimientoView(APIView):
@@ -103,3 +103,18 @@ class MovimientoView(APIView):
         return Response(
             {"error": "movimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND
         )
+
+
+class ExcelView(APIView):
+
+    service = ExcelService()
+
+    def post(self, request: Request) -> Response:
+        excel_file = request.FILES["excel"]
+        processed_file = self.service.main(excel_file=excel_file)
+        if processed_file:
+            return Response(
+                {"message": "Archivo procesado correctamente"},
+                status=status.HTTP_200_OK,
+            )
+        return Response({"message": "Ha ocurrido un error"})
