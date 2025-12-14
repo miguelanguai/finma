@@ -15,7 +15,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,8 +22,6 @@ load_dotenv("../.env")  # Carga variables desde el .env
 PROFILE = os.getenv("PROFILE")
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 print("Perfil: ", PROFILE)
-print("Perfil: ", os.getenv("PROFILE"))
-print("usuario: ", POSTGRES_USER)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -43,7 +40,6 @@ if PROFILE in ["local", "dev"]:
     ALLOWED_HOSTS = ["*"]
 else:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-
 
 
 # Application definition
@@ -98,17 +94,19 @@ WSGI_APPLICATION = "root.wsgi.application"
 if PROFILE == "local":
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3"
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "HOST": os.getenv("POSTGRES_HOST"),
+            "PORT": os.getenv("POSTGRES_PORT"),
         }
     }
 else:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "USER":os.getenv("POSTGRES_USER"),
-            "PASSWORD":os.getenv("POSTGRES_PASSWORD"),
-            "NAME":os.getenv("POSTGRES_DB"),
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 
