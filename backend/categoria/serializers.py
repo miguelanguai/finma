@@ -7,7 +7,7 @@ class CategoriaReadSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta"""
         model = Categoria
-        fields = ["id", "nombre", "padre"]
+        fields = ["id", "nombre", "is_gasto", "padre"]
 
 
 class CategoriaWriteSerializer(serializers.ModelSerializer):
@@ -15,4 +15,4 @@ class CategoriaWriteSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta"""
         model = Categoria
-        fields = ["nombre", "padre"]
+        fields = ["nombre", "is_gasto", "padre"]

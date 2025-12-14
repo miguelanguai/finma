@@ -37,7 +37,7 @@ class CategoriaService:
             Categoria: categoria guardada
         """
         categoria_to_save = Categoria(
-            nombre=categoria["nombre"], padre=categoria["padre"]
+            nombre=categoria["nombre"], is_gasto=categoria["is_gasto"], padre=categoria["padre"]
         )
         return self.repo.save(categoria=categoria_to_save)
 
@@ -57,6 +57,7 @@ class CategoriaService:
         categoria_to_update = self.find_by_id(categoria_id=categoria_to_update_id)
         if categoria_to_update:
             categoria_to_update.nombre = updated_categoria["nombre"]
+            categoria_to_update.is_gasto = updated_categoria["is_gasto"]
             categoria_to_update.padre = updated_categoria["padre"]
             categoria = self.repo.save(categoria=categoria_to_update)
             return categoria
