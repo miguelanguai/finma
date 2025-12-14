@@ -41,6 +41,7 @@ class ObjetivoService:
             monto=objetivo["monto"],
             prioridad=objetivo["prioridad"],
             fecha=objetivo["fecha"],
+            is_cumplido=objetivo["is_cumplido"],
         )
         return self.repo.save(objetivo=objetivo_to_save)
 
@@ -63,6 +64,7 @@ class ObjetivoService:
             objetivo_to_update.monto = updated_objetivo["monto"]
             objetivo_to_update.prioridad = updated_objetivo["prioridad"]
             objetivo_to_update.fecha = updated_objetivo["fecha"]
+            objetivo_to_update.is_cumplido=updated_objetivo["is_cumplido"],
             objetivo = self.repo.save(objetivo=objetivo_to_update)
             return objetivo
         raise Objetivo.DoesNotExist

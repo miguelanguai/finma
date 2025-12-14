@@ -13,7 +13,7 @@ class ObjetivoReadSerializer(serializers.ModelSerializer):
         """Meta"""
 
         model = Objetivo
-        fields = ["id", "nombre", "monto", "prioridad", "fecha"]
+        fields = ["id", "nombre", "monto", "prioridad", "fecha", "is_cumplido"]
 
 
 class ObjetivoWriteSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class ObjetivoWriteSerializer(serializers.ModelSerializer):
         """Meta"""
 
         model = Objetivo
-        fields = ["nombre", "monto", "prioridad", "fecha"]
+        fields = ["nombre", "monto", "prioridad", "fecha", "is_cumplido"]
 
 
 class MapCategoriaObjetivoReadSerializer(serializers.ModelSerializer):
