@@ -47,5 +47,5 @@ class MapCategoriaObjetivo(models.Model):
 
     fecha_inicio = models.DateTimeField(null=False)
     fecha_fin = models.DateTimeField(null=False)
-    categoria = models.ForeignKey(Categoria, null=True, on_delete=models.SET_NULL)
-    objetivo = models.ForeignKey(Objetivo, null=True, on_delete=models.SET_NULL)
+    categoria = models.ForeignKey(Categoria, null=True, on_delete=models.CASCADE)
+    objetivo = models.ForeignKey(Objetivo, null=True, on_delete=models.CASCADE)
