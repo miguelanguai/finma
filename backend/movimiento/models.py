@@ -25,7 +25,7 @@ class Movimiento(models.Model):
         models (Model): clase nativa Model
     """
 
-    concepto = models.CharField(max_length=50, null=False)
+    concepto = models.CharField(max_length=255, null=False)
     monto = models.DecimalField(max_digits=8, decimal_places=2, null=False)
     fecha = models.DateTimeField(null=False)
     recurrente = models.BooleanField(null=False)
