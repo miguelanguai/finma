@@ -3,7 +3,8 @@ import re
 
 from datetime import datetime
 
-from .repositories import MovimientoRepository
+
+from .repositories import ExcelRepository, MovimientoRepository
 
 from periodo.models import Periodo
 from periodo.services import PeriodoService
@@ -117,6 +118,7 @@ class ExcelService:
     def __init__(self):
         self.excel_file_name: str = None
         self.excel_periodo: Periodo = None
+        self.repo = ExcelRepository()
 
     def main(self, excel_file):
         """Método main
@@ -128,14 +130,12 @@ class ExcelService:
             _type_: _description_
         """
         self.excel_file_name = excel_file.name
-        print("excel file name: " + self.excel_file_name)
         self.excel_periodo = self.find_periodo_from_file_name(
             file_name=self.excel_file_name
         )
-        print(self.excel_periodo)
         df = self.get_df(excel_file=excel_file)
         data_batch = self.process_dataframe(df=df)
-        # TODO: pasar data_batch como arg para un metodo del repositorio que suba el batch entero
+        self.repo.save_batch(batch=data_batch)
         return True
 
     def find_periodo_from_file_name(self, file_name: str) -> Periodo:
@@ -179,18 +179,15 @@ class ExcelService:
         Returns:
             list[MovimientoExcel]: lista de instanciaciones para guardar en la bd.
         """
-        mini_df = df.head()
-        for i in range(len(mini_df)):
+        movimientos_list = []
+        for i in range(len(df)):
             row = df.iloc[i]
-            # print(row)
-            # print(row["Concepto"])
             movimiento = MovimientoExcel(
                 fecha=row["Fecha operación"],
                 concepto=row["Concepto"],
                 importe=row["Importe"],
                 periodo=self.excel_periodo,
             )
-            # no imprime el periodo en este string
-            print(movimiento)
+            movimientos_list.append(movimiento)
 
-        return []
+        return movimientos_list
