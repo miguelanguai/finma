@@ -1,6 +1,8 @@
+import logging
+
 from .models import Categoria
 
-
+logger = logging.getLogger(__name__)
 class CategoriaRepository:
     """Repositorio de Categoria"""
 
@@ -28,7 +30,7 @@ class CategoriaRepository:
         try:
             return Categoria.objects.get(pk=categoria_id)
         except Categoria.DoesNotExist as error:
-            print(error)
+            logger.error(error)
             return None
 
     def save(self, categoria: Categoria) -> Categoria:

@@ -1,3 +1,4 @@
+import logging
 import os
 
 from dotenv import load_dotenv
@@ -17,7 +18,7 @@ DB_USER = os.getenv("POSTGRES_USER")
 DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 DB_TABLE = "movimiento_movimiento"
 
-
+logger = logging.getLogger(__name__)
 class MovimientoRepository:
     """Repositorio de Movimiento"""
 
@@ -44,7 +45,7 @@ class MovimientoRepository:
         try:
             return Movimiento.objects.get(pk=movimiento_id)
         except Movimiento.DoesNotExist as error:
-            print(error)
+            logger.error(error)
             return None
 
     def find_all_by_periodo(self, periodo_id: int) -> list[Movimiento]:
@@ -98,10 +99,9 @@ class ExcelRepository:
                 password=DB_PASSWORD,
                 port=DB_PORT,
             )
-            print("Conectado con la base de datos %s", DB_NAME)
             return conn
         except psycopg2.DatabaseError as error:
-            print("Error conectando a la base de datos: " + error)
+            logger.error("Error conectando a la base de datos: %s", error)
             raise
 
     def save_batch(self, batch: list[MovimientoExcel]):
@@ -139,5 +139,5 @@ class ExcelRepository:
             self.conn.commit()
         except psycopg2.DatabaseError as error:
             self.conn.rollback()
-            print("Error obtenido en save_batch: " + str(error))
+            logger.error("Error obtenido en save_batch: %s", str(error))
             raise

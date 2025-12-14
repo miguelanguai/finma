@@ -125,7 +125,6 @@ class MapPeriodoCategoriaService:
         Returns:
             MapPeriodoCategoria: mapeo guardado
         """
-        print(mapeo["categoria"])
         mapeo_to_save = MapPeriodoCategoria(
             porc_ideal_fijo=mapeo["porc_ideal_fijo"],
             porc_ideal_estimado=mapeo["porc_ideal_estimado"],
@@ -133,7 +132,6 @@ class MapPeriodoCategoriaService:
             periodo=mapeo["periodo"],
             categoria=mapeo["categoria"],
         )
-        print(mapeo_to_save)
         return self.repo.save(mapeo=mapeo_to_save)
 
     def update(

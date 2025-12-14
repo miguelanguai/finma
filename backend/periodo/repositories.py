@@ -1,8 +1,9 @@
 import datetime
+import logging
 
 from .models import MapPeriodoCategoria, Periodo
 
-
+logger = logging.getLogger(__name__)
 class PeriodoRepository:
     """Reporitorio de Periodo"""
 
@@ -15,6 +16,7 @@ class PeriodoRepository:
         Returns:
             list[Periodo]: todos los periodos existente
         """
+        logger.debug("Prueba")
         return Periodo.objects.all()
 
     def find_by_id(self, periodo_id: int) -> Periodo | None:
@@ -29,7 +31,7 @@ class PeriodoRepository:
         try:
             return Periodo.objects.get(pk=periodo_id)
         except Periodo.DoesNotExist as error:
-            print(error)
+            logger.error(error)
             return None
 
     def find_periodo_by_datetime(self, periodo_datetime: datetime) -> Periodo | None:
@@ -44,7 +46,7 @@ class PeriodoRepository:
         try:
             return Periodo.objects.filter(fecha=periodo_datetime)[0]
         except Periodo.DoesNotExist as error:
-            print(error)
+            logger.error(error)
             return None
 
     def save(self, periodo: Periodo) -> Periodo:
@@ -98,7 +100,7 @@ class MapPeriodoCategoriaRepository:
         try:
             return MapPeriodoCategoria.objects.get(pk=mapeo_id)
         except MapPeriodoCategoria.DoesNotExist as error:
-            print(error)
+            logger.error(error)
             return None
 
     def save(self, mapeo: MapPeriodoCategoria) -> MapPeriodoCategoria:

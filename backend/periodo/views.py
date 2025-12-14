@@ -153,11 +153,8 @@ class MapPeriodoCategoriaView(APIView):
         Returns:
             Response: _description_
         """
-        print(request.data)
         serializer = MapPeriodoCategoriaWriteSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
-            print(serializer)
             mapeo = self.service.save(serializer.validated_data)
             return Response(
                 MapPeriodoCategoriaWriteSerializer(mapeo).data,

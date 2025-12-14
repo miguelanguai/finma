@@ -1,6 +1,8 @@
+import logging
+
 from .models import MapCategoriaObjetivo, Objetivo
 
-
+logger = logging.getLogger(__name__)
 class ObjetivoRepository:
     def __init__(self):
         pass
@@ -12,7 +14,7 @@ class ObjetivoRepository:
         try:
             return Objetivo.objects.get(pk=objetivo_id)
         except Objetivo.DoesNotExist as error:
-            print(error)
+            logger.error(error)
             return None
 
     def save(self, objetivo: Objetivo) -> Objetivo:
@@ -35,7 +37,7 @@ class MapCategoriaObjetivoRepository:
         try:
             return MapCategoriaObjetivo.objects.get(pk=mapeo_id)
         except MapCategoriaObjetivo.DoesNotExist as error:
-            print(error)
+            logger.error(error)
             return None
 
     def save(self, mapeo: MapCategoriaObjetivo) -> MapCategoriaObjetivo:

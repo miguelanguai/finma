@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import logging
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv("../.env")  # Carga variables desde el .env
 PROFILE = os.getenv("PROFILE")
 POSTGRES_USER = os.getenv("POSTGRES_USER")
-print("Perfil: ", PROFILE)
+logger.debug("Perfil: %s", PROFILE)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -109,6 +111,40 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
+
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "handlers": {
+        "dev": {
+            "level": "DEBUG",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "root": {
+            "handlers": ["dev"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
 
 
 # Password validation
