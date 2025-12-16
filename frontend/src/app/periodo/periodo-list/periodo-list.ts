@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
+
 import { PeriodoService } from '../periodo-service';
+
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-periodo-list',
-  imports: [],
+  imports: [
+    ButtonModule
+  ],
   templateUrl: './periodo-list.html',
   styleUrl: './periodo-list.css',
 })
