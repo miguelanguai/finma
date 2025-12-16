@@ -2,7 +2,8 @@
 
 <div>
     <div></div>
-    <p-table [value]="periodos" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [value]="periodos" stripedRows [paginator]="true" [rows]="12" [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[12, 24, 60]">
         <ng-template #header>
             <tr>
                 <th>Nombre</th>
