@@ -1,0 +1,12 @@
+<div>
+    <div>
+        <p-floatlabel>
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="periodo.nombre"/>
+            <label for="over_label">Nombre</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-datepicker [(ngModel)]="periodo.fecha" />
+    </div>
+</div>
+<p-button (click)="createPeriodo()" label="Submit" />
