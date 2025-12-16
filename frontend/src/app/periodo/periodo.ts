@@ -1,9 +1,9 @@
-class Periodo {
+export class Periodo {
     nombre: string;
     fecha: Date;
 
-    constructor(nombre: string, fecha: Date) {
+    constructor(nombre: string, fecha: string) {
         this.nombre = nombre;
-        this.fecha = fecha;
+        this.fecha = new Date(fecha);
     }
 }
