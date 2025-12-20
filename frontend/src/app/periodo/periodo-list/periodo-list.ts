@@ -36,7 +36,10 @@ export class PeriodoList implements OnInit {
   getPeriodos() {
     this.periodoService.getPeriodos().subscribe({
       next: (data) => {
-        this.periodos = data.map(d => new Periodo(d.nombre, d.fecha));
+        this.periodos = data.map(
+          d => new Periodo(d.nombre, d.fecha)
+        );
+
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -53,6 +56,19 @@ export class PeriodoList implements OnInit {
       resizable: true,
       draggable: true,
     })
+
+    this.ref?.onClose.subscribe((periodo: Periodo) => {
+      if (periodo) {
+        this.periodoService.savePeriodo(periodo).subscribe({
+          next: () => {
+            this.ngOnInit();
+          },
+          error: err => {
+            console.error("Error al guardar el periodo", err);
+          }
+        });
+      }
+    });
   }
 
 }

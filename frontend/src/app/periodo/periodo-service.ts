@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
+import { Periodo } from './periodo';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -12,9 +14,17 @@ export class PeriodoService {
 
   appUrl = environment.apiUrl + 'periodo/'
 
-  getPeriodos() : Observable<Periodo[]>{
-    
+  getPeriodos(): Observable<Periodo[]> {
+
     return this.http.get<Periodo[]>(this.appUrl);
+  }
+
+  savePeriodo(periodo: Periodo): Observable<Periodo> {
+    const postBody = {
+      "nombre": periodo.getNombre(),
+      "fecha": periodo.getFechaAsString()
+    }
+    return this.http.post<Periodo>(this.appUrl, postBody);
   }
 
 }

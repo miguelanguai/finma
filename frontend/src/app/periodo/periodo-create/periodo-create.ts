@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-periodo-create',
@@ -25,8 +26,10 @@ export class PeriodoCreate {
 
   periodo: Periodo = new Periodo();
 
+  constructor(private ref: DynamicDialogRef){}
+
   createPeriodo(){
-    console.log(this.periodo);
+    this.ref.close(this.periodo);
   }
 
 }

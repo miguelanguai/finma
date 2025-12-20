@@ -16,7 +16,6 @@ class PeriodoRepository:
         Returns:
             list[Periodo]: todos los periodos existente
         """
-        logger.debug("Prueba")
         return Periodo.objects.all()
 
     def find_by_id(self, periodo_id: int) -> Periodo | None:
