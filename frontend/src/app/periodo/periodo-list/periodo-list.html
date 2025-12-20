@@ -6,14 +6,22 @@
         [rowsPerPageOptions]="[12, 24, 60]">
         <ng-template #header>
             <tr>
+                <th>ID</th>
                 <th>Nombre</th>
                 <th>Fecha</th>
             </tr>
         </ng-template>
         <ng-template #body let-periodo>
             <tr>
+                <td>{{ periodo.id }}</td>
                 <td>{{ periodo.nombre }}</td>
                 <td>{{ periodo.fecha.getDate() }}/{{ periodo.fecha.getMonth()+1 }}/{{ periodo.fecha.getFullYear() }}
+                </td>
+                <td>
+                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreatePeriodoDialog()" />
+                </td>
+                <td>
+                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeletePeriodoDialog()" />
                 </td>
             </tr>
         </ng-template>

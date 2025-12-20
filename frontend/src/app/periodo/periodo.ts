@@ -1,10 +1,12 @@
 export class Periodo {
+    id: number | undefined;
     nombre: string;
     fecha: Date;
     
     constructor();
-    constructor(nombre: string, fecha?: string | Date);
-    constructor(nombre?: string, fecha?: string | Date) {
+    constructor(id?: number | undefined, nombre?: string, fecha?: string | Date);
+    constructor(id?: number | undefined, nombre?: string, fecha?: string | Date) {
+        this.id = id ?? undefined;
         this.nombre = nombre ?? '';
         if (fecha instanceof Date){
             this.fecha = fecha;

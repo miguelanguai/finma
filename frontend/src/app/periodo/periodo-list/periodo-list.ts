@@ -37,9 +37,8 @@ export class PeriodoList implements OnInit {
     this.periodoService.getPeriodos().subscribe({
       next: (data) => {
         this.periodos = data.map(
-          d => new Periodo(d.nombre, d.fecha)
+          d => new Periodo(d.id, d.nombre,  d.fecha)
         );
-
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -69,6 +68,11 @@ export class PeriodoList implements OnInit {
         });
       }
     });
+  }
+
+  showDeletePeriodoDialog(){
+    console.log("aqui la eliminacion");
+    
   }
 
 }
