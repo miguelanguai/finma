@@ -18,7 +18,7 @@
                 <td>{{ periodo.fecha.getDate() }}/{{ periodo.fecha.getMonth()+1 }}/{{ periodo.fecha.getFullYear() }}
                 </td>
                 <td>
-                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreatePeriodoDialog()" />
+                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreatePeriodoDialog(periodo)" />
                 </td>
                 <td>
                     <p-button icon="pi pi-trash" severity="danger" (click)="showDeletePeriodoDialog()" />

@@ -20,11 +20,20 @@ export class PeriodoService {
   }
 
   savePeriodo(periodo: Periodo): Observable<Periodo> {
-    const postBody = {
-      "nombre": periodo.getNombre(),
-      "fecha": periodo.getFechaAsString()
+    if (periodo.id) {
+      const postBody = {
+        "nombre": periodo.getNombre(),
+        "fecha": periodo.getFechaAsString()
+      }
+      return this.http.put<Periodo>(this.appUrl + periodo.id, postBody);
+
+    } else {
+      const postBody = {
+        "nombre": periodo.getNombre(),
+        "fecha": periodo.getFechaAsString()
+      }
+      return this.http.post<Periodo>(this.appUrl, postBody);
     }
-    return this.http.post<Periodo>(this.appUrl, postBody);
   }
 
 }

@@ -1,8 +1,14 @@
 <div>
     <div>
-        <p-floatlabel>
-            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="periodo.nombre"/>
-            <label for="over_label">Nombre</label>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="periodo.id" [disabled]="true" />
+            <label for="in_label">ID</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="periodo.nombre" />
+            <label for="in_label">Nombre</label>
         </p-floatlabel>
     </div>
     <div>

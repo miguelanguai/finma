@@ -47,8 +47,11 @@ export class PeriodoList implements OnInit {
     });
   }
 
-  showCreatePeriodoDialog() {
+  showCreatePeriodoDialog(periodo?:Periodo) {
     this.ref = this.dialogService.open(PeriodoCreate, {
+      data: {
+        periodo: periodo ?? null
+      },
       header: "select",
       closeOnEscape: true,
       closable: true,
