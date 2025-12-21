@@ -36,4 +36,8 @@ export class PeriodoService {
     }
   }
 
+  deletePeriodo(periodo: Periodo): Observable<Periodo> {
+    return this.http.delete<Periodo>(this.appUrl + periodo.id);
+  }
+
 }

@@ -1,3 +1,6 @@
+<p-toast />
+<p-confirmdialog />
+
 <p-button (click)="showCreatePeriodoDialog()" label="Crear Periodo" />
 
 <div>
@@ -21,7 +24,7 @@
                     <p-button icon="pi pi-pencil" severity="info" (click)="showCreatePeriodoDialog(periodo)" />
                 </td>
                 <td>
-                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeletePeriodoDialog()" />
+                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeletePeriodoDialog(periodo, $event)" />
                 </td>
             </tr>
         </ng-template>

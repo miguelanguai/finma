@@ -4,18 +4,25 @@ import { Periodo } from '../periodo';
 import { PeriodoCreate } from '../periodo-create/periodo-create';
 import { PeriodoService } from '../periodo-service';
 
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-periodo-list',
   imports: [
     ButtonModule,
-    TableModule
+    ConfirmDialogModule,
+    TableModule,
+    ToastModule
   ],
   providers: [
-    DialogService
+    DialogService,
+    MessageService,
+    ConfirmationService
   ],
   templateUrl: './periodo-list.html',
   styleUrl: './periodo-list.css',
@@ -26,7 +33,7 @@ export class PeriodoList implements OnInit {
 
   ref: DynamicDialogRef | null = null;
 
-  constructor(private cdr: ChangeDetectorRef, public dialogService: DialogService, private periodoService: PeriodoService) { }
+  constructor(private cdr: ChangeDetectorRef, private confirmationService: ConfirmationService, public dialogService: DialogService, private messageService: MessageService, private periodoService: PeriodoService) { }
 
   ngOnInit() {
     this.getPeriodos();
@@ -37,7 +44,7 @@ export class PeriodoList implements OnInit {
     this.periodoService.getPeriodos().subscribe({
       next: (data) => {
         this.periodos = data.map(
-          d => new Periodo(d.id, d.nombre,  d.fecha)
+          d => new Periodo(d.id, d.nombre, d.fecha)
         );
         this.cdr.detectChanges();
       },
@@ -47,7 +54,7 @@ export class PeriodoList implements OnInit {
     });
   }
 
-  showCreatePeriodoDialog(periodo?:Periodo) {
+  showCreatePeriodoDialog(periodo?: Periodo) {
     this.ref = this.dialogService.open(PeriodoCreate, {
       data: {
         periodo: periodo ?? null
@@ -73,9 +80,31 @@ export class PeriodoList implements OnInit {
     });
   }
 
-  showDeletePeriodoDialog(){
-    console.log("aqui la eliminacion");
-    
+  showDeletePeriodoDialog(periodo: Periodo, event: Event) {
+    this.confirmationService.confirm({
+      header: "¿Borrar periodo?",
+      message: "Confirma para continuar",
+      accept: () => {
+        this.periodoService.deletePeriodo(periodo).subscribe({
+          next: (data) => {
+          }
+        })
+        this.messageService.add({
+          severity: "info",
+          summary: "Confirmado",
+          detail: "Has eliminado el periodo"
+        });
+        this.ngOnInit();
+        this.getPeriodos();
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: "info",
+          summary: "Rechazado",
+          detail: "El periodo sigue existiendo"
+        })
+      }
+    })
   }
 
 }
