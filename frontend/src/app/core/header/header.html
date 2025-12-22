@@ -1,11 +1,18 @@
-<div>
-       <img src="/assets/images/bugs.jpg" alt="bugs">
-    <h1>Finma</h1>
-</div>
-<div>
-    @for(route of routes; track route.title){
-        <div>
+<div class="header-div">
+    <div>
+        <div class="header-img">
+            <img src="/assets/images/bugs.jpg" alt="bugs" width="50" height="50">
+        </div>
+        <div class="header-h1">
+            <h1>Finma</h1>
+        </div>
+    </div>
+    <div class="header-links">
+        @for(route of routes; track route.title){
+        <div class="header-link">
             <a href="{{route.path}}">{{route.title}}</a>
         </div>
-    }
+        }
+    </div>
+    <div></div>
 </div>
