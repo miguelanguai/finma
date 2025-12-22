@@ -3,5 +3,9 @@
     <h1>Finma</h1>
 </div>
 <div>
-
+    @for(route of routes; track route.title){
+        <div>
+            <a href="{{route.path}}">{{route.title}}</a>
+        </div>
+    }
 </div>

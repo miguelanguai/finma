@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Routes } from '@angular/router';
+import { LandingPage } from '../../home/landing-page/landing-page';
+import { PeriodoList } from '../../periodo/periodo-list/periodo-list';
 
 @Component({
   selector: 'app-header',
@@ -7,5 +10,16 @@ import { Component } from '@angular/core';
   styleUrl: './header.css',
 })
 export class Header {
-
+  routes: Routes = [
+    {
+      path: '',
+      component: LandingPage,
+      title: "Home"
+    },
+    {
+      path: 'periodo',
+      component: PeriodoList,
+      title: "Periodo"
+    },
+  ];
 }
