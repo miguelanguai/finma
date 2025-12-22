@@ -66,11 +66,25 @@ export class PeriodoList implements OnInit {
       draggable: true,
     })
 
-    this.ref?.onClose.subscribe((periodo: Periodo) => {
-      if (periodo) {
-        this.periodoService.savePeriodo(periodo).subscribe({
+    this.ref?.onClose.subscribe((returnedPeriodo: Periodo) => {
+      if (returnedPeriodo) {
+        this.periodoService.savePeriodo(returnedPeriodo).subscribe({
           next: () => {
             this.ngOnInit();
+            if (periodo) {
+
+              this.messageService.add({
+                severity: "info",
+                summary: "Confirmado",
+                detail: "Has editado el periodo"
+              });
+            } else {
+              this.messageService.add({
+                severity: "info",
+                summary: "Confirmado",
+                detail: "Has creado el periodo"
+              });
+            }
           },
           error: err => {
             console.error("Error al guardar el periodo", err);
