@@ -1,1 +1,22 @@
-<p>categoria-edit works!</p>
+<div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="categoria.id" [disabled]="true" />
+            <label for="in_label">ID</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="categoria.nombre"  />
+            <label for="in_label">Nombre</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p>Gasto</p>
+        <p-toggleswitch [(ngModel)]="categoria.is_gasto" />
+    </div>
+    <div>
+        <p-select [options]="categoriaList" [(ngModel)]="categoria.padre" optionLabel="nombre" optionValue="id" placeholder="Elige una categoria padre" class="w-full md:w-56" />
+    </div>
+</div>
+<p-button (click)="createCategoria()" label="Crear" />

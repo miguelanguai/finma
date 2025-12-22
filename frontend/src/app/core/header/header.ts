@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 import { LandingPage } from '../../home/landing-page/landing-page';
 import { PeriodoList } from '../../periodo/periodo-list/periodo-list';
+import { CategoriaList } from '../../categoria/categoria-list/categoria-list';
 
 @Component({
   selector: 'app-header',
@@ -20,6 +21,11 @@ export class Header {
       path: 'periodo',
       component: PeriodoList,
       title: "Periodo"
+    },
+    {
+      path: 'categoria',
+      component: CategoriaList,
+      title: "Categoria"
     },
   ];
 }
