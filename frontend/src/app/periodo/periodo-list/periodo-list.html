@@ -5,13 +5,29 @@
 
 <div>
     <div></div>
-    <p-table [value]="periodos" stripedRows [paginator]="true" [rows]="12" [tableStyle]="{ 'min-width': '50rem' }"
-        [rowsPerPageOptions]="[12, 24, 60]">
+    <p-table #dt1 dataKey="id" [value]="periodos" stripedRows [paginator]="true" [rows]="12"
+        [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[12, 24, 60]"
+        [globalFilterFields]="['id', 'nombre', 'fecha']">
         <ng-template #header>
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Fecha</th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        ID
+                        <p-columnFilter type="text" field="id" display="menu" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Nombre
+                        <p-columnFilter type="text" field="nombre" display="menu" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Fecha
+                        <p-columnFilter type="date" field="fecha" display="menu" />
+                    </div>
+                </th>
             </tr>
         </ng-template>
         <ng-template #body let-periodo>
