@@ -10,19 +10,19 @@
         [globalFilterFields]="['id', 'nombre', 'fecha']">
         <ng-template #header>
             <tr>
-                <th>
+                <th pSortableColumn="id">
                     <div class="flex items-center justify-between">
                         ID
                         <p-columnFilter type="text" field="id" display="menu" />
                     </div>
                 </th>
-                <th>
+                <th pSortableColumn="nombre">
                     <div class="flex items-center justify-between">
                         Nombre
                         <p-columnFilter type="text" field="nombre" display="menu" />
                     </div>
                 </th>
-                <th>
+                <th pSortableColumn="fecha">
                     <div class="flex items-center justify-between">
                         Fecha
                         <p-columnFilter type="date" field="fecha" display="menu" />
