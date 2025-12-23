@@ -41,7 +41,7 @@
                 <td>{{ categoria.id }}</td>
                 <td>{{ categoria.nombre }}</td>
                 <td>{{ categoria.is_gasto }}</td>
-                <td>{{ categoria.padre }}</td>
+                <td>{{ categoria.padre?.nombre }}</td>
                 <td>
                     <p-button icon="pi pi-pencil" severity="info"
                         (click)="showCreateCategoriaDialog(categoria)" />
