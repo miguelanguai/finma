@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import MapPeriodoCategoria, Periodo
+
 from categoria.models import Categoria
+from categoria.serializers import CategoriaReadSerializer
+from .models import MapPeriodoCategoria, Periodo
 
 class PeriodoReadSerializer(serializers.ModelSerializer):
     """Serializador de lectura de Periodo
@@ -44,8 +46,8 @@ class MapPeriodoCategoriaReadSerializer(serializers.ModelSerializer):
         serializers (_type_): _description_
     """
 
-    periodo = serializers.PrimaryKeyRelatedField(queryset=Periodo.objects.all())
-    categoria = serializers.PrimaryKeyRelatedField(queryset=Categoria.objects.all())
+    periodo = PeriodoReadSerializer()
+    categoria = CategoriaReadSerializer()
 
     class Meta:
         """Meta"""
