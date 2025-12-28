@@ -202,3 +202,29 @@ class MapPeriodoCategoriaView(APIView):
         return Response(
             {"error": "mapeo no encontrado"}, status=status.HTTP_404_NOT_FOUND
         )
+
+
+class MapPeriodoCategoriaView2(APIView):
+    """API de entidad MapPeriodoCategoria
+
+    Args:
+        APIView (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
+    service = MapPeriodoCategoriaService()
+
+    def post(self, request: Request) -> Response:
+        """GET. Devuelve un listado de mapeos que cumplen con el filtrado
+
+        Args:
+            request (Request): _description_
+
+        Returns:
+            Response: _description_
+        """
+        mapeos_list = self.service.find_by_filter(request.data)
+        serializer = MapPeriodoCategoriaReadSerializer(mapeos_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

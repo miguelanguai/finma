@@ -4,6 +4,8 @@ import logging
 from .models import MapPeriodoCategoria, Periodo
 
 logger = logging.getLogger(__name__)
+
+
 class PeriodoRepository:
     """Reporitorio de Periodo"""
 
@@ -98,6 +100,29 @@ class MapPeriodoCategoriaRepository:
         """
         try:
             return MapPeriodoCategoria.objects.get(pk=mapeo_id)
+        except MapPeriodoCategoria.DoesNotExist as error:
+            logger.error(error)
+            return None
+
+    def find_by_filter(self, instance_filter: dict) -> list[Periodo]:
+        """_summary_
+
+        Args:
+            filter (dict): _description_
+
+        Returns:
+            list[Periodo]: _description_
+        """
+        try:
+            return (
+                MapPeriodoCategoria.objects.filter(
+                    periodo=instance_filter["periodo"]["id"]
+                )
+                .filter(categoria=instance_filter["categoria"]["id"])
+                .filter(porc_ideal_fijo=instance_filter["porc_ideal_fijo"])
+                .filter(porc_ideal_estimado=instance_filter["porc_ideal_estimado"])
+                .filter(porc_ideal_obtenido=instance_filter["porc_ideal_obtenido"])
+            )
         except MapPeriodoCategoria.DoesNotExist as error:
             logger.error(error)
             return None

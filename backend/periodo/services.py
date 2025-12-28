@@ -116,6 +116,17 @@ class MapPeriodoCategoriaService:
         """
         return self.repo.find_by_id(mapeo_id=mapeo_id)
 
+    def find_by_filter(self, instance_filter: dict) -> list[Periodo]:
+        """_summary_
+
+        Args:
+            filter (dict): _description_
+
+        Returns:
+            list[Periodo]: _description_
+        """
+        return self.repo.find_by_filter(instance_filter=instance_filter)
+
     def save(self, mapeo: dict) -> MapPeriodoCategoria:
         """Guarda un mapeo y lo retorna
 
