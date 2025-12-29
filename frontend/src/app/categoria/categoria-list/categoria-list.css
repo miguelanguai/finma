@@ -1,0 +1,13 @@
+.period-header{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    .chip-assigned{
+        background-color: rgb(201, 255, 209);
+        color: rgb(1, 136, 21);
+    }
+    .chip-not-assigned{
+        background-color: rgb(255, 175, 175);
+        color: rgb(136, 1, 1);
+    }
+}

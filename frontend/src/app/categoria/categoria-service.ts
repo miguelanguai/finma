@@ -12,7 +12,8 @@ import { Categoria } from './Categoria';
 export class CategoriaService {
   constructor(private http: HttpClient) { }
 
-  appUrl = environment.apiUrl + 'categoria/'
+  appUrl = environment.apiUrl + 'categoria/';
+  appUrl2 = environment.apiUrl + 'map/filter/';
 
   getCategorias(): Observable<Categoria[]> {
 

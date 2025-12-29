@@ -1,13 +1,26 @@
 <p-toast />
 <p-confirmdialog />
 
+<div class="period-header">
+    <div class="period-select">
+        <p-listbox [options]="periodos" [(ngModel)]="selectedPeriodo" optionLabel="nombre" (onChange)="getCategorias()"
+            class="w-full md:w-56" />
+    </div>
+    @if (isAllCategoriasAssigned){
+    <p-chip label="Asignados" icon="pi pi-check" class="chip-assigned" />
+    }
+    @else{
+    <p-chip label="Por Asignar" icon="pi pi-times" class="chip-not-assigned" />
+    }
+</div>
+
 <p-button (click)="showCreateCategoriaDialog()" label="Crear Categoria" />
 
 <div>
     <div></div>
-    <p-table #dt1 dataKey="id" [value]="categorias" stripedRows [paginator]="true" [rows]="12"
+    <p-table #dt1 dataKey="id" [value]="maps" stripedRows [paginator]="true" [rows]="12"
         [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[12, 24, 60]"
-        [globalFilterFields]="['id', 'nombre', 'is_gasto']">
+        [globalFilterFields]="['id', 'categoria?.nombre']">
         <ng-template #header>
             <tr>
                 <th pSortableColumn="id">
@@ -16,39 +29,114 @@
                         <p-columnFilter type="text" field="id" display="menu" />
                     </div>
                 </th>
-                <th pSortableColumn="nombre">
+                <th pSortableColumn="categoria?.nombre">
                     <div class="flex items-center justify-between">
                         Nombre
-                        <p-columnFilter type="text" field="nombre" display="menu" />
+                        <p-columnFilter type="text" field="id" display="menu" />
                     </div>
                 </th>
-                <th pSortableColumn="is_gasto">
+                <th>
                     <div class="flex items-center justify-between">
-                        Gasto
-                        <p-columnFilter type="boolean" field="is_gasto" display="menu" />
+                        Editar Categoria
                     </div>
                 </th>
-                <th pSortableColumn="padre">
+                <th>
                     <div class="flex items-center justify-between">
-                        Padre
-                        <p-columnFilter type="text" field="padre" display="menu" />
+                        Borra Categoria
+                    </div>
+                </th>
+                <th pSortableColumn="id">
+                    <!--TODO: esta variable no existe en el objeto. Crearla -->
+                    <div class="flex items-center justify-between">
+                        Gasto total (real)
+                        <p-columnFilter type="text" field="id" display="menu" />
+                    </div>
+                </th>
+                <th pSortableColumn="porc_ideal_fijo">
+                    <div class="flex items-center justify-between">
+                        Gasto Fijo (%)
+                        <p-columnFilter type="text" field="porc_ideal_fijo" display="menu" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Valor Gasto Fijo (€)
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Diferencia Gasto Fijo - Gasto Real (€)
+                    </div>
+                </th>
+                <th pSortableColumn="porc_ideal_estimado">
+                    <div class="flex items-center justify-between">
+                        Gasto Estimado (%)
+                        <p-columnFilter type="text" field="porc_ideal_estimado" display="menu" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Valor Gasto Estimado (€)
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Diferencia Gasto Estimado - Gasto Real (€)
+                    </div>
+                </th>
+                <th pSortableColumn="porc_ideal_obtenido">
+                    <div class="flex items-center justify-between">
+                        Gasto Obtenido (%)
+                        <p-columnFilter type="text" field="porc_ideal_estimado" display="menu" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Valor Gasto Obtenido (€)
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Diferencia Gasto Obtenido - Gasto Real (€)
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Periodo
                     </div>
                 </th>
             </tr>
         </ng-template>
-        <ng-template #body let-categoria>
+        <ng-template #body let-map>
             <tr>
-                <td>{{ categoria.id }}</td>
-                <td>{{ categoria.nombre }}</td>
-                <td>{{ categoria.is_gasto }}</td>
-                <td>{{ categoria.padre?.nombre }}</td>
+                <td>{{ map.id }}</td>
+                <td>{{ map.categoria?.nombre }}</td>
                 <td>
-                    <p-button icon="pi pi-pencil" severity="info"
-                        (click)="showCreateCategoriaDialog(categoria)" />
+                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateCategoriaDialog(map)"
+                        label="Editar Categoria" />
                 </td>
                 <td>
-                    <p-button icon="pi pi-trash" severity="danger"
-                        (click)="showDeleteCategoriaDialog(categoria, $event)" />
+                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeleteCategoriaDialog(map, $event)"
+                        label="Borrar Categoria" />
+                </td>
+                <td>Gasto total (real)</td>
+                <td>{{ map.porc_ideal_fijo }}</td>
+                <td>Valor Calculado</td>
+                <td>Diferencia valores calculada</td>
+                <td>{{ map.porc_ideal_estimado }}</td>
+                <td>Valor Calculado</td>
+                <td>Diferencia valores calculada</td>
+                <td>{{ map.porc_ideal_obtenido }}</td>
+                <td>Valor Calculado</td>
+                <td>Diferencia valores calculada</td>
+                <td>{{ map.periodo?.nombre }}</td>
+                <td>
+                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateCategoriaDialog(map)"
+                        label="Editar Mapeo" />
+                </td>
+                <td>
+                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeleteCategoriaDialog(map, $event)"
+                        label="Borrar Mapeo" />
                 </td>
             </tr>
         </ng-template>
