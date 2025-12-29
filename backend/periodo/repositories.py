@@ -113,16 +113,19 @@ class MapPeriodoCategoriaRepository:
         Returns:
             list[Periodo]: _description_
         """
+        filters = {}
+        if instance_filter["porc_ideal_fijo"]:
+            filters["porc_ideal_fijo"]=instance_filter["porc_ideal_fijo"]
+        if instance_filter["porc_ideal_estimado"]:
+            filters["porc_ideal_estimado"]=instance_filter["porc_ideal_estimado"]
+        if instance_filter["porc_ideal_obtenido"]:
+            filters["porc_ideal_obtenido"]=instance_filter["porc_ideal_obtenido"]
+        if instance_filter["categoria"]:
+            filters["categoria"]=instance_filter["categoria"]
+        if instance_filter["periodo"]:
+            filters["periodo"]=instance_filter["periodo"]
         try:
-            return (
-                MapPeriodoCategoria.objects.filter(
-                    periodo=instance_filter["periodo"]["id"]
-                )
-                .filter(categoria=instance_filter["categoria"]["id"])
-                .filter(porc_ideal_fijo=instance_filter["porc_ideal_fijo"])
-                .filter(porc_ideal_estimado=instance_filter["porc_ideal_estimado"])
-                .filter(porc_ideal_obtenido=instance_filter["porc_ideal_obtenido"])
-            )
+            return MapPeriodoCategoria.objects.filter(**filters)
         except MapPeriodoCategoria.DoesNotExist as error:
             logger.error(error)
             return None
