@@ -1,1 +1,33 @@
-<p>mapeo-edit works!</p>
+<div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.id" [disabled]="true" />
+            <label for="in_label">ID</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_fijo"  />
+            <label for="in_label">Porcentaje ideal Fijo</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_estimado"  />
+            <label for="in_label">Porcentaje ideal Estimado</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_obtenido"  />
+            <label for="in_label">Porcentaje ideal Obtenido</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-select [options]="categoriaList" [(ngModel)]="mapeo.categoria" optionLabel="nombre" placeholder="Elige una categoria" class="w-full md:w-56" />
+    </div>
+    <div>
+        <p-select [options]="periodoList" [(ngModel)]="mapeo.periodo" optionLabel="nombre" placeholder="Elige un periodo" class="w-full md:w-56" />
+    </div>
+</div>
+<p-button (click)="createMapeo()" label="Crear" />

@@ -11,3 +11,9 @@
         color: rgb(136, 1, 1);
     }
 }
+
+.buttons{
+    p-button{
+        padding-right: 1rem;
+    }
+}

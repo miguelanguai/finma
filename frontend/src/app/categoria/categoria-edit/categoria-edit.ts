@@ -47,8 +47,6 @@ export class CategoriaEdit {
   }
 
   createCategoria() {
-    console.log(this.categoria);
-
     this.ref.close(this.categoria);
   }
 }

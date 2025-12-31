@@ -17,6 +17,7 @@ import { MapCatPerService } from '../../periodo/map-cat-per-service';
 import { MapPeriodoCategoria } from '../../periodo/MapPeriodoCategoria';
 import { Periodo } from '../../periodo/periodo';
 import { PeriodoService } from '../../periodo/periodo-service';
+import { MapeoEdit } from '../mapeo-edit/mapeo-edit';
 
 @Component({
   selector: 'app-categoria-list',
@@ -176,6 +177,76 @@ export class CategoriaList {
           severity: "info",
           summary: "Rechazado",
           detail: "La categoria sigue existiendo"
+        })
+      }
+    })
+  }
+
+  showCreateMapeoDialog(mapeo?: MapPeriodoCategoria) {
+    this.ref = this.dialogService.open(MapeoEdit, {
+      data: {
+        mapeo: mapeo ?? null,
+        mapeoList: this.maps,
+        categoriaList: this.categorias,
+        periodoList: this.periodos
+      },
+      header: "select",
+      closeOnEscape: true,
+      closable: true,
+      resizable: true,
+      draggable: true,
+    })
+
+    this.ref?.onClose.subscribe((returnedMapeo: MapPeriodoCategoria) => {
+      if (returnedMapeo) {
+        this.mapService.saveMapPeriodoCategoria(returnedMapeo).subscribe({
+          next: () => {
+            this.ngOnInit();
+            if (mapeo) {
+
+              this.messageService.add({
+                severity: "info",
+                summary: "Confirmado",
+                detail: "Has editado el mapeo"
+              });
+            } else {
+              this.messageService.add({
+                severity: "info",
+                summary: "Confirmado",
+                detail: "Has creado el mapeo"
+              });
+            }
+          },
+          error: err => {
+            console.error("Error al guardar el mapeo", err);
+          }
+        });
+      }
+    });
+  }
+
+  showDeleteMapeoDialog(mapeo: MapPeriodoCategoria, event: Event) {
+    this.confirmationService.confirm({
+      header: "¿Borrar mapeo?",
+      message: "Confirma para continuar",
+      accept: () => {
+        this.mapService.deleteMapPeriodoCategoria(mapeo).subscribe({
+          next: (data) => {
+          }
+        })
+        this.messageService.add({
+          severity: "info",
+          summary: "Confirmado",
+          detail: "Has eliminado el mapeo"
+        });
+        this.ngOnInit();
+        this.getCategorias();
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: "info",
+          summary: "Rechazado",
+          detail: "El mapeo sigue existiendo"
         })
       }
     })

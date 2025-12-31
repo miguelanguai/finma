@@ -14,7 +14,10 @@
     }
 </div>
 
-<p-button (click)="showCreateCategoriaDialog()" label="Crear Categoria" />
+<div class="buttons">
+    <p-button (click)="showCreateCategoriaDialog()" label="Crear Categoria" />
+    <p-button (click)="showCreateMapeoDialog()" label="Crear Mapeo" />
+</div>
 
 <div>
     <div></div>
@@ -105,6 +108,16 @@
                         Periodo
                     </div>
                 </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Editar Mapeo
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-between">
+                        Borra Mapeo
+                    </div>
+                </th>
             </tr>
         </ng-template>
         <ng-template #body let-map>
@@ -131,11 +144,11 @@
                 <td>Diferencia valores calculada</td>
                 <td>{{ map.periodo?.nombre }}</td>
                 <td>
-                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateCategoriaDialog(map)"
+                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateMapeoDialog(map)"
                         label="Editar Mapeo" />
                 </td>
                 <td>
-                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeleteCategoriaDialog(map, $event)"
+                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeleteMapeoDialog(map, $event)"
                         label="Borrar Mapeo" />
                 </td>
             </tr>
