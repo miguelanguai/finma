@@ -28,9 +28,7 @@ export class MapCatPerService {
       "porc_ideal_obtenido": map_filter.porc_ideal_obtenido,
       "periodo": map_filter.periodo?.id || null,
       "categoria": map_filter.categoria?.id || null
-    }
-    console.log(BODY);
-    
+    }    
     return this.http.post<MapPeriodoCategoria[]>(this.appUrl2, BODY);
   }
 

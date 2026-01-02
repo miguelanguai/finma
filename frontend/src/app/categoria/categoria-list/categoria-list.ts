@@ -8,6 +8,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ListboxModule } from 'primeng/listbox';
 import { TableModule } from 'primeng/table';
+import { TabsModule } from 'primeng/tabs';
 import { ToastModule } from 'primeng/toast';
 
 import { Categoria } from '../Categoria';
@@ -28,6 +29,7 @@ import { MapeoEdit } from '../mapeo-edit/mapeo-edit';
     FormsModule,
     ListboxModule,
     TableModule,
+    TabsModule,
     ToastModule
   ],
   providers: [
