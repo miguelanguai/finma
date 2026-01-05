@@ -12,6 +12,18 @@
         </p-floatlabel>
     </div>
     <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="periodo.ingreso_fijo" />
+            <label for="in_label">Ingreso Fijo</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="periodo.ingreso_estimado" />
+            <label for="in_label">Ingreso Estimado</label>
+        </p-floatlabel>
+    </div>
+    <div>
         <p-datepicker [(ngModel)]="periodo.fecha" />
     </div>
 </div>

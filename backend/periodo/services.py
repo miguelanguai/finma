@@ -54,6 +54,8 @@ class PeriodoService:
         periodo_to_save = Periodo(
             nombre=periodo["nombre"],
             fecha=periodo["fecha"],
+            ingreso_fijo=periodo["ingreso_fijo"],
+            ingreso_estimado=periodo["ingreso_estimado"],
         )
         return self.repo.save(periodo=periodo_to_save)
 
@@ -74,6 +76,8 @@ class PeriodoService:
         if periodo_to_update:
             periodo_to_update.nombre = updated_period["nombre"]
             periodo_to_update.fecha = updated_period["fecha"]
+            periodo_to_update.ingreso_fijo = updated_period["ingreso_fijo"]
+            periodo_to_update.ingreso_estimado = updated_period["ingreso_estimado"]
             periodo = self.repo.save(periodo=periodo_to_update)
             return periodo
         raise Periodo.DoesNotExist

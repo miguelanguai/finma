@@ -57,6 +57,8 @@ export class CategoriaList {
   ngOnInit() {
     this.getCategorias();
     this.getPeriodos();
+    
+
     //TODO: Listar también el gasto total (real) que supone la categoria al mes. Es decir, la suma de todos los movimientos pertenecientes a la categoria
     //TODO: Poner formularios para creación y edición de mapeos
 
@@ -106,7 +108,7 @@ export class CategoriaList {
     this.periodoService.getPeriodos().subscribe({
       next: (data) => {
         this.periodos = data.map(
-          d => new Periodo(d.id, d.nombre, d.fecha)
+          d => new Periodo(d.id, d.nombre, d.fecha, d.ingreso_fijo, d.ingreso_estimado)
         );
         this.cdr.detectChanges();
       },

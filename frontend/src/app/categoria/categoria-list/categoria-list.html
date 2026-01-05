@@ -28,8 +28,8 @@
                             <td>{{ categoria.is_gasto }}</td>
                             <td>{{ categoria.padre?.nombre }}</td>
                             <td>
-                                <p-button icon="pi pi-pencil" severity="info" (click)="showCreateCategoriaDialog(categoria)"
-                                    label="Editar Categoria" />
+                                <p-button icon="pi pi-pencil" severity="info"
+                                    (click)="showCreateCategoriaDialog(categoria)" label="Editar Categoria" />
                             </td>
                             <td>
                                 <p-button icon="pi pi-trash" severity="danger"
@@ -45,6 +45,16 @@
                 <div class="period-select">
                     <p-listbox [options]="periodos" [(ngModel)]="selectedPeriodo" optionLabel="nombre"
                         (onChange)="getCategorias()" class="w-full md:w-56" />
+                </div>
+                <div class="ingresos">
+                    <div>
+                        <p>Ingreso Fijo:</p>
+                        <p>{{selectedPeriodo.ingreso_fijo}}</p>
+                    </div>
+                    <div>
+                        <p>Ingreso Estimado:</p>
+                        <p>{{selectedPeriodo.ingreso_estimado}}</p>
+                    </div>
                 </div>
                 @if (isAllCategoriasAssigned){
                 <p-chip label="Asignados" icon="pi pi-check" class="chip-assigned" />

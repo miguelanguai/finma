@@ -28,6 +28,18 @@
                         <p-columnFilter type="date" field="fecha" display="menu" />
                     </div>
                 </th>
+                <th pSortableColumn="id">
+                    <div class="flex items-center justify-between">
+                        Ingreso Fijo
+                        <p-columnFilter type="text" field="ingreso_fijo" display="menu" />
+                    </div>
+                </th>
+                <th pSortableColumn="id">
+                    <div class="flex items-center justify-between">
+                        Ingreso Variable
+                        <p-columnFilter type="text" field="ingreso_estimado" display="menu" />
+                    </div>
+                </th>
             </tr>
         </ng-template>
         <ng-template #body let-periodo>
@@ -36,6 +48,8 @@
                 <td>{{ periodo.nombre }}</td>
                 <td>{{ periodo.fecha.getDate() }}/{{ periodo.fecha.getMonth()+1 }}/{{ periodo.fecha.getFullYear() }}
                 </td>
+                <td>{{ periodo.ingreso_fijo }}</td>
+                <td>{{ periodo.ingreso_estimado }}</td>
                 <td>
                     <p-button icon="pi pi-pencil" severity="info" (click)="showCreatePeriodoDialog(periodo)" />
                 </td>

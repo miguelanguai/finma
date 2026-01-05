@@ -1,19 +1,32 @@
-.period-header{
+.period-header {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    .chip-assigned{
+
+    .chip-assigned {
         background-color: rgb(201, 255, 209);
         color: rgb(1, 136, 21);
     }
-    .chip-not-assigned{
+
+    .chip-not-assigned {
         background-color: rgb(255, 175, 175);
         color: rgb(136, 1, 1);
     }
 }
 
-.buttons{
-    p-button{
+.ingresos {
+    div {
+        display: flex;
+        justify-content: space-between;
+
+        p:first-child {
+            padding-right: 1rem;
+        }
+    }
+}
+
+.buttons {
+    p-button {
         padding-right: 1rem;
     }
 }

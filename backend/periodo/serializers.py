@@ -4,6 +4,7 @@ from categoria.models import Categoria
 from categoria.serializers import CategoriaReadSerializer
 from .models import MapPeriodoCategoria, Periodo
 
+
 class PeriodoReadSerializer(serializers.ModelSerializer):
     """Serializador de lectura de Periodo
 
@@ -19,6 +20,8 @@ class PeriodoReadSerializer(serializers.ModelSerializer):
             "id",
             "nombre",
             "fecha",
+            "ingreso_fijo",
+            "ingreso_estimado",
         ]
 
 
@@ -36,6 +39,8 @@ class PeriodoWriteSerializer(serializers.ModelSerializer):
         fields = [
             "nombre",
             "fecha",
+            "ingreso_fijo",
+            "ingreso_estimado",
         ]
 
 
