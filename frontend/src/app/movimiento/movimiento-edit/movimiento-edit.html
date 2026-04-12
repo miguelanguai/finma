@@ -1,0 +1,37 @@
+<div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="movimiento.id" [disabled]="true" />
+            <label for="in_label">ID</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="movimiento.concepto"  />
+            <label for="in_label">Concepto</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="movimiento.monto"  />
+            <label for="in_label">Monto</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-datepicker [(ngModel)]="movimiento.fecha" />
+    </div>
+    <div>
+        <p>Recurrente</p>
+        <p-toggleswitch [(ngModel)]="movimiento.recurrente" />
+    </div>
+    <div>
+        <textarea rows="5" cols="30" pTextarea [(ngModel)]="movimiento.notas"></textarea>
+    </div>
+    <div>
+        <p-select [options]="categoriaList" [(ngModel)]="movimiento.categoria" optionLabel="nombre" placeholder="Elige la categoria" class="w-full md:w-56" />
+    </div>
+    <div>
+        <p-select [options]="periodoList" [(ngModel)]="movimiento.periodo" optionLabel="nombre" placeholder="Elige el periodo" class="w-full md:w-56" />
+    </div>
+</div>
+<p-button (click)="createMovimiento()" [label]="movimiento.id ? 'Editar' : 'Crear'" />

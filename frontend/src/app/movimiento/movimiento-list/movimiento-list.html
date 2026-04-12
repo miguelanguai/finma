@@ -1,0 +1,84 @@
+<p-confirmDialog />
+<p-toast />
+<div class="buttons">
+    <p-button (click)="showCreateMovimientoDialog()" label="Crear Movimiento" />
+</div>
+<div class="table">
+    <p-table dataKey="id" [value]="movimientos" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="25"
+        [rowsPerPageOptions]="[25, 50, 100]">
+        <ng-template #header>
+            <tr>
+                <th pSortableColumn="id">
+                    <div class="flex items-center justify-between">
+                        ID
+                        <p-columnFilter type="text" field="id" display="menu" />
+                        <p-sortIcon field="id" />
+                    </div>
+                </th>
+                <th pSortableColumn="concepto">
+                    <div class="flex items-center justify-between">
+                        Concepto
+                        <p-columnFilter type="text" field="concepto" display="menu" />
+                        <p-sortIcon field="concepto" />
+                    </div>
+                </th>
+                <th pSortableColumn="fecha">
+                    <div class="flex items-center justify-between">
+                        Fecha
+                        <p-columnFilter type="text" field="fecha" display="menu" />
+                        <p-sortIcon field="fecha" />
+                    </div>
+                </th>
+                <th pSortableColumn="recurrente">
+                    <div class="flex items-center justify-between">
+                        Recurrente
+                        <p-columnFilter type="text" field="recurrente" display="menu" />
+                        <p-sortIcon field="recurrente" />
+                    </div>
+                </th>
+                <th pSortableColumn="notas">
+                    <div class="flex items-center justify-between">
+                        Notas
+                        <p-columnFilter type="text" field="notas" display="menu" />
+                        <p-sortIcon field="notas" />
+                    </div>
+                </th>
+                <th pSortableColumn="periodo">
+                    <div class="flex items-center justify-between">
+                        Periodo
+                        <p-columnFilter type="text" field="periodo" display="menu" />
+                        <p-sortIcon field="periodo" />
+                    </div>
+                </th>
+                <th pSortableColumn="categoria">
+                    <div class="flex items-center justify-between">
+                        Categoria
+                        <p-columnFilter type="text" field="categoria" display="menu" />
+                        <p-sortIcon field="categoria" />
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-movimiento>
+            <tr>
+                <td>{{ movimiento.id }}</td>
+                <td>{{ movimiento.concepto }}</td>
+                <td>{{ movimiento.fecha.getDate() }}/{{ movimiento.fecha.getMonth()+1 }}/{{
+                    movimiento.fecha.getFullYear()
+                    }}</td>
+                <td>{{ movimiento.recurrente }}</td>
+                <td>{{ movimiento.notas }}</td>
+                <td>{{ movimiento.periodo?.nombre }}</td>
+                <td>{{ movimiento.categoria?.nombre }}</td>
+                <td>
+                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateMovimientoDialog(movimiento)"
+                        label="Editar Movimiento" />
+                </td>
+                <td>
+                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeleteMovimientoDialog(movimiento, $event)"
+                        label="Borrar Movimiento" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
