@@ -59,7 +59,7 @@ export class PeriodoList implements OnInit {
       data: {
         periodo: periodo ?? null
       },
-      header: "select",
+      header: periodo ? 'Editar Periodo' : 'Crear Periodo',
       closeOnEscape: true,
       closable: true,
       resizable: true,
@@ -100,16 +100,15 @@ export class PeriodoList implements OnInit {
       message: "Confirma para continuar",
       accept: () => {
         this.periodoService.deletePeriodo(periodo).subscribe({
-          next: (data) => {
+          next: () => {
+            this.getPeriodos();
+            this.messageService.add({
+              severity: "info",
+              summary: "Confirmado",
+              detail: "Has eliminado el periodo"
+            });
           }
-        })
-        this.messageService.add({
-          severity: "info",
-          summary: "Confirmado",
-          detail: "Has eliminado el periodo"
         });
-        this.ngOnInit();
-        this.getPeriodos();
       },
       reject: () => {
         this.messageService.add({
