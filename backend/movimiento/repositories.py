@@ -19,6 +19,8 @@ DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 DB_TABLE = "movimiento_movimiento"
 
 logger = logging.getLogger(__name__)
+
+
 class MovimientoRepository:
     """Repositorio de Movimiento"""
 
@@ -59,6 +61,23 @@ class MovimientoRepository:
         """
         return Movimiento.objects.filter(periodo_id=periodo_id)
 
+    def find_all_by_periodo_and_category(
+        self, periodo_id: int, categoria_id: int
+    ) -> list[Movimiento]:
+        """Retorna una lista de movimientos que estén adscritos a un periodo y a una categoria
+        en particular
+
+        Args:
+            periodo_id (int): ID de Periodo
+            categoria_id (int): ID de Categoria
+
+        Returns:
+            list[Movimiento]: lista de movimientos
+        """
+        return Movimiento.objects.filter(periodo_id=periodo_id).filter(
+            categoria_id=categoria_id
+        )
+
     def save(self, movimiento: Movimiento) -> Movimiento:
         """Crea un nuevo Movimiento
 
@@ -86,6 +105,7 @@ class MovimientoRepository:
 
 class ExcelRepository:
     """Repositorio para Excel"""
+
     def __init__(self):
         self.conn = self.connect_to_db()
 

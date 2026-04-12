@@ -228,3 +228,13 @@ class MapPeriodoCategoriaView2(APIView):
         mapeos_list = self.service.find_by_filter(request.data)
         serializer = MapPeriodoCategoriaReadSerializer(mapeos_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MapPeriodoCategoriaView3(APIView):
+    service = MapPeriodoCategoriaService()
+
+    def post(self, request: Request, mapeo_id: int) -> Response:
+        # la suma de los movimientos de un periodo y una categoria determinados
+        mapeo_sum = self.service.get_sum_by_map(mapeo_id=mapeo_id)
+        print(mapeo_sum)
+        return Response({"sum": mapeo_sum}, status=status.HTTP_200_OK)

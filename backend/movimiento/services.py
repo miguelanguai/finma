@@ -52,6 +52,20 @@ class MovimientoService:
         """
         return self.repo.find_all_by_periodo(periodo_id=periodo_id)
 
+    def find_all_by_periodo_and_category(
+        self, periodo_id: int, category_id: int
+    ) -> list[Movimiento]:
+        """Retorna una lista de movimientos que estén adscritos a un periodo y a una categoria
+
+        Args:
+            periodo_id (int): ID de Periodo
+            category_id (int): ID de Categoria
+
+        Returns:
+            list[Movimiento]: _description_
+        """
+        return self.repo.find_all_by_periodo_and_category(periodo_id, category_id)
+
     def save(self, movimiento: dict) -> Movimiento:
         """Guarda un movimiento y lo retorna
         Llama a MovimientoRepository.save

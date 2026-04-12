@@ -3,8 +3,11 @@ import datetime
 from .models import MapPeriodoCategoria, Periodo
 from .repositories import MapPeriodoCategoriaRepository, PeriodoRepository
 
+# from ..movimiento.services import MovimientoService # TODO: esto es lo que va mal. Importacion circular. Resolver
+
 
 class PeriodoService:
+
     def __init__(self):
         self.repo = PeriodoRepository()
 
@@ -97,7 +100,10 @@ class PeriodoService:
 
 class MapPeriodoCategoriaService:
     def __init__(self):
+        from movimiento.services import MovimientoService
+
         self.repo = MapPeriodoCategoriaRepository()
+        self.movimiento_service = MovimientoService()
 
     def find_all(self) -> list[MapPeriodoCategoria]:
         """Retorna todos los mapeos existentes.
@@ -130,6 +136,25 @@ class MapPeriodoCategoriaService:
             list[Periodo]: _description_
         """
         return self.repo.find_by_filter(instance_filter=instance_filter)
+
+    def get_sum_by_map(self, mapeo_id: int) -> int:
+        """Recoge todos los movimientos que pertenecen a un periodo y a una categoria, y suma sus cantidades
+
+        Args:
+            mapeo_id (int): _description_
+
+        Returns:
+            int: _description_
+        """
+        mapeo = self.find_by_id(mapeo_id=mapeo_id)
+        movimiento_list = self.movimiento_service.find_all_by_periodo_and_category(
+            periodo_id=mapeo.periodo.id, category_id=mapeo.categoria.id
+        )
+        map_sum = 0
+        for mov in movimiento_list:
+            map_sum += mov.monto
+
+        return map_sum
 
     def save(self, mapeo: dict) -> MapPeriodoCategoria:
         """Guarda un mapeo y lo retorna
