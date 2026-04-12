@@ -15,6 +15,7 @@ export class MapCatPerService {
 
   appUrl = environment.apiUrl + 'periodo/map/';
   appUrl2 = environment.apiUrl + 'periodo/map/filter/';
+  appUrlSum = environment.apiUrl + 'periodo/map/sum/';
 
   getMapPeriodoCategorias(): Observable<MapPeriodoCategoria[]> {
 
@@ -49,5 +50,9 @@ export class MapCatPerService {
 
   deleteMapPeriodoCategoria(map: MapPeriodoCategoria): Observable<MapPeriodoCategoria> {
     return this.http.delete<MapPeriodoCategoria>(this.appUrl + map.id);
+  }
+
+  getMapGastoTotal(map: MapPeriodoCategoria){
+    return this.http.post<{sum: number}>(this.appUrlSum + map.id, {});
   }
 }

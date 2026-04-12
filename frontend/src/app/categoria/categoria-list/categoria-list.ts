@@ -52,17 +52,19 @@ export class CategoriaList {
 
   ref: DynamicDialogRef | null = null;
 
-  constructor(private cdr: ChangeDetectorRef, private confirmationService: ConfirmationService, public dialogService: DialogService, private messageService: MessageService, private categoriaService: CategoriaService, private mapService: MapCatPerService, private periodoService: PeriodoService) { }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private confirmationService: ConfirmationService,
+    public dialogService: DialogService,
+    private messageService: MessageService,
+    private categoriaService: CategoriaService,
+    private mapService: MapCatPerService,
+    private periodoService: PeriodoService
+  ) { }
 
   ngOnInit() {
     this.getCategorias();
     this.getPeriodos();
-    
-
-    //TODO: Listar también el gasto total (real) que supone la categoria al mes. Es decir, la suma de todos los movimientos pertenecientes a la categoria
-    //TODO: Poner formularios para creación y edición de mapeos
-
-
   }
 
   checkAllMapsAreAssigned(): void {
@@ -93,7 +95,14 @@ export class CategoriaList {
     this.mapService.getMapPeriodoCategoriasFiltered(this.filterMap).subscribe({
       next: (data) => {
         this.maps = data.map(
-          d => new MapPeriodoCategoria(d.id, d.porc_ideal_fijo ?? undefined, d.porc_ideal_estimado ?? undefined, d.porc_ideal_obtenido ?? undefined, d.periodo ?? undefined, d.categoria ?? undefined)
+          d => new MapPeriodoCategoria(
+            d.id,
+            d.porc_ideal_fijo ?? undefined,
+            d.porc_ideal_estimado ?? undefined,
+            d.porc_ideal_obtenido ?? undefined,
+            d.periodo ?? undefined,
+            d.categoria ?? undefined
+          )
         );
         this.cdr.detectChanges();
         this.checkAllMapsAreAssigned();
@@ -101,7 +110,7 @@ export class CategoriaList {
       error: (err) => {
         console.error(err);
       }
-    })
+    });
   }
 
   getPeriodos(): void {
@@ -124,35 +133,26 @@ export class CategoriaList {
         categoria: categoria ?? null,
         categoriaList: this.categorias
       },
-      header: "select",
+      header: categoria ? 'Editar categoría' : 'Nueva categoría',
       closeOnEscape: true,
       closable: true,
       resizable: true,
       draggable: true,
-    })
+    });
 
     this.ref?.onClose.subscribe((returnedCategoria: Categoria) => {
       if (returnedCategoria) {
         this.categoriaService.saveCategoria(returnedCategoria).subscribe({
           next: () => {
             this.ngOnInit();
-            if (categoria) {
-
-              this.messageService.add({
-                severity: "info",
-                summary: "Confirmado",
-                detail: "Has editado la categoria"
-              });
-            } else {
-              this.messageService.add({
-                severity: "info",
-                summary: "Confirmado",
-                detail: "Has creado la categoria"
-              });
-            }
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Confirmado',
+              detail: categoria ? 'Has editado la categoría' : 'Has creado la categoría'
+            });
           },
           error: err => {
-            console.error("Error al guardar el categoria", err);
+            console.error('Error al guardar la categoría', err);
           }
         });
       }
@@ -161,29 +161,31 @@ export class CategoriaList {
 
   showDeleteCategoriaDialog(categoria: Categoria, event: Event) {
     this.confirmationService.confirm({
-      header: "¿Borrar categoria?",
-      message: "Confirma para continuar",
+      header: '¿Borrar categoría?',
+      message: 'Confirma para continuar',
       accept: () => {
         this.categoriaService.deleteCategoria(categoria).subscribe({
-          next: (data) => {
+          next: () => {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Confirmado',
+              detail: 'Has eliminado la categoría'
+            });
+            this.ngOnInit(); // already calls getCategorias() internally
+          },
+          error: (err) => {
+            console.error('Error al eliminar la categoría', err);
           }
-        })
-        this.messageService.add({
-          severity: "info",
-          summary: "Confirmado",
-          detail: "Has eliminado la categoria"
         });
-        this.ngOnInit();
-        this.getCategorias();
       },
       reject: () => {
         this.messageService.add({
-          severity: "info",
-          summary: "Rechazado",
-          detail: "La categoria sigue existiendo"
-        })
+          severity: 'info',
+          summary: 'Rechazado',
+          detail: 'La categoría sigue existiendo'
+        });
       }
-    })
+    });
   }
 
   showCreateMapeoDialog(mapeo?: MapPeriodoCategoria) {
@@ -194,35 +196,26 @@ export class CategoriaList {
         categoriaList: this.categorias,
         periodoList: this.periodos
       },
-      header: "select",
+      header: mapeo ? 'Editar mapeo' : 'Nuevo mapeo',
       closeOnEscape: true,
       closable: true,
       resizable: true,
       draggable: true,
-    })
+    });
 
     this.ref?.onClose.subscribe((returnedMapeo: MapPeriodoCategoria) => {
       if (returnedMapeo) {
         this.mapService.saveMapPeriodoCategoria(returnedMapeo).subscribe({
           next: () => {
             this.ngOnInit();
-            if (mapeo) {
-
-              this.messageService.add({
-                severity: "info",
-                summary: "Confirmado",
-                detail: "Has editado el mapeo"
-              });
-            } else {
-              this.messageService.add({
-                severity: "info",
-                summary: "Confirmado",
-                detail: "Has creado el mapeo"
-              });
-            }
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Confirmado',
+              detail: mapeo ? 'Has editado el mapeo' : 'Has creado el mapeo'
+            });
           },
           error: err => {
-            console.error("Error al guardar el mapeo", err);
+            console.error('Error al guardar el mapeo', err);
           }
         });
       }
@@ -231,28 +224,36 @@ export class CategoriaList {
 
   showDeleteMapeoDialog(mapeo: MapPeriodoCategoria, event: Event) {
     this.confirmationService.confirm({
-      header: "¿Borrar mapeo?",
-      message: "Confirma para continuar",
+      header: '¿Borrar mapeo?',
+      message: 'Confirma para continuar',
       accept: () => {
         this.mapService.deleteMapPeriodoCategoria(mapeo).subscribe({
-          next: (data) => {
+          next: () => {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Confirmado',
+              detail: 'Has eliminado el mapeo'
+            });
+            this.ngOnInit(); // already calls getCategorias() internally
+          },
+          error: (err) => {
+            console.error('Error al eliminar el mapeo', err);
           }
-        })
-        this.messageService.add({
-          severity: "info",
-          summary: "Confirmado",
-          detail: "Has eliminado el mapeo"
         });
-        this.ngOnInit();
-        this.getCategorias();
       },
       reject: () => {
         this.messageService.add({
-          severity: "info",
-          summary: "Rechazado",
-          detail: "El mapeo sigue existiendo"
-        })
+          severity: 'info',
+          summary: 'Rechazado',
+          detail: 'El mapeo sigue existiendo'
+        });
       }
-    })
+    });
+  }
+
+  // FIX: removed dead code after return and the erroneous .subscribe() call.
+  // getMapGastoTotal is a synchronous method — call it directly, no subscribe needed.
+  getMapGastoTotal(mapeo: MapPeriodoCategoria) {
+    return this.mapService.getMapGastoTotal(mapeo);
   }
 }

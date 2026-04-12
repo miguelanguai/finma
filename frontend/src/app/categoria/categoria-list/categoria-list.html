@@ -162,12 +162,12 @@
                         <tr>
                             <td>{{ map.id }}</td>
                             <td>{{ map.categoria?.nombre }}</td>
-                            <td>Gasto total (real)</td>
+                            <td>{{ getMapGastoTotal(map) }}</td>
                             <td>{{ map.porc_ideal_fijo }}</td>
-                            <td>Valor Calculado</td>
+                            <td>{{ (map.periodo.ingreso_fijo * map.porc_ideal_fijo)/100 }}</td>
                             <td>Diferencia valores calculada</td>
                             <td>{{ map.porc_ideal_estimado }}</td>
-                            <td>Valor Calculado</td>
+                            <td>{{ (map.periodo.ingreso_estimado * map.porc_ideal_estimado)/100 }}</td>
                             <td>Diferencia valores calculada</td>
                             <td>{{ map.porc_ideal_obtenido }}</td>
                             <td>Valor Calculado</td>
