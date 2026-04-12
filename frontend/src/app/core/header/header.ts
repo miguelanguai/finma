@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { LandingPage } from '../../home/landing-page/landing-page';
 import { PeriodoList } from '../../periodo/periodo-list/periodo-list';
 import { CategoriaList } from '../../categoria/categoria-list/categoria-list';
+import { MovimientoList } from '../../movimiento/movimiento-list/movimiento-list';
 
 @Component({
   selector: 'app-header',
@@ -26,6 +27,11 @@ export class Header {
       path: 'categoria',
       component: CategoriaList,
       title: "Categoria"
+    },
+    {
+      path: 'movimiento',
+      component: MovimientoList,
+      title: "Movimiento"
     },
   ];
 }
