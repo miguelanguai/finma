@@ -29,7 +29,7 @@ import { Categoria } from '../Categoria';
 export class CategoriaEdit {
   categoria: Categoria = new Categoria();
   categoriaList: Categoria[] = [];
-  selectedPadre: Categoria = new Categoria();
+  selectedPadreId: number | null = null;
 
   constructor(
     private config: DynamicDialogConfig,
@@ -39,6 +39,7 @@ export class CategoriaEdit {
   ngOnInit(): void {
     if (this.config.data?.categoria) {
       this.categoria = this.config.data?.categoria;
+      this.selectedPadreId = this.categoria.padre?.id ?? null;
     } else {
       this.categoria.is_gasto = true;
     }
@@ -47,6 +48,7 @@ export class CategoriaEdit {
   }
 
   createCategoria() {
+    (this.categoria as any).padre = this.selectedPadreId;
     this.ref.close(this.categoria);
   }
 }
