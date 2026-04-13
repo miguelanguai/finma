@@ -49,6 +49,7 @@ export class CategoriaList {
   filterMap: MapPeriodoCategoria = new MapPeriodoCategoria();
 
   isAllCategoriasAssigned: boolean = false;
+  gastosTotales: Record<number, number> = {};
 
   ref: DynamicDialogRef | null = null;
 
@@ -106,11 +107,31 @@ export class CategoriaList {
         );
         this.cdr.detectChanges();
         this.checkAllMapsAreAssigned();
+        this.loadGastosTotales();
       },
       error: (err) => {
         console.error(err);
       }
     });
+  }
+
+  private loadGastosTotales(): void {
+    this.gastosTotales = {};
+    this.maps.forEach(map => {
+      if (map.id != null) {
+        this.mapService.getMapGastoTotal(map).subscribe({
+          next: (data) => {
+            this.gastosTotales[map.id!] = data.sum;
+            this.cdr.detectChanges();
+          },
+          error: (err) => console.error(err)
+        });
+      }
+    });
+  }
+
+  getGastoTotal(map: MapPeriodoCategoria): number | null {
+    return map.id != null ? (this.gastosTotales[map.id] ?? null) : null;
   }
 
   getPeriodos(): void {
@@ -251,9 +272,4 @@ export class CategoriaList {
     });
   }
 
-  // FIX: removed dead code after return and the erroneous .subscribe() call.
-  // getMapGastoTotal is a synchronous method — call it directly, no subscribe needed.
-  getMapGastoTotal(mapeo: MapPeriodoCategoria) {
-    return this.mapService.getMapGastoTotal(mapeo);
-  }
 }
