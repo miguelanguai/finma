@@ -69,11 +69,14 @@
             </div>
 
             <div>
-                <p-table #dt1 dataKey="id" [value]="maps" stripedRows [paginator]="true" [rows]="12"
+                <p-table #dt1 dataKey="id" [value]="maps" [(selection)]="selectedMaps" selectionMode="multiple" stripedRows [paginator]="true" [rows]="12"
                     [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[12, 24, 60]"
                     [globalFilterFields]="['id', 'categoria?.nombre']">
                     <ng-template #header>
                         <tr>
+                            <th style="width: 3rem">
+                                <p-tableHeaderCheckbox />
+                            </th>
                             <th pSortableColumn="id">
                                 <div class="flex items-center justify-between">
                                     ID
@@ -160,6 +163,9 @@
                     </ng-template>
                     <ng-template #body let-map>
                         <tr>
+                            <td>
+                                <p-tableCheckbox [value]="map" />
+                            </td>
                             <td>{{ map.id }}</td>
                             <td>{{ map.categoria?.nombre }}</td>
                             <td>{{ getGastoTotal(map) }}</td>

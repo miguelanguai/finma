@@ -46,6 +46,7 @@ export class CategoriaList {
   periodos: Periodo[] = [];
 
   selectedPeriodo: Periodo = new Periodo();
+  selectedMaps: MapPeriodoCategoria[] = [];
   filterMap: MapPeriodoCategoria = new MapPeriodoCategoria();
 
   isAllCategoriasAssigned: boolean = false;
