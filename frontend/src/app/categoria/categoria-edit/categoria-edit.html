@@ -19,4 +19,4 @@
         <p-select [options]="categoriaList" [(ngModel)]="categoria.padre" optionLabel="nombre" optionValue="id" placeholder="Elige una categoria padre" class="w-full md:w-56" />
     </div>
 </div>
-<p-button (click)="createCategoria()" label="Crear" />
+<p-button (click)="createCategoria()" [label]="categoria.id ? 'Guardar' : 'Crear'" />
