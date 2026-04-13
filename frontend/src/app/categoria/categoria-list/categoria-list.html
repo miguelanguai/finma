@@ -66,10 +66,11 @@
 
             <div class="buttons">
                 <p-button (click)="showCreateMapeoDialog()" label="Crear Mapeo" />
+                <p-selectbutton [options]="filtroOpciones" [(ngModel)]="filtroTipo" optionLabel="label" optionValue="value" />
             </div>
 
             <div>
-                <p-table #dt1 dataKey="id" [value]="maps" [(selection)]="selectedMaps" selectionMode="multiple" stripedRows [paginator]="true" [rows]="12"
+                <p-table #dt1 dataKey="id" [value]="mapsFiltrados" [(selection)]="selectedMaps" selectionMode="multiple" stripedRows [paginator]="true" [rows]="12"
                     [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[12, 24, 60]"
                     [globalFilterFields]="['id', 'categoria?.nombre']">
                     <ng-template #header>

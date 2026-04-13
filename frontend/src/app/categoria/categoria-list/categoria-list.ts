@@ -7,6 +7,7 @@ import { ChipModule } from 'primeng/chip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ListboxModule } from 'primeng/listbox';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
 import { ToastModule } from 'primeng/toast';
@@ -28,6 +29,7 @@ import { MapeoEdit } from '../mapeo-edit/mapeo-edit';
     ChipModule,
     FormsModule,
     ListboxModule,
+    SelectButtonModule,
     TableModule,
     TabsModule,
     ToastModule
@@ -48,6 +50,23 @@ export class CategoriaList {
   selectedPeriodo: Periodo = new Periodo();
   selectedMaps: MapPeriodoCategoria[] = [];
   filterMap: MapPeriodoCategoria = new MapPeriodoCategoria();
+
+  filtroTipo: string = 'todos';
+  filtroOpciones = [
+    { label: 'Todos', value: 'todos' },
+    { label: 'Solo gastos', value: 'gastos' },
+    { label: 'Solo ingresos', value: 'ingresos' }
+  ];
+
+  get mapsFiltrados(): MapPeriodoCategoria[] {
+    if (this.filtroTipo === 'gastos') {
+      return this.maps.filter(m => m.categoria?.is_gasto === true);
+    }
+    if (this.filtroTipo === 'ingresos') {
+      return this.maps.filter(m => m.categoria?.is_gasto === false);
+    }
+    return this.maps;
+  }
 
   isAllCategoriasAssigned: boolean = false;
   gastosTotales: Record<number, number> = {};
