@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { forkJoin } from 'rxjs';
+
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
@@ -244,9 +246,9 @@ export class CategoriaList {
       draggable: true,
     });
 
-    this.ref?.onClose.subscribe((returnedMapeo: MapPeriodoCategoria) => {
-      if (returnedMapeo) {
-        this.mapService.saveMapPeriodoCategoria(returnedMapeo).subscribe({
+    this.ref?.onClose.subscribe((returnedMapeos: MapPeriodoCategoria[]) => {
+      if (returnedMapeos?.length) {
+        forkJoin(returnedMapeos.map(m => this.mapService.saveMapPeriodoCategoria(m))).subscribe({
           next: () => {
             this.ngOnInit();
             this.messageService.add({

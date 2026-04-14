@@ -1,33 +1,104 @@
-<div>
-    <div>
-        <p-floatlabel variant="in">
-            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.id" [disabled]="true" />
-            <label for="in_label">ID</label>
-        </p-floatlabel>
-    </div>
-    <div>
-        <p-floatlabel variant="in">
-            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_fijo"  />
-            <label for="in_label">Porcentaje ideal Fijo</label>
-        </p-floatlabel>
-    </div>
-    <div>
-        <p-floatlabel variant="in">
-            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_estimado"  />
-            <label for="in_label">Porcentaje ideal Estimado</label>
-        </p-floatlabel>
-    </div>
-    <div>
-        <p-floatlabel variant="in">
-            <input pInputText id="in_label" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_obtenido"  />
-            <label for="in_label">Porcentaje ideal Obtenido</label>
-        </p-floatlabel>
-    </div>
-    <div>
-        <p-select [options]="categoriaList" [(ngModel)]="mapeo.categoria" optionLabel="nombre" placeholder="Elige una categoria" class="w-full md:w-56" />
-    </div>
-    <div>
-        <p-select [options]="periodoList" [(ngModel)]="mapeo.periodo" optionLabel="nombre" placeholder="Elige un periodo" class="w-full md:w-56" />
-    </div>
+<div class="flex flex-col gap-4 p-2">
+
+    <!-- Periodo -->
+    <p-select
+        [options]="periodoList"
+        [(ngModel)]="mapeo.periodo"
+        optionLabel="nombre"
+        placeholder="Elige un periodo"
+        class="w-full"
+    />
+
+    <!-- Categoría: autocomplete single (edit) o multiselect (create) -->
+    @if (isEditMode) {
+        <p-autocomplete
+            [(ngModel)]="mapeo.categoria"
+            [suggestions]="categoriaSugerencias"
+            (completeMethod)="filtrarCategorias($event)"
+            (onSelect)="onCategoriaSeleccionada($event)"
+            field="nombre"
+            placeholder="Busca o crea una categoría"
+            [forceSelection]="true"
+            class="w-full"
+        />
+    } @else {
+        <p-autocomplete
+            [(ngModel)]="selectedCategorias"
+            [multiple]="true"
+            [suggestions]="categoriaSugerencias"
+            (completeMethod)="filtrarCategorias($event)"
+            (onSelect)="onCategoriaSeleccionada($event)"
+            field="nombre"
+            placeholder="Busca o crea categorías"
+            [forceSelection]="true"
+            class="w-full"
+        />
+    }
+
+    <!-- Inline: crear categoría al vuelo -->
+    @if (mostrarFormNuevaCategoria) {
+        <div class="border-1 surface-border border-round p-3 flex flex-col gap-3 surface-50">
+            <span class="font-semibold text-sm">Nueva categoría</span>
+
+            <p-floatlabel variant="in">
+                <input pInputText id="nueva_nombre" [(ngModel)]="nuevaCategoriaNombre" autocomplete="off" class="w-full" />
+                <label for="nueva_nombre">Nombre</label>
+            </p-floatlabel>
+
+            <div class="flex align-items-center gap-2">
+                <p-toggleswitch [(ngModel)]="nuevaCategoriaIsGasto" />
+                <span class="text-sm">{{ nuevaCategoriaIsGasto ? 'Gasto' : 'Ingreso' }}</span>
+            </div>
+
+            <p-select
+                [options]="categoriaList"
+                [(ngModel)]="nuevaCategoriaPadre"
+                optionLabel="nombre"
+                placeholder="Categoría padre (opcional)"
+                [showClear]="true"
+                class="w-full"
+            />
+
+            <div class="flex gap-2">
+                <p-button
+                    label="Confirmar"
+                    size="small"
+                    (click)="confirmarNuevaCategoria()"
+                    [loading]="creandoCategoria"
+                    [disabled]="!nuevaCategoriaNombre.trim()"
+                />
+                <p-button
+                    label="Cancelar"
+                    size="small"
+                    severity="secondary"
+                    (click)="cancelarNuevaCategoria()"
+                />
+            </div>
+        </div>
+    }
+
+    <!-- Porcentajes -->
+    <p-floatlabel variant="in">
+        <input pInputText id="porc_fijo" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_fijo" />
+        <label for="porc_fijo">Porcentaje ideal Fijo</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="in">
+        <input pInputText id="porc_estimado" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_estimado" />
+        <label for="porc_estimado">Porcentaje ideal Estimado</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="in">
+        <input pInputText id="porc_obtenido" autocomplete="off" [(ngModel)]="mapeo.porc_ideal_obtenido" />
+        <label for="porc_obtenido">Porcentaje ideal Obtenido</label>
+    </p-floatlabel>
+
 </div>
-<p-button (click)="createMapeo()" label="Crear" />
+
+<div class="flex justify-content-end p-2 pt-3">
+    <p-button
+        (click)="guardar()"
+        [label]="isEditMode ? 'Guardar' : 'Crear'"
+        [disabled]="isEditMode ? !mapeo.categoria : selectedCategorias.length === 0"
+    />
+</div>
