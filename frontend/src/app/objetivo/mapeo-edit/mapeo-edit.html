@@ -1,0 +1,51 @@
+<div class="flex flex-col gap-4 p-2">
+
+    <!-- Objetivo -->
+    <p-select
+        [options]="objetivoList"
+        [(ngModel)]="mapeo.objetivo"
+        optionLabel="nombre"
+        placeholder="Elige un objetivo"
+        class="w-full"
+    />
+
+    <!-- Categoría: multiselect (create) o single select (edit) -->
+    @if (isEditMode) {
+        <p-select
+            [options]="categoriaList"
+            [(ngModel)]="mapeo.categoria"
+            optionLabel="nombre"
+            placeholder="Elige una categoría"
+            class="w-full"
+        />
+    } @else {
+        <p-multiselect
+            [options]="categoriaList"
+            [(ngModel)]="selectedCategorias"
+            optionLabel="nombre"
+            placeholder="Elige categorías"
+            class="w-full"
+        />
+    }
+
+    <!-- Fecha inicio -->
+    <p-floatlabel variant="in">
+        <p-datepicker inputId="fecha_inicio" [(ngModel)]="mapeo.fecha_inicio" dateFormat="dd/mm/yy" class="w-full" />
+        <label for="fecha_inicio">Fecha inicio</label>
+    </p-floatlabel>
+
+    <!-- Fecha fin -->
+    <p-floatlabel variant="in">
+        <p-datepicker inputId="fecha_fin" [(ngModel)]="mapeo.fecha_fin" dateFormat="dd/mm/yy" class="w-full" />
+        <label for="fecha_fin">Fecha fin</label>
+    </p-floatlabel>
+
+</div>
+
+<div class="flex justify-content-end p-2 pt-3">
+    <p-button
+        (click)="guardar()"
+        [label]="isEditMode ? 'Guardar' : 'Crear'"
+        [disabled]="!puedeGuardar"
+    />
+</div>
