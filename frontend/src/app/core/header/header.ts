@@ -37,5 +37,9 @@ export class Header {
       path: 'objetivo',
       title: "Objetivos"
     },
+    {
+      path: 'analisis',
+      title: "Análisis"
+    },
   ];
 }
