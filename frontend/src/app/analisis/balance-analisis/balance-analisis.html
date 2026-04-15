@@ -1,0 +1,36 @@
+<div class="controles">
+    <label>Año:</label>
+    <p-inputnumber [(ngModel)]="anio" [useGrouping]="false" [min]="2000" [max]="2100" />
+    <p-button label="Cargar" icon="pi pi-refresh" (click)="cargar()" />
+</div>
+
+@if (chartData && balance && balance.meses.length > 0) {
+    <p-chart type="line" [data]="chartData" [options]="chartOptions" />
+} @else if (balance) {
+    <p class="sin-datos">No hay datos mensuales para el año {{ anio }}.</p>
+}
+
+@if (balance) {
+    <div class="resumen">
+        <table class="resumen-tabla">
+            <thead>
+                <tr>
+                    <th>Balance actual</th>
+                    <th>Prev. mínima</th>
+                    <th>Prev. máxima</th>
+                    <th>Prev. media</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td [class.positivo]="balance.balance_actual >= 0" [class.negativo]="balance.balance_actual < 0">
+                        {{ balance.balance_actual | number:'1.2-2' }} €
+                    </td>
+                    <td>{{ balance.prev_minima | number:'1.2-2' }} €</td>
+                    <td>{{ balance.prev_maxima | number:'1.2-2' }} €</td>
+                    <td>{{ balance.prev_media | number:'1.2-2' }} €</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

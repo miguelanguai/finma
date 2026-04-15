@@ -1,0 +1,55 @@
+<div class="controles">
+    <label>Año:</label>
+    <p-inputnumber [(ngModel)]="anio" [useGrouping]="false" [min]="2000" [max]="2100" />
+    <p-button label="Cargar" icon="pi pi-refresh" (click)="cargar()" />
+</div>
+
+<p-tabs value="0">
+    <p-tablist>
+        <p-tab value="0">Por mes</p-tab>
+        <p-tab value="1">Por año</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+
+        <p-tabpanel value="0">
+            @if (chartData && categorias.length > 0) {
+                <p-chart type="bar" [data]="chartData" [options]="chartOptions" />
+            } @else {
+                <p class="sin-datos">No hay datos para el año {{ anio }}.</p>
+            }
+        </p-tabpanel>
+
+        <p-tabpanel value="1">
+            <p-table
+                [value]="categorias"
+                [tableStyle]="{ 'min-width': '40rem' }"
+                stripedRows
+            >
+                <ng-template #header>
+                    <tr>
+                        <th pSortableColumn="categoria">Categoría</th>
+                        <th pSortableColumn="gasto_anual">Gasto anual</th>
+                        <th pSortableColumn="prev_minima">Prev. mínima</th>
+                        <th pSortableColumn="prev_maxima">Prev. máxima</th>
+                        <th pSortableColumn="prev_media">Prev. media</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-cat>
+                    <tr>
+                        <td>{{ cat.categoria }}</td>
+                        <td>{{ cat.gasto_anual | number:'1.2-2' }} €</td>
+                        <td>{{ cat.prev_minima | number:'1.2-2' }} €</td>
+                        <td>{{ cat.prev_maxima | number:'1.2-2' }} €</td>
+                        <td>{{ cat.prev_media | number:'1.2-2' }} €</td>
+                    </tr>
+                </ng-template>
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="5">No hay datos para el año {{ anio }}.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabpanel>
+
+    </p-tabpanels>
+</p-tabs>

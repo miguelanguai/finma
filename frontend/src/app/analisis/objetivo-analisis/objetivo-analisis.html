@@ -1,0 +1,36 @@
+<p-table
+    [value]="objetivos"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    stripedRows
+    [paginator]="true"
+    [rows]="12"
+    [rowsPerPageOptions]="[12, 24, 60]"
+>
+    <ng-template #header>
+        <tr>
+            <th pSortableColumn="nombre">Nombre</th>
+            <th pSortableColumn="monto">Monto objetivo</th>
+            <th pSortableColumn="acumulado">Acumulado</th>
+            <th>Progreso</th>
+            <th>Fecha previsión</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-obj>
+        <tr [ngClass]="{ 'fila-cumplida': esCumplido(obj) }">
+            <td>{{ obj.nombre }}</td>
+            <td>{{ obj.monto | number:'1.2-2' }} €</td>
+            <td>{{ obj.acumulado | number:'1.2-2' }} €</td>
+            <td>
+                <div class="progreso-celda">
+                    <p-progressbar [value]="obj.porcentaje" [showValue]="true" />
+                </div>
+            </td>
+            <td>{{ obj.fecha_prevista ? (obj.fecha_prevista | date:'dd/MM/yyyy') : '—' }}</td>
+        </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+        <tr>
+            <td colspan="5">No hay datos de progreso.</td>
+        </tr>
+    </ng-template>
+</p-table>

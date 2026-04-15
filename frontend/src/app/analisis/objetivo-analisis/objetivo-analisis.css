@@ -1,0 +1,8 @@
+.fila-cumplida td {
+    color: var(--p-green-600);
+    font-weight: 500;
+}
+
+.progreso-celda {
+    min-width: 140px;
+}

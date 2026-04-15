@@ -1,0 +1,11 @@
+.controles {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.sin-datos {
+    color: var(--p-text-muted-color);
+    padding: 1rem 0;
+}

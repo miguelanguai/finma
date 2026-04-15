@@ -1,0 +1,43 @@
+.controles {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.sin-datos {
+    color: var(--p-text-muted-color);
+    padding: 1rem 0;
+}
+
+.resumen {
+    margin-top: 1.5rem;
+}
+
+.resumen-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.resumen-tabla th,
+.resumen-tabla td {
+    padding: 0.6rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid var(--p-surface-border);
+}
+
+.resumen-tabla th {
+    font-weight: 600;
+    color: var(--p-text-muted-color);
+}
+
+.positivo {
+    color: var(--p-green-600);
+    font-weight: 600;
+}
+
+.negativo {
+    color: var(--p-red-600);
+    font-weight: 600;
+}
