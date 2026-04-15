@@ -17,7 +17,9 @@
     </ng-template>
     <ng-template #body let-obj>
         <tr [ngClass]="{ 'fila-cumplida': esCumplido(obj) }">
-            <td>{{ obj.nombre }}</td>
+            <td>
+                <a [routerLink]="['/objetivo']" class="objetivo-link">{{ obj.nombre }}</a>
+            </td>
             <td>{{ obj.monto | number:'1.2-2' }} €</td>
             <td>{{ obj.acumulado | number:'1.2-2' }} €</td>
             <td>

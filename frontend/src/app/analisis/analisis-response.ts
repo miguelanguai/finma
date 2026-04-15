@@ -9,6 +9,7 @@ export interface ProgresoObjetivoResponse {
 
 export interface GastoCategoriaResponse {
   categoria: string;
+  categoria_path?: string;
   gastos_por_mes: { [periodo: string]: number };
   gasto_anual: number;
   prev_minima: number;

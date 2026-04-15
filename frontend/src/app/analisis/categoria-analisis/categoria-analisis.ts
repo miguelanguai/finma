@@ -1,27 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
 
-import { AnalisisService } from '../analisis-service';
 import { GastoCategoriaResponse } from '../analisis-response';
 
 @Component({
   selector: 'app-categoria-analisis',
-  imports: [ButtonModule, ChartModule, DecimalPipe, FormsModule, InputNumberModule, TableModule, TabsModule],
+  imports: [ChartModule, DecimalPipe, FormsModule, SelectButtonModule, TableModule, TabsModule],
   templateUrl: './categoria-analisis.html',
   styleUrl: './categoria-analisis.css',
 })
-export class CategoriaAnalisis implements OnInit {
-  anio: number = new Date().getFullYear();
-  categorias: GastoCategoriaResponse[] = [];
+export class CategoriaAnalisis implements OnChanges {
+  @Input() anio: number = new Date().getFullYear();
+  @Input() categorias: GastoCategoriaResponse[] = [];
+
   chartData: any = null;
   chartOptions: any = null;
+
+  apilado = false;
+  modoOpciones = [
+    { label: 'Agrupado', value: false },
+    { label: 'Apilado', value: true },
+  ];
 
   private readonly MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   private readonly COLORES = [
@@ -29,25 +34,20 @@ export class CategoriaAnalisis implements OnInit {
     '#edc948', '#b07aa1', '#ff9da7', '#9c755f', '#bab0ac',
   ];
 
-  constructor(private analisisService: AnalisisService) {}
-
-  ngOnInit(): void {
-    this.cargar();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['categorias'] || changes['anio']) {
+      this.buildChart();
+    }
   }
 
-  cargar(): void {
-    this.analisisService.getGastosCategorias(this.anio).subscribe({
-      next: (data) => {
-        this.categorias = data;
-        this.buildChart();
-      },
-      error: (err) => console.error(err),
-    });
+  onModoChange(apilado: boolean): void {
+    this.apilado = apilado;
+    this.buildChart();
   }
 
   private buildChart(): void {
     const datasets = this.categorias.map((cat, i) => ({
-      label: cat.categoria,
+      label: cat.categoria_path ?? cat.categoria,
       data: this.MESES.map((_, mesIdx) => {
         const key = `${this.anio}-${String(mesIdx + 1).padStart(2, '0')}`;
         return cat.gastos_por_mes[key] ?? 0;
@@ -60,8 +60,8 @@ export class CategoriaAnalisis implements OnInit {
       plugins: { legend: { position: 'bottom' } },
       responsive: true,
       scales: {
-        x: { stacked: false },
-        y: { beginAtZero: true },
+        x: { stacked: this.apilado },
+        y: { beginAtZero: true, stacked: this.apilado },
       },
     };
   }

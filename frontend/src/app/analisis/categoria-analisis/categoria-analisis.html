@@ -1,7 +1,11 @@
 <div class="controles">
-    <label>Año:</label>
-    <p-inputnumber [(ngModel)]="anio" [useGrouping]="false" [min]="2000" [max]="2100" />
-    <p-button label="Cargar" icon="pi pi-refresh" (click)="cargar()" />
+    <p-selectbutton
+        [options]="modoOpciones"
+        [ngModel]="apilado"
+        (ngModelChange)="onModoChange($event)"
+        optionLabel="label"
+        optionValue="value"
+    />
 </div>
 
 <p-tabs value="0">
@@ -36,7 +40,7 @@
                 </ng-template>
                 <ng-template #body let-cat>
                     <tr>
-                        <td>{{ cat.categoria }}</td>
+                        <td>{{ cat.categoria_path ?? cat.categoria }}</td>
                         <td>{{ cat.gasto_anual | number:'1.2-2' }} €</td>
                         <td>{{ cat.prev_minima | number:'1.2-2' }} €</td>
                         <td>{{ cat.prev_maxima | number:'1.2-2' }} €</td>
