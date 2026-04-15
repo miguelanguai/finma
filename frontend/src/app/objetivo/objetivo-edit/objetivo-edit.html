@@ -1,0 +1,28 @@
+<div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="nombre" autocomplete="off" [(ngModel)]="objetivo.nombre" />
+            <label for="nombre">Nombre</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <p-inputnumber id="monto" [(ngModel)]="objetivo.monto" [minFractionDigits]="2" [maxFractionDigits]="2" />
+            <label for="monto">Monto</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-floatlabel variant="in">
+            <input pInputText id="prioridad" autocomplete="off" [(ngModel)]="objetivo.prioridad" />
+            <label for="prioridad">Prioridad</label>
+        </p-floatlabel>
+    </div>
+    <div>
+        <p-datepicker [(ngModel)]="objetivo.fecha" />
+    </div>
+    <div>
+        <p>Cumplido</p>
+        <p-toggleswitch [(ngModel)]="objetivo.is_cumplido" />
+    </div>
+</div>
+<p-button (click)="guardarObjetivo()" [label]="objetivo.id ? 'Guardar' : 'Crear'" />
