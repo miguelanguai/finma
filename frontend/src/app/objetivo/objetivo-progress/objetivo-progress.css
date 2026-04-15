@@ -1,0 +1,39 @@
+.objetivo-progress-card {
+    padding: 1rem;
+    border: 1px solid var(--p-surface-border);
+    border-radius: var(--p-border-radius);
+    background: var(--p-surface-card);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.objetivo-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.objetivo-nombre {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.objetivo-montos {
+    font-size: 0.875rem;
+    color: var(--p-text-muted-color);
+}
+
+.objetivo-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--p-text-muted-color);
+}
+
+.sin-objetivo {
+    font-size: 0.875rem;
+    color: var(--p-text-muted-color);
+    margin-bottom: 1rem;
+}

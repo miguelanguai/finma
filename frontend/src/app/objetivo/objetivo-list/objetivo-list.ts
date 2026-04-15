@@ -17,8 +17,11 @@ import { MapCategoriaObjetivo } from '../MapCategoriaObjetivo';
 import { ObjetivoService } from '../objetivo-service';
 import { ObjetivoEdit } from '../objetivo-edit/objetivo-edit';
 import { ObjetivoMapeoEdit } from '../mapeo-edit/mapeo-edit';
+import { ObjetivoProgress } from '../objetivo-progress/objetivo-progress';
 import { Categoria } from '../../categoria/Categoria';
 import { CategoriaService } from '../../categoria/categoria-service';
+import { Movimiento } from '../../movimiento/movimiento';
+import { MovimientoService } from '../../movimiento/movimiento-service';
 
 @Component({
   selector: 'app-objetivo-list',
@@ -28,6 +31,7 @@ import { CategoriaService } from '../../categoria/categoria-service';
     DatePipe,
     DecimalPipe,
     FormsModule,
+    ObjetivoProgress,
     SelectButtonModule,
     SelectModule,
     TableModule,
@@ -46,6 +50,7 @@ export class ObjetivoList {
   objetivos: Objetivo[] = [];
   mapeos: MapCategoriaObjetivo[] = [];
   categorias: Categoria[] = [];
+  movimientos: Movimiento[] = [];
 
   filtroCumplido: string = 'pendientes';
   filtroOpciones = [
@@ -79,6 +84,7 @@ export class ObjetivoList {
     private confirmationService: ConfirmationService,
     public dialogService: DialogService,
     private messageService: MessageService,
+    private movimientoService: MovimientoService,
     private objetivoService: ObjetivoService,
   ) { }
 
@@ -86,6 +92,7 @@ export class ObjetivoList {
     this.getObjetivos();
     this.getMapeos();
     this.getCategorias();
+    this.getMovimientos();
   }
 
   getObjetivos(): void {
@@ -114,6 +121,16 @@ export class ObjetivoList {
     this.categoriaService.getCategorias().subscribe({
       next: (data) => {
         this.categorias = data;
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  getMovimientos(): void {
+    this.movimientoService.getMovimientos().subscribe({
+      next: (data) => {
+        this.movimientos = data;
+        this.cdr.detectChanges();
       },
       error: (err) => console.error(err),
     });

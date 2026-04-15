@@ -1,0 +1,19 @@
+@if (objetivo) {
+    <div class="objetivo-progress-card">
+        <div class="objetivo-progress-header">
+            <span class="objetivo-nombre">{{ objetivo.nombre }}</span>
+            <span class="objetivo-montos">
+                {{ acumulado | number:'1.2-2' }} € / {{ objetivo.monto | number:'1.2-2' }} €
+            </span>
+        </div>
+        <p-progressbar [value]="progreso" [showValue]="true" />
+        <div class="objetivo-meta">
+            @if (objetivo.prioridad) {
+                <span>Prioridad: {{ objetivo.prioridad }}</span>
+            }
+            <span>Fecha límite: {{ objetivo.fecha | date:'dd/MM/yyyy' }}</span>
+        </div>
+    </div>
+} @else {
+    <p class="sin-objetivo">No hay objetivos pendientes.</p>
+}
