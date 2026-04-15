@@ -21,4 +21,8 @@ export const routes: Routes = [
         path: 'movimiento',
         component: MovimientoList
     },
+    {
+        path: 'objetivo',
+        loadComponent: () => import('./objetivo/objetivo-list/objetivo-list').then(m => m.ObjetivoList)
+    },
 ];

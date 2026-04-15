@@ -33,5 +33,9 @@ export class Header {
       component: MovimientoList,
       title: "Movimiento"
     },
+    {
+      path: 'objetivo',
+      title: "Objetivos"
+    },
   ];
 }
