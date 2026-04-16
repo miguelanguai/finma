@@ -1,0 +1,57 @@
+.seccion-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.seccion-titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.ver-todos-link {
+    font-size: 0.85rem;
+    color: var(--p-primary-color);
+    text-decoration: none;
+}
+
+.ver-todos-link:hover {
+    text-decoration: underline;
+}
+
+.objetivos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.objetivo-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--p-surface-border);
+    border-radius: var(--p-border-radius);
+    background: var(--p-surface-card);
+}
+
+.objetivo-nombre {
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.objetivo-pct {
+    font-size: 0.8rem;
+    color: var(--p-text-muted-color);
+    text-align: right;
+}
+
+.sin-datos {
+    color: var(--p-text-muted-color);
+    font-size: 0.9rem;
+}

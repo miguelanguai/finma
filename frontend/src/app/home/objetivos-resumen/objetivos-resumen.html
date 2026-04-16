@@ -1,0 +1,18 @@
+<div class="seccion-cabecera">
+    <h2 class="seccion-titulo">Objetivos</h2>
+    <a routerLink="/objetivo" class="ver-todos-link">Ver todos →</a>
+</div>
+
+@if (top3.length === 0) {
+    <p class="sin-datos">No hay objetivos en progreso.</p>
+} @else {
+    <div class="objetivos-grid">
+        @for (obj of top3; track obj.id) {
+            <div class="objetivo-card">
+                <span class="objetivo-nombre">{{ obj.nombre }}</span>
+                <p-progressbar [value]="obj.porcentaje" [showValue]="false" styleClass="objetivo-barra" />
+                <span class="objetivo-pct">{{ obj.porcentaje.toFixed(0) }}%</span>
+            </div>
+        }
+    </div>
+}

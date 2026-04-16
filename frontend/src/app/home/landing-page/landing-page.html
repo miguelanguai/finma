@@ -1,1 +1,65 @@
-<p>landing-page works!</p>
+<div class="landing-page">
+
+    <!-- Cabecera -->
+    <div class="landing-cabecera">
+        <h1 class="landing-titulo">Finma</h1>
+        @if (resumen?.periodo_activo) {
+            <span class="periodo-badge">{{ resumen!.periodo_activo!.nombre }}</span>
+        }
+    </div>
+
+    <!-- Error -->
+    @if (error) {
+        <div class="landing-error">
+            <i class="pi pi-exclamation-triangle"></i>
+            No se pudieron cargar los datos. Comprueba la conexión con el servidor.
+        </div>
+    }
+
+    <!-- KPIs -->
+    @if (cargando) {
+        <div class="kpis-skeleton">
+            @for (_ of [1, 2, 3, 4]; track $index) {
+                <div class="kpi-card-skeleton">
+                    <p-skeleton height="0.85rem" width="55%" styleClass="mb-2" />
+                    <p-skeleton height="1.4rem" width="75%" />
+                </div>
+            }
+        </div>
+    } @else if (resumen) {
+        <app-kpi-landing
+            [balance]="resumen.balance_periodo"
+            [gasto]="resumen.total_gasto_periodo"
+            [ingreso]="resumen.total_ingreso_periodo"
+            [numMovimientos]="resumen.num_movimientos"
+        />
+    }
+
+    <!-- Últimos movimientos -->
+    <section class="landing-section">
+        @if (cargando) {
+            <p-skeleton height="220px" />
+        } @else if (resumen) {
+            <app-ultimos-movimientos [movimientos]="resumen.ultimos_movimientos" />
+        }
+    </section>
+
+    <!-- Objetivos -->
+    <section class="landing-section">
+        @if (cargando) {
+            <p-skeleton height="130px" />
+        } @else if (resumen) {
+            <app-objetivos-resumen [objetivos]="resumen.objetivos_progreso" />
+        }
+    </section>
+
+    <!-- Accesos rápidos -->
+    <section class="landing-section">
+        @if (cargando) {
+            <p-skeleton height="100px" />
+        } @else {
+            <app-accesos-rapidos />
+        }
+    </section>
+
+</div>

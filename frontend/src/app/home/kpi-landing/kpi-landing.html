@@ -1,0 +1,11 @@
+<div class="kpis-row">
+    @for (kpi of kpis; track kpi.label) {
+        <div class="kpi-card">
+            <span class="kpi-label">{{ kpi.label }}</span>
+            <span class="kpi-valor" [ngClass]="{
+                'kpi-positivo': kpi.positivo === true,
+                'kpi-negativo': kpi.positivo === false
+            }">{{ kpi.valor }}</span>
+        </div>
+    }
+</div>

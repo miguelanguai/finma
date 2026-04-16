@@ -1,0 +1,59 @@
+.landing-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.landing-cabecera {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.landing-titulo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.periodo-badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--p-text-muted-color);
+    background: var(--p-surface-100);
+    border: 1px solid var(--p-surface-border);
+    border-radius: 999px;
+    padding: 0.2rem 0.75rem;
+}
+
+.landing-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--p-border-radius);
+    background: var(--p-red-100);
+    color: var(--p-red-700);
+    font-size: 0.9rem;
+}
+
+.kpis-skeleton {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.kpi-card-skeleton {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--p-surface-border);
+    border-radius: var(--p-border-radius);
+    background: var(--p-surface-card);
+}
+
+.landing-section {
+    border: 1px solid var(--p-surface-border);
+    border-radius: var(--p-border-radius);
+    background: var(--p-surface-card);
+    padding: 1.5rem;
+}

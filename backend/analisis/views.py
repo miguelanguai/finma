@@ -5,7 +5,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .services import BalanceAnalisisService, CategoriasAnalisisService, ObjetivosAnalisisService
+from .services import BalanceAnalisisService, CategoriasAnalisisService, ObjetivosAnalisisService, ResumenLandingService
+
+
+class ResumenLandingView(APIView):
+    service = ResumenLandingService()
+
+    def get(self, request: Request) -> Response:
+        return Response(self.service.get_resumen(), status=status.HTTP_200_OK)
 
 
 class ObjetivosAnalisisView(APIView):

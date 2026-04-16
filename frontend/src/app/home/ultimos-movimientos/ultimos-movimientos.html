@@ -1,0 +1,33 @@
+<div class="seccion-cabecera">
+    <h2 class="seccion-titulo">Últimos movimientos</h2>
+    <a routerLink="/movimiento" class="ver-todos-link">Ver todos →</a>
+</div>
+
+<p-table [value]="movimientos" [tableStyle]="{ 'min-width': '30rem' }" stripedRows>
+    <ng-template #header>
+        <tr>
+            <th>Fecha</th>
+            <th>Concepto</th>
+            <th>Categoría</th>
+            <th style="text-align: right">Importe</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-mov>
+        <tr>
+            <td>{{ mov.fecha | date:'dd/MM/yyyy' }}</td>
+            <td>{{ mov.concepto }}</td>
+            <td>{{ mov.categoria ?? '—' }}</td>
+            <td style="text-align: right" [ngClass]="{
+                'importe-gasto': mov.tipo === 'gasto',
+                'importe-ingreso': mov.tipo === 'ingreso'
+            }">
+                {{ mov.tipo === 'gasto' ? '-' : '+' }}{{ mov.importe.toFixed(2) }} €
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+        <tr>
+            <td colspan="4">No hay movimientos en el período activo.</td>
+        </tr>
+    </ng-template>
+</p-table>

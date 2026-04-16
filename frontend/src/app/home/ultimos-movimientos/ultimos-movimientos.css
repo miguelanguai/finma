@@ -1,0 +1,25 @@
+.seccion-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.seccion-titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.ver-todos-link {
+    font-size: 0.85rem;
+    color: var(--p-primary-color);
+    text-decoration: none;
+}
+
+.ver-todos-link:hover {
+    text-decoration: underline;
+}
+
+.importe-gasto { color: var(--p-red-600); font-weight: 600; }
+.importe-ingreso { color: var(--p-green-600); font-weight: 600; }

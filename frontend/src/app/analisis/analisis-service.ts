@@ -6,6 +6,7 @@ import {
   BalanceAnualResponse,
   GastoCategoriaResponse,
   ProgresoObjetivoResponse,
+  ResumenLandingResponse,
 } from './analisis-response';
 
 @Injectable({
@@ -30,5 +31,9 @@ export class AnalisisService {
     return this.http.get<BalanceAnualResponse>(
       `${this.baseUrl}balance/?anio=${anio}`
     );
+  }
+
+  getResumen(): Observable<ResumenLandingResponse> {
+    return this.http.get<ResumenLandingResponse>(this.baseUrl + 'resumen/');
   }
 }

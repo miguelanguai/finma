@@ -1,3 +1,4 @@
+from calendar import monthrange
 from datetime import date, timedelta
 from decimal import Decimal
 
@@ -63,6 +64,74 @@ class ObjetivosAnalisisService:
             })
 
         return resultado
+
+
+class ResumenLandingService:
+    def get_resumen(self) -> dict:
+        """Calcula el resumen del período activo para la landing page.
+
+        Período activo: el último período con al menos un movimiento asociado.
+
+        Returns:
+            dict: KPIs del período, últimos movimientos y progreso de objetivos.
+        """
+        periodo = (
+            Periodo.objects.filter(movimiento__isnull=False)
+            .order_by("-fecha")
+            .first()
+        )
+
+        if periodo is None:
+            return {
+                "periodo_activo": None,
+                "balance_periodo": 0.0,
+                "total_gasto_periodo": 0.0,
+                "total_ingreso_periodo": 0.0,
+                "num_movimientos": 0,
+                "ultimos_movimientos": [],
+                "objetivos_progreso": ObjetivosAnalisisService().get_progreso(),
+            }
+
+        fecha_inicio = periodo.fecha
+        ultimo_dia = monthrange(fecha_inicio.year, fecha_inicio.month)[1]
+        fecha_fin = fecha_inicio.replace(day=ultimo_dia)
+
+        movimientos = Movimiento.objects.filter(periodo=periodo).select_related("categoria")
+
+        total_gasto = float(
+            sum(abs(m.monto) for m in movimientos if m.categoria and m.categoria.is_gasto)
+        )
+        total_ingreso = float(periodo.ingreso_fijo or 0)
+        balance = total_ingreso - total_gasto
+        num_movimientos = movimientos.count()
+
+        ultimos = movimientos.order_by("-fecha")[:10]
+        ultimos_movimientos = [
+            {
+                "id": m.id,
+                "fecha": m.fecha.date().isoformat(),
+                "concepto": m.concepto,
+                "importe": float(abs(m.monto)),
+                "tipo": "gasto" if (m.categoria and m.categoria.is_gasto) else "ingreso",
+                "categoria": m.categoria.nombre if m.categoria else None,
+            }
+            for m in ultimos
+        ]
+
+        return {
+            "periodo_activo": {
+                "id": periodo.id,
+                "nombre": periodo.nombre,
+                "fecha_inicio": fecha_inicio.isoformat(),
+                "fecha_fin": fecha_fin.isoformat(),
+            },
+            "balance_periodo": balance,
+            "total_gasto_periodo": total_gasto,
+            "total_ingreso_periodo": total_ingreso,
+            "num_movimientos": num_movimientos,
+            "ultimos_movimientos": ultimos_movimientos,
+            "objetivos_progreso": ObjetivosAnalisisService().get_progreso(),
+        }
 
 
 class CategoriasAnalisisService:

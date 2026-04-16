@@ -1,0 +1,9 @@
+<h2 class="seccion-titulo">Accesos rápidos</h2>
+<div class="accesos-grid">
+    @for (acceso of accesos; track acceso.ruta) {
+        <a [routerLink]="acceso.ruta" class="acceso-card">
+            <i [class]="acceso.icono + ' acceso-icono'"></i>
+            <span class="acceso-label">{{ acceso.label }}</span>
+        </a>
+    }
+</div>
