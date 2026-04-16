@@ -1,0 +1,18 @@
+.excel-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.aviso-formato {
+  width: 100%;
+}
+
+.error-mensaje {
+  width: 100%;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+}

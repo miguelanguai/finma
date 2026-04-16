@@ -2,6 +2,7 @@
 <p-toast />
 <div class="buttons">
     <p-button (click)="showCreateMovimientoDialog()" label="Crear Movimiento" />
+    <p-button (click)="showExcelUploadDialog()" label="Subir Excel" icon="pi pi-upload" severity="secondary" />
 </div>
 <div class="table">
     <p-table dataKey="id" [value]="movimientos" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="25"

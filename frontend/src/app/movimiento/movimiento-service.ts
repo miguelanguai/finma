@@ -40,4 +40,10 @@ export class MovimientoService {
     return this.http.delete<Movimiento>(this.appUrl + movimiento.id);
   }
 
+  uploadExcel(file: File): Observable<{ message: string }> {
+    const formData = new FormData();
+    formData.append('excel', file);
+    return this.http.post<{ message: string }>(this.appUrl + 'excel', formData);
+  }
+
 }

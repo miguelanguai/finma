@@ -7,6 +7,7 @@ import { ToastModule } from 'primeng/toast';
 import { MovimientoService } from '../movimiento-service';
 import { Movimiento } from '../movimiento';
 import { MovimientoEdit } from '../movimiento-edit/movimiento-edit';
+import { ExcelUpload } from '../excel-upload/excel-upload';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
@@ -92,6 +93,27 @@ export class MovimientoList {
           error: err => {
             console.error("Error al guardar el movimiento", err);
           }
+        });
+      }
+    });
+  }
+
+  showExcelUploadDialog() {
+    this.ref = this.dialogService.open(ExcelUpload, {
+      header: 'Importar movimientos desde Excel',
+      closeOnEscape: true,
+      closable: true,
+      resizable: false,
+      draggable: true,
+    });
+
+    this.ref?.onClose.subscribe((resultado: boolean) => {
+      if (resultado) {
+        this.getMovimientos();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Importado',
+          detail: 'Los movimientos se han importado correctamente',
         });
       }
     });

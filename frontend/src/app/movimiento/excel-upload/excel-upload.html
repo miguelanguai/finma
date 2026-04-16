@@ -1,0 +1,32 @@
+<div class="excel-upload">
+  <p-message severity="info" styleClass="aviso-formato">
+    El archivo debe llamarse <code>YY-MM_*.xlsx</code> (ej. <code>25-04_extracto.xlsx</code>).
+    El período se asigna automáticamente a partir del nombre.
+  </p-message>
+
+  <p-fileupload
+    mode="advanced"
+    accept=".xlsx"
+    [maxFileSize]="5242880"
+    [auto]="false"
+    [multiple]="false"
+    chooseLabel="Seleccionar archivo"
+    [showUploadButton]="false"
+    [showCancelButton]="false"
+    (onSelect)="onFileSelect($event)"
+  />
+
+  @if (errorMensaje) {
+    <p-message severity="error" [text]="errorMensaje" styleClass="error-mensaje" />
+  }
+
+  <div class="acciones">
+    <p-button
+      label="Subir"
+      icon="pi pi-upload"
+      [loading]="cargando"
+      [disabled]="!archivoSeleccionado || cargando"
+      (click)="subir()"
+    />
+  </div>
+</div>
