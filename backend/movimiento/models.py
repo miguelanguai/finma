@@ -62,7 +62,10 @@ class MovimientoExcel:
     def __init__(self, fecha: str, concepto: str, importe: str, periodo: Periodo):
         self.fecha: datetime = datetime.strptime(fecha, "%d/%m/%Y")
         self.concepto: str = concepto
-        self.importe: float = float(importe)
+        importe_str = str(importe).replace("€", "").replace(" ", "")
+        if "," in importe_str:
+            importe_str = importe_str.replace(".", "").replace(",", ".")
+        self.importe: float = float(importe_str)
         self.periodo: Periodo = periodo
 
     def __str__(self):
