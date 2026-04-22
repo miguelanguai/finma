@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-
-import { SkeletonModule } from 'primeng/skeleton';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { AnalisisService } from '../../analisis/analisis-service';
 import { ResumenLandingResponse } from '../../analisis/analisis-response';
@@ -8,30 +6,34 @@ import { KpiLanding } from '../kpi-landing/kpi-landing';
 import { UltimosMovimientos } from '../ultimos-movimientos/ultimos-movimientos';
 import { ObjetivosResumen } from '../objetivos-resumen/objetivos-resumen';
 import { AccesosRapidos } from '../accesos-rapidos/accesos-rapidos';
+import { MovimientosCategoria } from '../movimientos-categoria/movimientos-categoria';
+import { BalanceGeneral } from '../balance-general/balance-general';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [SkeletonModule, KpiLanding, UltimosMovimientos, ObjetivosResumen, AccesosRapidos],
+  imports: [KpiLanding, UltimosMovimientos, ObjetivosResumen, AccesosRapidos, MovimientosCategoria, BalanceGeneral],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css',
 })
 export class LandingPage implements OnInit {
   resumen: ResumenLandingResponse | null = null;
-  cargando = false;
   error = false;
+  anioActual = new Date().getFullYear();
 
-  constructor(private analisisService: AnalisisService) {}
+  constructor(
+    private analisisService: AnalisisService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
-    this.cargando = true;
     this.analisisService.getResumen().subscribe({
       next: (data) => {
         this.resumen = data;
-        this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = true;
-        this.cargando = false;
+        this.cdr.detectChanges();
       },
     });
   }

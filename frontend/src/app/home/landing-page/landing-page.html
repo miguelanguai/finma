@@ -17,16 +17,7 @@
     }
 
     <!-- KPIs -->
-    @if (cargando) {
-        <div class="kpis-skeleton">
-            @for (_ of [1, 2, 3, 4]; track $index) {
-                <div class="kpi-card-skeleton">
-                    <p-skeleton height="0.85rem" width="55%" styleClass="mb-2" />
-                    <p-skeleton height="1.4rem" width="75%" />
-                </div>
-            }
-        </div>
-    } @else if (resumen) {
+    @if (resumen) {
         <app-kpi-landing
             [balance]="resumen.balance_periodo"
             [gasto]="resumen.total_gasto_periodo"
@@ -36,30 +27,44 @@
     }
 
     <!-- Últimos movimientos -->
-    <section class="landing-section">
-        @if (cargando) {
-            <p-skeleton height="220px" />
-        } @else if (resumen) {
+    @if (resumen) {
+        <section class="landing-section">
             <app-ultimos-movimientos [movimientos]="resumen.ultimos_movimientos" />
-        }
-    </section>
+        </section>
+    }
 
     <!-- Objetivos -->
-    <section class="landing-section">
-        @if (cargando) {
-            <p-skeleton height="130px" />
-        } @else if (resumen) {
+    @if (resumen) {
+        <section class="landing-section">
             <app-objetivos-resumen [objetivos]="resumen.objetivos_progreso" />
-        }
-    </section>
+        </section>
+    }
+
+    <!-- Balance general -->
+    @if (resumen) {
+        <section class="landing-section">
+            <app-balance-general
+                [gasto]="resumen.total_gasto_periodo"
+                [ingreso]="resumen.total_ingreso_periodo"
+                [balance]="resumen.balance_periodo"
+            />
+        </section>
+    }
+
+    <!-- Movimientos por categoría -->
+    @if (resumen) {
+        <section class="landing-section">
+            <app-movimientos-categoria
+                [gastosPeriodo]="resumen.gastos_por_categoria"
+                [anio]="anioActual"
+                [nombrePeriodo]="resumen.periodo_activo?.nombre ?? 'Período activo'"
+            />
+        </section>
+    }
 
     <!-- Accesos rápidos -->
     <section class="landing-section">
-        @if (cargando) {
-            <p-skeleton height="100px" />
-        } @else {
-            <app-accesos-rapidos />
-        }
+        <app-accesos-rapidos />
     </section>
 
 </div>
