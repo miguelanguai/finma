@@ -1,0 +1,59 @@
+<h2 class="seccion-titulo">Balance general</h2>
+
+<div class="balance-grid">
+
+    <div class="balance-fila">
+        <div class="balance-etiqueta">
+            <span class="etiqueta-texto">Ingresos</span>
+            <span class="etiqueta-importe ingreso">{{ ingreso | number:'1.2-2' }} €</span>
+        </div>
+        <div class="barra-base">
+            <div class="barra-relleno barra-ingreso" style="width: 100%"></div>
+        </div>
+    </div>
+
+    <div class="balance-fila">
+        <div class="balance-etiqueta">
+            <span class="etiqueta-texto">Gastos</span>
+            <span class="etiqueta-importe" [class.gasto-ok]="estadoGasto === 'ok'" [class.gasto-alerta]="estadoGasto === 'alerta'" [class.gasto-critico]="estadoGasto === 'critico'">
+                {{ gasto | number:'1.2-2' }} €
+                <span class="pct-badge">({{ pctGasto }}%)</span>
+            </span>
+        </div>
+        <div class="barra-base">
+            <div
+                class="barra-relleno"
+                [class.barra-gasto-ok]="estadoGasto === 'ok'"
+                [class.barra-gasto-alerta]="estadoGasto === 'alerta'"
+                [class.barra-gasto-critico]="estadoGasto === 'critico'"
+                [style.width.%]="pctGasto"
+            ></div>
+        </div>
+    </div>
+
+    <div class="balance-fila">
+        <div class="balance-etiqueta">
+            <span class="etiqueta-texto">Ahorrado</span>
+            <span class="etiqueta-importe" [class.ingreso]="balance >= 0" [class.gasto-critico]="balance < 0">
+                {{ balance | number:'1.2-2' }} €
+                @if (ingreso > 0) {
+                    <span class="pct-badge">({{ pctAhorro }}%)</span>
+                }
+            </span>
+        </div>
+        <div class="barra-base">
+            <div
+                class="barra-relleno barra-ahorro"
+                [style.width.%]="pctAhorro"
+            ></div>
+        </div>
+    </div>
+
+</div>
+
+@if (balance < 0) {
+    <div class="alerta-negativo">
+        <i class="pi pi-exclamation-triangle"></i>
+        Los gastos superan los ingresos este período.
+    </div>
+}

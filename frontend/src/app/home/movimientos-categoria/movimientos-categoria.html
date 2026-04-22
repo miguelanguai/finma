@@ -1,0 +1,18 @@
+<div class="seccion-cabecera">
+    <h2 class="seccion-titulo">Movimientos por categoría</h2>
+    <p-selectbutton
+        [options]="vistaOpciones"
+        [(ngModel)]="vista"
+        (ngModelChange)="onVistaChange($event)"
+        optionLabel="label"
+        optionValue="value"
+    />
+</div>
+
+@if (cargandoAnio) {
+    <p-skeleton height="200px" />
+} @else if (chartData) {
+    <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="220px" />
+} @else {
+    <p class="sin-datos">No hay datos de gasto para {{ vista === 'periodo' ? nombrePeriodo : 'el año ' + anio }}.</p>
+}
