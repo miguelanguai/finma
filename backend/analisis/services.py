@@ -90,6 +90,7 @@ class ResumenLandingService:
                 "num_movimientos": 0,
                 "ultimos_movimientos": [],
                 "objetivos_progreso": ObjetivosAnalisisService().get_progreso(),
+                "gastos_por_categoria": [],
             }
 
         fecha_inicio = periodo.fecha
@@ -118,6 +119,15 @@ class ResumenLandingService:
             for m in ultimos
         ]
 
+        cat_totales: dict[str, float] = {}
+        for m in movimientos:
+            if m.categoria and m.categoria.is_gasto:
+                cat_totales[m.categoria.nombre] = cat_totales.get(m.categoria.nombre, 0.0) + float(abs(m.monto))
+        gastos_por_categoria = [
+            {"categoria": nombre, "total": total}
+            for nombre, total in sorted(cat_totales.items(), key=lambda x: -x[1])
+        ]
+
         return {
             "periodo_activo": {
                 "id": periodo.id,
@@ -131,6 +141,7 @@ class ResumenLandingService:
             "num_movimientos": num_movimientos,
             "ultimos_movimientos": ultimos_movimientos,
             "objetivos_progreso": ObjetivosAnalisisService().get_progreso(),
+            "gastos_por_categoria": gastos_por_categoria,
         }
 
 

@@ -28,7 +28,6 @@ export class CategoriaAnalisis implements OnChanges {
     { label: 'Apilado', value: true },
   ];
 
-  private readonly MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   private readonly COLORES = [
     '#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f',
     '#edc948', '#b07aa1', '#ff9da7', '#9c755f', '#bab0ac',
@@ -46,16 +45,19 @@ export class CategoriaAnalisis implements OnChanges {
   }
 
   private buildChart(): void {
+    if (this.categorias.length === 0) {
+      this.chartData = null;
+      return;
+    }
+
+    const labels = this.categorias[0].gastos_por_mes.map(g => g.periodo);
     const datasets = this.categorias.map((cat, i) => ({
-      label: cat.categoria_path ?? cat.categoria,
-      data: this.MESES.map((_, mesIdx) => {
-        const key = `${this.anio}-${String(mesIdx + 1).padStart(2, '0')}`;
-        return cat.gastos_por_mes[key] ?? 0;
-      }),
+      label: cat.categoria.nombre,
+      data: cat.gastos_por_mes.map(g => g.gasto),
       backgroundColor: this.COLORES[i % this.COLORES.length],
     }));
 
-    this.chartData = { labels: this.MESES, datasets };
+    this.chartData = { labels, datasets };
     this.chartOptions = {
       plugins: { legend: { position: 'bottom' } },
       responsive: true,

@@ -7,6 +7,11 @@ export interface UltimoMovimientoResponse {
   categoria: string | null;
 }
 
+export interface GastoCategoriaLandingItem {
+  categoria: string;
+  total: number;
+}
+
 export interface ResumenLandingResponse {
   periodo_activo: { id: number; nombre: string; fecha_inicio: string; fecha_fin: string } | null;
   balance_periodo: number;
@@ -15,6 +20,7 @@ export interface ResumenLandingResponse {
   num_movimientos: number;
   ultimos_movimientos: UltimoMovimientoResponse[];
   objetivos_progreso: ProgresoObjetivoResponse[];
+  gastos_por_categoria: GastoCategoriaLandingItem[];
 }
 
 export interface ProgresoObjetivoResponse {
@@ -27,9 +33,8 @@ export interface ProgresoObjetivoResponse {
 }
 
 export interface GastoCategoriaResponse {
-  categoria: string;
-  categoria_path?: string;
-  gastos_por_mes: { [periodo: string]: number };
+  categoria: { id: number; nombre: string };
+  gastos_por_mes: { periodo: string; gasto: number }[];
   gasto_anual: number;
   prev_minima: number;
   prev_maxima: number;

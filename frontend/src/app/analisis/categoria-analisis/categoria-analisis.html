@@ -40,7 +40,7 @@
                 </ng-template>
                 <ng-template #body let-cat>
                     <tr>
-                        <td>{{ cat.categoria_path ?? cat.categoria }}</td>
+                        <td>{{ cat.categoria.nombre }}</td>
                         <td>{{ cat.gasto_anual | number:'1.2-2' }} €</td>
                         <td>{{ cat.prev_minima | number:'1.2-2' }} €</td>
                         <td>{{ cat.prev_maxima | number:'1.2-2' }} €</td>

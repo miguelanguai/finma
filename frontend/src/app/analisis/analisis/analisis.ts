@@ -77,7 +77,7 @@ export class Analisis implements OnInit {
     let totalGastado = 0;
     const gastosPorMes: Record<string, number> = {};
     for (const cat of this.categorias) {
-      for (const [mes, valor] of Object.entries(cat.gastos_por_mes)) {
+      for (const { periodo: mes, gasto: valor } of cat.gastos_por_mes) {
         totalGastado += valor;
         gastosPorMes[mes] = (gastosPorMes[mes] ?? 0) + valor;
       }
