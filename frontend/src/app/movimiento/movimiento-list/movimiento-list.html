@@ -1,12 +1,45 @@
 <p-confirmDialog />
 <p-toast />
+
 <div class="buttons">
     <p-button (click)="showCreateMovimientoDialog()" label="Crear Movimiento" />
     <p-button (click)="showExcelUploadDialog()" label="Subir Excel" icon="pi pi-upload" severity="secondary" />
 </div>
+
+<div class="filtros">
+    <div class="filtros-campos">
+        <div class="filtro-campo">
+            <label>Fecha desde</label>
+            <p-datepicker [(ngModel)]="fechaDesde" dateFormat="dd/mm/yy" [showClear]="true" placeholder="dd/mm/aaaa" />
+        </div>
+        <div class="filtro-campo">
+            <label>Fecha hasta</label>
+            <p-datepicker [(ngModel)]="fechaHasta" dateFormat="dd/mm/yy" [showClear]="true" placeholder="dd/mm/aaaa" />
+        </div>
+        <div class="filtro-campo">
+            <label>Categoría</label>
+            <p-select [(ngModel)]="categoriaSeleccionada" [options]="categorias" optionLabel="nombre"
+                [showClear]="true" placeholder="Todas" />
+        </div>
+        <div class="filtro-campo">
+            <label>Tipo</label>
+            <p-select [(ngModel)]="tipoSeleccionado" [options]="tipoOpciones" optionLabel="label"
+                optionValue="value" placeholder="Todos" />
+        </div>
+        <div class="filtro-campo">
+            <label>Concepto</label>
+            <input pInputText [(ngModel)]="conceptoBusqueda" placeholder="Buscar concepto..." />
+        </div>
+    </div>
+    <div class="filtros-acciones">
+        <p-button (click)="aplicarFiltros()" label="Aplicar" icon="pi pi-search" />
+        <p-button (click)="limpiarFiltros()" label="Limpiar" icon="pi pi-times" severity="secondary" />
+    </div>
+</div>
+
 <div class="table">
-    <p-table dataKey="id" [value]="movimientos" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="25"
-        [rowsPerPageOptions]="[25, 50, 100]">
+    <p-table dataKey="id" [value]="movimientos" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
+        [rows]="25" [rowsPerPageOptions]="[25, 50, 100]">
         <ng-template #header>
             <tr>
                 <th pSortableColumn="id">
@@ -58,6 +91,8 @@
                         <p-sortIcon field="categoria" />
                     </div>
                 </th>
+                <th></th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template #body let-movimiento>
@@ -76,8 +111,8 @@
                         label="Editar Movimiento" />
                 </td>
                 <td>
-                    <p-button icon="pi pi-trash" severity="danger" (click)="showDeleteMovimientoDialog(movimiento, $event)"
-                        label="Borrar Movimiento" />
+                    <p-button icon="pi pi-trash" severity="danger"
+                        (click)="showDeleteMovimientoDialog(movimiento, $event)" label="Borrar Movimiento" />
                 </td>
             </tr>
         </ng-template>

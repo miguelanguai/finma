@@ -52,6 +52,22 @@ class MovimientoService:
         """
         return self.repo.find_all_by_periodo(periodo_id=periodo_id)
 
+    def find_with_filters(
+        self,
+        fecha_desde=None,
+        fecha_hasta=None,
+        categoria_id=None,
+        is_gasto=None,
+        concepto=None,
+    ) -> list[Movimiento]:
+        return self.repo.find_with_filters(
+            fecha_desde=fecha_desde,
+            fecha_hasta=fecha_hasta,
+            categoria_id=categoria_id,
+            is_gasto=is_gasto,
+            concepto=concepto,
+        )
+
     def find_all_by_periodo_and_category(
         self, periodo_id: int, category_id: int
     ) -> list[Movimiento]:

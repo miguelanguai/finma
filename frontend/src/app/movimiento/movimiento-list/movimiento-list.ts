@@ -1,23 +1,33 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DatePickerModule } from 'primeng/datepicker';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
-import { MovimientoService } from '../movimiento-service';
+import { MovimientoService, FiltrosMovimiento } from '../movimiento-service';
 import { Movimiento } from '../movimiento';
 import { MovimientoEdit } from '../movimiento-edit/movimiento-edit';
 import { ExcelUpload } from '../excel-upload/excel-upload';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Categoria } from '../../categoria/Categoria';
+import { CategoriaService } from '../../categoria/categoria-service';
 
 @Component({
   selector: 'app-movimiento-list',
   imports: [
     ButtonModule,
     ConfirmDialogModule,
+    DatePickerModule,
+    FormsModule,
+    InputTextModule,
+    SelectModule,
     TableModule,
-    ToastModule
+    ToastModule,
   ],
   providers: [
     ConfirmationService,
@@ -29,33 +39,91 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 })
 export class MovimientoList {
   movimientos: Movimiento[] = [];
-
-
+  categorias: Categoria[] = [];
   ref: DynamicDialogRef | null = null;
 
-  constructor(private cdr: ChangeDetectorRef, private confirmationService: ConfirmationService, public dialogService: DialogService, private messageService: MessageService, private movimientoService: MovimientoService) { }
+  fechaDesde: Date | null = null;
+  fechaHasta: Date | null = null;
+  categoriaSeleccionada: Categoria | null = null;
+  tipoSeleccionado: boolean | null = null;
+  conceptoBusqueda: string = '';
+
+  tipoOpciones = [
+    { label: 'Todos', value: null },
+    { label: 'Gasto', value: true },
+    { label: 'Ingreso', value: false },
+  ];
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private confirmationService: ConfirmationService,
+    public dialogService: DialogService,
+    private messageService: MessageService,
+    private movimientoService: MovimientoService,
+    private categoriaService: CategoriaService,
+  ) { }
 
   ngOnInit() {
+    this.getCategorias();
     this.getMovimientos();
-
   };
 
-  getMovimientos() {
-    this.movimientoService.getMovimientos().subscribe({
+  getCategorias() {
+    this.categoriaService.getCategorias().subscribe({
       next: (data) => {
-        //console.log(data);
-
-        this.movimientos = data.map(
-          d => new Movimiento(d.id, d.concepto, d.monto, d.fecha, d.recurrente, d.notas?? undefined, d.periodo ?? undefined, d.categoria ?? undefined)
+        this.categorias = data.map(
+          d => new Categoria(d.id, d.nombre, d.is_gasto, d.padre ?? undefined)
         );
-
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
-      }
+      error: (err) => console.error(err),
     });
+  }
 
+  getMovimientos() {
+    const filtros = this.buildFiltros();
+    this.movimientoService.getMovimientos(filtros).subscribe({
+      next: (data) => {
+        this.movimientos = data.map(
+          d => new Movimiento(d.id, d.concepto, d.monto, d.fecha, d.recurrente, d.notas ?? undefined, d.periodo ?? undefined, d.categoria ?? undefined)
+        );
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  aplicarFiltros() {
+    this.getMovimientos();
+  }
+
+  limpiarFiltros() {
+    this.fechaDesde = null;
+    this.fechaHasta = null;
+    this.categoriaSeleccionada = null;
+    this.tipoSeleccionado = null;
+    this.conceptoBusqueda = '';
+    this.getMovimientos();
+  }
+
+  private buildFiltros(): FiltrosMovimiento | undefined {
+    const hay = this.fechaDesde || this.fechaHasta || this.categoriaSeleccionada || this.tipoSeleccionado != null || this.conceptoBusqueda;
+    if (!hay) return undefined;
+
+    const filtros: FiltrosMovimiento = {};
+    if (this.fechaDesde) filtros.fecha_desde = this.toISODate(this.fechaDesde);
+    if (this.fechaHasta) filtros.fecha_hasta = this.toISODate(this.fechaHasta);
+    if (this.categoriaSeleccionada) filtros.categoria_id = this.categoriaSeleccionada.id;
+    if (this.tipoSeleccionado != null) filtros.is_gasto = this.tipoSeleccionado;
+    if (this.conceptoBusqueda) filtros.concepto = this.conceptoBusqueda;
+    return filtros;
+  }
+
+  private toISODate(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
   showCreateMovimientoDialog(movimiento?: Movimiento) {
@@ -74,25 +142,14 @@ export class MovimientoList {
       if (returnedMovimiento) {
         this.movimientoService.saveMovimiento(returnedMovimiento).subscribe({
           next: () => {
-            this.ngOnInit();
+            this.getMovimientos();
             if (movimiento) {
-
-              this.messageService.add({
-                severity: "info",
-                summary: "Confirmado",
-                detail: "Has editado el movimiento"
-              });
+              this.messageService.add({ severity: "info", summary: "Confirmado", detail: "Has editado el movimiento" });
             } else {
-              this.messageService.add({
-                severity: "info",
-                summary: "Confirmado",
-                detail: "Has creado el movimiento"
-              });
+              this.messageService.add({ severity: "info", summary: "Confirmado", detail: "Has creado el movimiento" });
             }
           },
-          error: err => {
-            console.error("Error al guardar el movimiento", err);
-          }
+          error: err => console.error("Error al guardar el movimiento", err),
         });
       }
     });
@@ -110,11 +167,7 @@ export class MovimientoList {
     this.ref?.onClose.subscribe((resultado: boolean) => {
       if (resultado) {
         this.getMovimientos();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Importado',
-          detail: 'Los movimientos se han importado correctamente',
-        });
+        this.messageService.add({ severity: 'success', summary: 'Importado', detail: 'Los movimientos se han importado correctamente' });
       }
     });
   }
@@ -127,21 +180,13 @@ export class MovimientoList {
         this.movimientoService.deleteMovimiento(movimiento).subscribe({
           next: () => {
             this.getMovimientos();
-            this.messageService.add({
-              severity: "info",
-              summary: "Confirmado",
-              detail: "Has eliminado el movimiento"
-            });
+            this.messageService.add({ severity: "info", summary: "Confirmado", detail: "Has eliminado el movimiento" });
           }
         });
       },
       reject: () => {
-        this.messageService.add({
-          severity: "info",
-          summary: "Rechazado",
-          detail: "El movimiento sigue existiendo"
-        })
+        this.messageService.add({ severity: "info", summary: "Rechazado", detail: "El movimiento sigue existiendo" });
       }
-    })
+    });
   }
 }

@@ -78,6 +78,27 @@ class MovimientoRepository:
             categoria_id=categoria_id
         )
 
+    def find_with_filters(
+        self,
+        fecha_desde=None,
+        fecha_hasta=None,
+        categoria_id=None,
+        is_gasto=None,
+        concepto=None,
+    ) -> list[Movimiento]:
+        qs = Movimiento.objects.all()
+        if fecha_desde:
+            qs = qs.filter(fecha__date__gte=fecha_desde)
+        if fecha_hasta:
+            qs = qs.filter(fecha__date__lte=fecha_hasta)
+        if categoria_id is not None:
+            qs = qs.filter(categoria_id=categoria_id)
+        if is_gasto is not None:
+            qs = qs.filter(categoria__is_gasto=is_gasto)
+        if concepto:
+            qs = qs.filter(concepto__icontains=concepto)
+        return qs
+
     def save(self, movimiento: Movimiento) -> Movimiento:
         """Crea un nuevo Movimiento
 

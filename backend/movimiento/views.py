@@ -41,7 +41,25 @@ class MovimientoView(APIView):
             return Response(
                 {"error": "Movimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
-        movimientos_list = self.service.find_all()
+
+        fecha_desde = request.query_params.get("fecha_desde")
+        fecha_hasta = request.query_params.get("fecha_hasta")
+        categoria_id_param = request.query_params.get("categoria_id")
+        is_gasto_param = request.query_params.get("is_gasto")
+        concepto = request.query_params.get("concepto")
+
+        categoria_id = int(categoria_id_param) if categoria_id_param else None
+        is_gasto = None
+        if is_gasto_param is not None:
+            is_gasto = is_gasto_param.lower() == "true"
+
+        movimientos_list = self.service.find_with_filters(
+            fecha_desde=fecha_desde,
+            fecha_hasta=fecha_hasta,
+            categoria_id=categoria_id,
+            is_gasto=is_gasto,
+            concepto=concepto,
+        )
         serializer = MovimientoReadSerializer(movimientos_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

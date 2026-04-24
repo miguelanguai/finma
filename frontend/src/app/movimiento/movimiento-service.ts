@@ -1,10 +1,18 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { Movimiento } from './movimiento';
+
+export interface FiltrosMovimiento {
+  fecha_desde?: string;
+  fecha_hasta?: string;
+  categoria_id?: number | null;
+  is_gasto?: boolean | null;
+  concepto?: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +23,17 @@ export class MovimientoService {
 
   appUrl = environment.apiUrl + 'movimiento/';
 
-  getMovimientos(): Observable<Movimiento[]> {
-    return this.http.get<Movimiento[]>(this.appUrl);
+  getMovimientos(filtros?: FiltrosMovimiento): Observable<Movimiento[]> {
+    if (!filtros) {
+      return this.http.get<Movimiento[]>(this.appUrl);
+    }
+    let params = new HttpParams();
+    if (filtros.fecha_desde) params = params.set('fecha_desde', filtros.fecha_desde);
+    if (filtros.fecha_hasta) params = params.set('fecha_hasta', filtros.fecha_hasta);
+    if (filtros.categoria_id != null) params = params.set('categoria_id', filtros.categoria_id.toString());
+    if (filtros.is_gasto != null) params = params.set('is_gasto', filtros.is_gasto.toString());
+    if (filtros.concepto) params = params.set('concepto', filtros.concepto);
+    return this.http.get<Movimiento[]>(this.appUrl, { params });
   }
 
   saveMovimiento(movimiento: Movimiento): Observable<Movimiento> {
