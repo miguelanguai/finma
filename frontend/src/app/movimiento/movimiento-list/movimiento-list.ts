@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -23,6 +24,7 @@ import { CategoriaService } from '../../categoria/categoria-service';
     ButtonModule,
     ConfirmDialogModule,
     DatePickerModule,
+    DecimalPipe,
     FormsModule,
     InputTextModule,
     SelectModule,
@@ -39,6 +41,7 @@ import { CategoriaService } from '../../categoria/categoria-service';
 })
 export class MovimientoList {
   movimientos: Movimiento[] = [];
+  movimientosSeleccionados: Movimiento[] = [];
   categorias: Categoria[] = [];
   ref: DynamicDialogRef | null = null;
 
@@ -117,6 +120,44 @@ export class MovimientoList {
     if (this.tipoSeleccionado != null) filtros.is_gasto = this.tipoSeleccionado;
     if (this.conceptoBusqueda) filtros.concepto = this.conceptoBusqueda;
     return filtros;
+  }
+
+  get gastosCategorizados(): number {
+    return this.movimientos
+      .filter(m => m.categoria && m.categoria.is_gasto === true)
+      .reduce((sum, m) => sum + Math.abs(m.monto ?? 0), 0);
+  }
+
+  get gastosSinCategorizar(): number {
+    return this.movimientos
+      .filter(m => !m.categoria)
+      .reduce((sum, m) => {
+        const v = m.monto ?? 0;
+        return sum + (v < 0 ? Math.abs(v) : 0);
+      }, 0);
+  }
+
+  get gastosTotal(): number {
+    return this.gastosCategorizados + this.gastosSinCategorizar;
+  }
+
+  get ingresosCategorizados(): number {
+    return this.movimientos
+      .filter(m => m.categoria && m.categoria.is_gasto === false)
+      .reduce((sum, m) => sum + Math.abs(m.monto ?? 0), 0);
+  }
+
+  get ingresosSinCategorizar(): number {
+    return this.movimientos
+      .filter(m => !m.categoria)
+      .reduce((sum, m) => {
+        const v = m.monto ?? 0;
+        return sum + (v > 0 ? v : 0);
+      }, 0);
+  }
+
+  get ingresosTotal(): number {
+    return this.ingresosCategorizados + this.ingresosSinCategorizar;
   }
 
   private toISODate(date: Date): string {

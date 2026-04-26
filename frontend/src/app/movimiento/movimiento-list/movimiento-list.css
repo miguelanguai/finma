@@ -40,6 +40,61 @@
     gap: 0.5rem;
 }
 
+.resumen {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.resumen-seccion {
+    flex: 1;
+    min-width: 220px;
+    border: 1px solid var(--p-surface-200, #dee2e6);
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.resumen-seccion.gastos {
+    border-left: 4px solid var(--p-red-400, #f87171);
+}
+
+.resumen-seccion.ingresos {
+    border-left: 4px solid var(--p-green-400, #4ade80);
+}
+
+.resumen-titulo {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.resumen-bloque {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--p-surface-100, #f1f5f9);
+}
+
+.resumen-bloque.total {
+    border-bottom: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding-top: 0.5rem;
+}
+
+.resumen-label {
+    color: var(--p-text-muted-color, #6c757d);
+}
+
+.resumen-valor {
+    font-variant-numeric: tabular-nums;
+}
+
 .table {
     margin-top: 0.5rem;
 }

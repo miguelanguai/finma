@@ -37,58 +37,76 @@
     </div>
 </div>
 
+<div class="resumen">
+    <div class="resumen-seccion gastos">
+        <h3 class="resumen-titulo">Gastos</h3>
+        <div class="resumen-bloque">
+            <span class="resumen-label">Categorizados</span>
+            <span class="resumen-valor">{{ gastosCategorizados | number:'1.2-2' }} €</span>
+        </div>
+        <div class="resumen-bloque">
+            <span class="resumen-label">Sin categorizar</span>
+            <span class="resumen-valor">{{ gastosSinCategorizar | number:'1.2-2' }} €</span>
+        </div>
+        <div class="resumen-bloque total">
+            <span class="resumen-label">Total</span>
+            <span class="resumen-valor">{{ gastosTotal | number:'1.2-2' }} €</span>
+        </div>
+    </div>
+    <div class="resumen-seccion ingresos">
+        <h3 class="resumen-titulo">Ingresos</h3>
+        <div class="resumen-bloque">
+            <span class="resumen-label">Categorizados</span>
+            <span class="resumen-valor">{{ ingresosCategorizados | number:'1.2-2' }} €</span>
+        </div>
+        <div class="resumen-bloque">
+            <span class="resumen-label">Sin categorizar</span>
+            <span class="resumen-valor">{{ ingresosSinCategorizar | number:'1.2-2' }} €</span>
+        </div>
+        <div class="resumen-bloque total">
+            <span class="resumen-label">Total</span>
+            <span class="resumen-valor">{{ ingresosTotal | number:'1.2-2' }} €</span>
+        </div>
+    </div>
+</div>
+
 <div class="table">
-    <p-table dataKey="id" [value]="movimientos" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
+    <p-table dataKey="id" [value]="movimientos" [(selection)]="movimientosSeleccionados"
+        selectionMode="multiple" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
         [rows]="25" [rowsPerPageOptions]="[25, 50, 100]">
         <ng-template #header>
             <tr>
-                <th pSortableColumn="id">
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox />
+                </th>
+                <th pSortableColumn="fecha">
                     <div class="flex items-center justify-between">
-                        ID
-                        <p-columnFilter type="text" field="id" display="menu" />
-                        <p-sortIcon field="id" />
+                        Fecha
+                        <p-sortIcon field="fecha" />
                     </div>
                 </th>
                 <th pSortableColumn="concepto">
                     <div class="flex items-center justify-between">
                         Concepto
-                        <p-columnFilter type="text" field="concepto" display="menu" />
                         <p-sortIcon field="concepto" />
                     </div>
                 </th>
-                <th pSortableColumn="fecha">
+                <th pSortableColumn="categoria">
                     <div class="flex items-center justify-between">
-                        Fecha
-                        <p-columnFilter type="text" field="fecha" display="menu" />
-                        <p-sortIcon field="fecha" />
-                    </div>
-                </th>
-                <th pSortableColumn="recurrente">
-                    <div class="flex items-center justify-between">
-                        Recurrente
-                        <p-columnFilter type="text" field="recurrente" display="menu" />
-                        <p-sortIcon field="recurrente" />
+                        Categoría
+                        <p-sortIcon field="categoria" />
                     </div>
                 </th>
                 <th pSortableColumn="notas">
                     <div class="flex items-center justify-between">
                         Notas
-                        <p-columnFilter type="text" field="notas" display="menu" />
                         <p-sortIcon field="notas" />
                     </div>
                 </th>
-                <th pSortableColumn="periodo">
+                <th pSortableColumn="monto">
                     <div class="flex items-center justify-between">
-                        Periodo
-                        <p-columnFilter type="text" field="periodo" display="menu" />
-                        <p-sortIcon field="periodo" />
-                    </div>
-                </th>
-                <th pSortableColumn="categoria">
-                    <div class="flex items-center justify-between">
-                        Categoria
-                        <p-columnFilter type="text" field="categoria" display="menu" />
-                        <p-sortIcon field="categoria" />
+                        Monto
+                        <p-sortIcon field="monto" />
                     </div>
                 </th>
                 <th></th>
@@ -97,22 +115,22 @@
         </ng-template>
         <ng-template #body let-movimiento>
             <tr>
-                <td>{{ movimiento.id }}</td>
-                <td>{{ movimiento.concepto }}</td>
+                <td>
+                    <p-tableCheckbox [value]="movimiento" />
+                </td>
                 <td>{{ movimiento.fecha.getDate() }}/{{ movimiento.fecha.getMonth()+1 }}/{{
                     movimiento.fecha.getFullYear()
                     }}</td>
-                <td>{{ movimiento.recurrente }}</td>
-                <td>{{ movimiento.notas }}</td>
-                <td>{{ movimiento.periodo?.nombre }}</td>
+                <td>{{ movimiento.concepto }}</td>
                 <td>{{ movimiento.categoria?.nombre }}</td>
+                <td>{{ movimiento.notas }}</td>
+                <td>{{ movimiento.monto | number:'1.2-2' }} €</td>
                 <td>
-                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateMovimientoDialog(movimiento)"
-                        label="Editar Movimiento" />
+                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateMovimientoDialog(movimiento)" />
                 </td>
                 <td>
                     <p-button icon="pi pi-trash" severity="danger"
-                        (click)="showDeleteMovimientoDialog(movimiento, $event)" label="Borrar Movimiento" />
+                        (click)="showDeleteMovimientoDialog(movimiento, $event)" />
                 </td>
             </tr>
         </ng-template>

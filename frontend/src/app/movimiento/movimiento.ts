@@ -16,7 +16,7 @@ export class Movimiento {
     constructor(id?: number | null, concepto?: string, monto?: number, fecha?: string | Date, recurrente?: boolean, notas?: string, periodo?: Periodo, categoria?: Categoria) {
         this.id = id ?? undefined;
         this.concepto = concepto ?? "";
-        this.monto = monto ?? undefined;
+        this.monto = monto != null ? Number(monto) : undefined;
         if (fecha instanceof Date) {
             this.fecha = fecha;
         } else if (typeof fecha == "string") {
