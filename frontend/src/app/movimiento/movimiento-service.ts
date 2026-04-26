@@ -63,4 +63,16 @@ export class MovimientoService {
     return this.http.post<{ message: string }>(this.appUrl + 'excel', formData);
   }
 
+  exportarMovimientos(filtros?: FiltrosMovimiento): Observable<Blob> {
+    let params = new HttpParams();
+    if (filtros) {
+      if (filtros.fecha_desde) params = params.set('fecha_desde', filtros.fecha_desde);
+      if (filtros.fecha_hasta) params = params.set('fecha_hasta', filtros.fecha_hasta);
+      if (filtros.categoria_id != null) params = params.set('categoria_id', filtros.categoria_id.toString());
+      if (filtros.is_gasto != null) params = params.set('is_gasto', filtros.is_gasto.toString());
+      if (filtros.concepto) params = params.set('concepto', filtros.concepto);
+    }
+    return this.http.get(this.appUrl + 'exportar/', { params, responseType: 'blob' });
+  }
+
 }

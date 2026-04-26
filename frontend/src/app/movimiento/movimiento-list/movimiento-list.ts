@@ -213,6 +213,21 @@ export class MovimientoList {
     });
   }
 
+  exportarExcel() {
+    const filtros = this.buildFiltros();
+    this.movimientoService.exportarMovimientos(filtros).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `movimientos_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al exportar', err),
+    });
+  }
+
   showDeleteMovimientoDialog(movimiento: Movimiento, event: Event) {
     this.confirmationService.confirm({
       header: "¿Borrar movimiento?",

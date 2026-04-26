@@ -1,8 +1,10 @@
 import datetime
+import io
 import re
 
 from datetime import datetime
 
+import openpyxl
 
 from .repositories import ExcelRepository, MovimientoRepository
 
@@ -142,6 +144,26 @@ class MovimientoService:
         movimiento_to_delete = self.find_by_id(movimiento_id=movimiento_to_delete_id)
         if movimiento_to_delete:
             return self.repo.delete(movimiento_to_delete=movimiento_to_delete)
+
+
+class ExportarService:
+    def generar_xlsx(self, movimientos) -> bytes:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Movimientos"
+        ws.append(["Fecha", "Concepto", "Monto", "Categoría", "Recurrente", "Notas"])
+        for m in movimientos:
+            ws.append([
+                m.fecha.strftime("%d/%m/%Y") if m.fecha else "",
+                m.concepto,
+                float(m.monto) if m.monto is not None else "",
+                m.categoria.nombre if m.categoria else "",
+                m.recurrente,
+                m.notas or "",
+            ])
+        buffer = io.BytesIO()
+        wb.save(buffer)
+        return buffer.getvalue()
 
 
 class ExcelService:

@@ -1,3 +1,6 @@
+from datetime import date
+
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from rest_framework.request import Request
@@ -7,7 +10,7 @@ from rest_framework import status
 
 from .models import Movimiento
 from .serializers import MovimientoReadSerializer, MovimientoWriteSerializer
-from .services import ExcelService, MovimientoService
+from .services import ExcelService, ExportarService, MovimientoService
 
 
 class MovimientoView(APIView):
@@ -121,6 +124,40 @@ class MovimientoView(APIView):
         return Response(
             {"error": "movimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND
         )
+
+
+class ExportarView(APIView):
+
+    service = MovimientoService()
+    exportar_service = ExportarService()
+
+    def get(self, request: Request) -> HttpResponse:
+        fecha_desde = request.query_params.get("fecha_desde")
+        fecha_hasta = request.query_params.get("fecha_hasta")
+        categoria_id_param = request.query_params.get("categoria_id")
+        is_gasto_param = request.query_params.get("is_gasto")
+        concepto = request.query_params.get("concepto")
+
+        categoria_id = int(categoria_id_param) if categoria_id_param else None
+        is_gasto = None
+        if is_gasto_param is not None:
+            is_gasto = is_gasto_param.lower() == "true"
+
+        movimientos = self.service.find_with_filters(
+            fecha_desde=fecha_desde,
+            fecha_hasta=fecha_hasta,
+            categoria_id=categoria_id,
+            is_gasto=is_gasto,
+            concepto=concepto,
+        )
+        xlsx_bytes = self.exportar_service.generar_xlsx(movimientos)
+        filename = f"movimientos_{date.today().isoformat()}.xlsx"
+        response = HttpResponse(
+            xlsx_bytes,
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
 
 
 class ExcelView(APIView):
