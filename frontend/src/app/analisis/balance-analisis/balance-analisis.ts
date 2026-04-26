@@ -29,7 +29,7 @@ export class BalanceAnalisis implements OnChanges {
   private buildChart(): void {
     if (!this.balance) return;
 
-    const mesesOrdenados = [...this.balance.meses].sort((a, b) =>
+    const mesesOrdenados = [...this.balance.balance_por_mes].sort((a, b) =>
       a.periodo.localeCompare(b.periodo)
     );
     const closedCount = mesesOrdenados.length;

@@ -208,6 +208,63 @@ class CategoriasAnalisisService:
         return resultado
 
 
+class ComparativaAnalisisService:
+    def get_comparativa(self, periodo1_id: int, periodo2_id: int) -> dict:
+        from periodo.models import Periodo as PeriodoModel
+        from django.db.models import Sum
+
+        try:
+            p1 = PeriodoModel.objects.get(pk=periodo1_id)
+            p2 = PeriodoModel.objects.get(pk=periodo2_id)
+        except PeriodoModel.DoesNotExist:
+            return None
+
+        def gastos_por_categoria(periodo):
+            rows = (
+                Movimiento.objects.filter(periodo=periodo, categoria__is_gasto=True)
+                .values("categoria__id", "categoria__nombre")
+                .annotate(total=Sum("monto"))
+            )
+            return {
+                row["categoria__id"]: {
+                    "id": row["categoria__id"],
+                    "nombre": row["categoria__nombre"],
+                    "total": float(abs(row["total"])),
+                }
+                for row in rows
+            }
+
+        mapa1 = gastos_por_categoria(p1)
+        mapa2 = gastos_por_categoria(p2)
+        todas_ids = set(mapa1) | set(mapa2)
+
+        categorias = []
+        for cat_id in todas_ids:
+            c1 = mapa1.get(cat_id)
+            c2 = mapa2.get(cat_id)
+            nombre = (c1 or c2)["nombre"]
+            gasto1 = c1["total"] if c1 else 0.0
+            gasto2 = c2["total"] if c2 else 0.0
+            if gasto1 > 0:
+                diferencia = round((gasto2 - gasto1) / gasto1 * 100, 2)
+            else:
+                diferencia = None
+            categorias.append({
+                "categoria": {"id": cat_id, "nombre": nombre},
+                "gasto_periodo1": gasto1,
+                "gasto_periodo2": gasto2,
+                "diferencia_porcentual": diferencia,
+            })
+
+        categorias.sort(key=lambda x: x["categoria"]["nombre"])
+
+        return {
+            "periodo1": {"id": p1.id, "nombre": p1.nombre},
+            "periodo2": {"id": p2.id, "nombre": p2.nombre},
+            "categorias": categorias,
+        }
+
+
 class BalanceAnalisisService:
     def get_balance(self, anio: int) -> dict:
         """Devuelve el balance mensual y anual para el año indicado,

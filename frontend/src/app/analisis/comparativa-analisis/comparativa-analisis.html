@@ -1,0 +1,72 @@
+<div class="comparativa-controles">
+    <p-select
+        [options]="periodos"
+        [(ngModel)]="periodo1"
+        optionLabel="nombre"
+        placeholder="Período 1"
+        [showClear]="true"
+    />
+    <p-select
+        [options]="periodos"
+        [(ngModel)]="periodo2"
+        optionLabel="nombre"
+        placeholder="Período 2"
+        [showClear]="true"
+    />
+    <p-button
+        label="Comparar"
+        icon="pi pi-chart-bar"
+        [disabled]="!puedeComparar"
+        [loading]="cargando"
+        (click)="comparar()"
+    />
+</div>
+
+@if (error) {
+    <p class="comparativa-error">
+        <i class="pi pi-exclamation-triangle"></i>
+        No se pudieron cargar los datos de comparativa.
+    </p>
+}
+
+@if (cargando) {
+    <p-skeleton height="300px" />
+}
+
+@if (resultado && !cargando) {
+    <div class="comparativa-grafico">
+        <p-chart type="bar" [data]="chartData" [options]="chartOptions" />
+    </div>
+
+    <p-table
+        [value]="resultado.categorias"
+        [tableStyle]="{ 'min-width': '36rem' }"
+        stripedRows
+    >
+        <ng-template #header>
+            <tr>
+                <th>Categoría</th>
+                <th>{{ resultado.periodo1.nombre }}</th>
+                <th>{{ resultado.periodo2.nombre }}</th>
+                <th>Diferencia</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-item>
+            <tr>
+                <td>{{ item.categoria.nombre }}</td>
+                <td>{{ item.gasto_periodo1 | number:'1.2-2' }} €</td>
+                <td>{{ item.gasto_periodo2 | number:'1.2-2' }} €</td>
+                <td>
+                    <span [ngClass]="diferenciaClase(item)">
+                        {{ diferenciaTexto(item) }}
+                    </span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="4">No hay gastos en ninguno de los dos períodos.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+}

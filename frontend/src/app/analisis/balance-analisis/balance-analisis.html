@@ -1,4 +1,4 @@
-@if (chartData && balance && balance.meses.length > 0) {
+@if (chartData && balance && balance.balance_por_mes.length > 0) {
     <p-chart type="line" [data]="chartData" [options]="chartOptions" />
 } @else if (balance) {
     <p class="sin-datos">No hay datos mensuales para el año {{ anio }}.</p>

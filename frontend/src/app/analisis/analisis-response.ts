@@ -51,5 +51,18 @@ export interface BalanceAnualResponse {
   prev_minima: number;
   prev_maxima: number;
   prev_media: number;
-  meses: BalanceMesResponse[];
+  balance_por_mes: BalanceMesResponse[];
+}
+
+export interface ComparativaCategoriaItem {
+  categoria: { id: number; nombre: string };
+  gasto_periodo1: number;
+  gasto_periodo2: number;
+  diferencia_porcentual: number | null;
+}
+
+export interface ComparativaResponse {
+  periodo1: { id: number; nombre: string };
+  periodo2: { id: number; nombre: string };
+  categorias: ComparativaCategoriaItem[];
 }

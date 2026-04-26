@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   BalanceAnualResponse,
+  ComparativaResponse,
   GastoCategoriaResponse,
   ProgresoObjetivoResponse,
   ResumenLandingResponse,
@@ -35,5 +36,11 @@ export class AnalisisService {
 
   getResumen(): Observable<ResumenLandingResponse> {
     return this.http.get<ResumenLandingResponse>(this.baseUrl + 'resumen/');
+  }
+
+  getComparativa(periodo1Id: number, periodo2Id: number): Observable<ComparativaResponse> {
+    return this.http.get<ComparativaResponse>(
+      `${this.baseUrl}comparativa/?periodo1=${periodo1Id}&periodo2=${periodo2Id}`
+    );
   }
 }

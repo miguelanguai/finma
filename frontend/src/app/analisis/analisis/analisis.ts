@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
@@ -12,6 +12,9 @@ import { ProgresoObjetivoResponse, GastoCategoriaResponse, BalanceAnualResponse 
 import { ObjetivoAnalisis } from '../objetivo-analisis/objetivo-analisis';
 import { CategoriaAnalisis } from '../categoria-analisis/categoria-analisis';
 import { BalanceAnalisis } from '../balance-analisis/balance-analisis';
+import { ComparativaAnalisis } from '../comparativa-analisis/comparativa-analisis';
+import { PeriodoService } from '../../periodo/periodo-service';
+import { Periodo } from '../../periodo/periodo';
 
 interface Kpi {
   label: string;
@@ -22,7 +25,7 @@ interface Kpi {
 @Component({
   selector: 'app-analisis',
   imports: [
-    ObjetivoAnalisis, CategoriaAnalisis, BalanceAnalisis,
+    ObjetivoAnalisis, CategoriaAnalisis, BalanceAnalisis, ComparativaAnalisis,
     ButtonModule, DecimalPipe, FormsModule, InputNumberModule, NgClass, SkeletonModule,
   ],
   templateUrl: './analisis.html',
@@ -34,21 +37,30 @@ export class Analisis implements OnInit {
   objetivos: ProgresoObjetivoResponse[] | null = null;
   categorias: GastoCategoriaResponse[] | null = null;
   balance: BalanceAnualResponse | null = null;
+  periodos: Periodo[] = [];
 
   cargando = false;
   error = false;
 
   kpis: Kpi[] = [];
 
-  constructor(private analisisService: AnalisisService) {}
+  constructor(
+    private analisisService: AnalisisService,
+    private periodoService: PeriodoService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.cargar();
+    this.periodoService.getPeriodos().subscribe({
+      next: (periodos) => { this.periodos = periodos; },
+    });
   }
 
   cargar(): void {
     this.cargando = true;
     this.error = false;
+    this.cdr.detectChanges();
 
     forkJoin({
       objetivos: this.analisisService.getProgresoObjetivos(),
@@ -61,10 +73,12 @@ export class Analisis implements OnInit {
         this.balance = balance;
         this.computarKpis();
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = true;
         this.cargando = false;
+        this.cdr.detectChanges();
       },
     });
   }
