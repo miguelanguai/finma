@@ -1,3 +1,4 @@
+/* ─── Sidebar base ───────────────────────────────────────── */
 .sidebar {
   position: sticky;
   top: 0;
@@ -15,7 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-4) var(--space-4);
+  padding: var(--space-4);
   min-height: 64px;
   border-bottom: 1px solid var(--p-content-border-color);
 }
@@ -27,19 +28,19 @@
   white-space: nowrap;
 }
 
-/* ─── Botón colapsar ────────────────────────────────────── */
+/* ─── Botón colapsar ─────────────────────────────────────── */
 .sidebar-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
+  flex-shrink: 0;
   border: none;
   border-radius: 6px;
   background: transparent;
   color: var(--p-text-muted-color);
   cursor: pointer;
-  flex-shrink: 0;
   transition: background-color 150ms ease, color 150ms ease;
 }
 
@@ -48,7 +49,7 @@
   color: var(--p-text-color);
 }
 
-/* ─── Navegación ────────────────────────────────────────── */
+/* ─── Navegación ─────────────────────────────────────────── */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -87,9 +88,26 @@
   font-weight: var(--font-semibold);
 }
 
-/* ─── Responsive: ocultar en móvil ─────────────────────── */
+/* ─── Móvil: overlay deslizante ──────────────────────────── */
 @media (max-width: 768px) {
   .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform var(--sidebar-transition);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* El botón de colapsar no tiene sentido en móvil */
+  .sidebar-toggle {
     display: none;
   }
 }

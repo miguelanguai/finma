@@ -1,9 +1,14 @@
-<aside class="sidebar">
+<aside class="sidebar" [class.mobile-open]="mobileOpen">
+
   <div class="sidebar-brand">
     @if (!collapsed) {
       <span class="sidebar-brand-name">Finma</span>
     }
-    <button class="sidebar-toggle" (click)="toggle()" [title]="collapsed ? 'Expandir' : 'Colapsar'">
+    <button
+      class="sidebar-toggle"
+      (click)="toggle()"
+      [title]="collapsed ? 'Expandir' : 'Colapsar'"
+    >
       <i class="pi" [class.pi-angle-double-left]="!collapsed" [class.pi-angle-double-right]="collapsed"></i>
     </button>
   </div>
@@ -24,4 +29,5 @@
       </a>
     }
   </nav>
+
 </aside>

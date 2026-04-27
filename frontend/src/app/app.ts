@@ -10,5 +10,6 @@ import { Header } from './core/header/header';
   styleUrl: './app.css'
 })
 export class App {
-  collapsed = signal(false);
+  collapsed  = signal(false);
+  mobileOpen = signal(false);
 }

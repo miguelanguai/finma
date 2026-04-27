@@ -1,6 +1,24 @@
 <div class="app-shell" [class.collapsed]="collapsed()">
-  <app-header [collapsed]="collapsed()" (collapsedChange)="collapsed.set($event)" />
+
+  <app-header
+    [collapsed]="collapsed()"
+    [mobileOpen]="mobileOpen()"
+    (collapsedChange)="collapsed.set($event)"
+    (mobileClose)="mobileOpen.set(false)"
+  />
+
+  @if (mobileOpen()) {
+    <div class="sidebar-backdrop" (click)="mobileOpen.set(false)"></div>
+  }
+
   <main class="app-main">
+    <div class="mobile-topbar">
+      <button class="hamburger" (click)="mobileOpen.set(true)" aria-label="Abrir menú">
+        <i class="pi pi-bars"></i>
+      </button>
+      <span class="mobile-brand">Finma</span>
+    </div>
     <router-outlet />
   </main>
+
 </div>
