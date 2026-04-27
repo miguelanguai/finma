@@ -1,45 +1,32 @@
-import { Component } from '@angular/core';
-import { Routes } from '@angular/router';
-import { LandingPage } from '../../home/landing-page/landing-page';
-import { PeriodoList } from '../../periodo/periodo-list/periodo-list';
-import { CategoriaList } from '../../categoria/categoria-list/categoria-list';
-import { MovimientoList } from '../../movimiento/movimiento-list/movimiento-list';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+
+interface NavItem {
+  path: string;
+  title: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
-  routes: Routes = [
-    {
-      path: '',
-      component: LandingPage,
-      title: "Home"
-    },
-    {
-      path: 'periodo',
-      component: PeriodoList,
-      title: "Periodo"
-    },
-    {
-      path: 'categoria',
-      component: CategoriaList,
-      title: "Categoria"
-    },
-    {
-      path: 'movimiento',
-      component: MovimientoList,
-      title: "Movimiento"
-    },
-    {
-      path: 'objetivo',
-      title: "Objetivos"
-    },
-    {
-      path: 'analisis',
-      title: "Análisis"
-    },
+  @Input() collapsed = false;
+  @Output() collapsedChange = new EventEmitter<boolean>();
+
+  navItems: NavItem[] = [
+    { path: '/',           title: 'Inicio',      icon: 'pi-home' },
+    { path: '/movimiento', title: 'Movimientos', icon: 'pi-arrows-v' },
+    { path: '/analisis',   title: 'Análisis',    icon: 'pi-chart-bar' },
+    { path: '/objetivo',   title: 'Objetivos',   icon: 'pi-bullseye' },
+    { path: '/categoria',  title: 'Categorías',  icon: 'pi-tags' },
+    { path: '/periodo',    title: 'Períodos',    icon: 'pi-calendar' },
   ];
+
+  toggle(): void {
+    this.collapsedChange.emit(!this.collapsed);
+  }
 }

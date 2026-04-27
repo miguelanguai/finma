@@ -1,6 +1,6 @@
-<div>
-    <app-header></app-header>
-    <div class="body">
-        <router-outlet />
-    </div>
+<div class="app-shell" [class.collapsed]="collapsed()">
+  <app-header [collapsed]="collapsed()" (collapsedChange)="collapsed.set($event)" />
+  <main class="app-main">
+    <router-outlet />
+  </main>
 </div>

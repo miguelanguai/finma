@@ -1,18 +1,27 @@
-<div class="header-div">
-    <div>
-        <div class="header-img">
-            <img src="/assets/images/bugs.jpg" alt="bugs" width="50" height="50">
-        </div>
-        <div class="header-h1">
-            <h1>Finma</h1>
-        </div>
-    </div>
-    <div class="header-links">
-        @for(route of routes; track route.title){
-        <div class="header-link">
-            <a href="{{route.path}}">{{route.title}}</a>
-        </div>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    @if (!collapsed) {
+      <span class="sidebar-brand-name">Finma</span>
+    }
+    <button class="sidebar-toggle" (click)="toggle()" [title]="collapsed ? 'Expandir' : 'Colapsar'">
+      <i class="pi" [class.pi-angle-double-left]="!collapsed" [class.pi-angle-double-right]="collapsed"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (item of navItems; track item.path) {
+      <a
+        class="sidebar-link"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+        [title]="collapsed ? item.title : ''"
+      >
+        <i class="pi {{ item.icon }}"></i>
+        @if (!collapsed) {
+          <span>{{ item.title }}</span>
         }
-    </div>
-    <div></div>
-</div>
+      </a>
+    }
+  </nav>
+</aside>

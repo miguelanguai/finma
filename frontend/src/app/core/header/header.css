@@ -1,37 +1,95 @@
-.header-div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: rgb(189, 189, 189);
-    border-radius: 10px;
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--p-surface-card);
+  border-right: 1px solid var(--p-content-border-color);
+  overflow: hidden;
+}
 
-    div {
-        display: flex;
+/* ─── Marca ─────────────────────────────────────────────── */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-4);
+  min-height: 64px;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
 
-        .header-img {
-            align-items: center;
-            padding: 0 1rem 0 1rem;
-        }
+.sidebar-brand-name {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--p-primary-color);
+  white-space: nowrap;
+}
 
-        .header-h1 {
-            align-items: center;
-        }
-    }
+/* ─── Botón colapsar ────────────────────────────────────── */
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--p-text-muted-color);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 150ms ease, color 150ms ease;
+}
 
-    .header-links {
-        div {
-            padding: 2rem;
-            a{
-                color: initial;
-                text-decoration: none;
-            }
-        }
-        div:hover{
-            background-color: rgb(158, 158, 158);
-            cursor: pointer;
-            a{
-                color: rgb(255, 255, 255)
-            }
-        }
-    }
+.sidebar-toggle:hover {
+  background-color: var(--p-content-hover-background);
+  color: var(--p-text-color);
+}
+
+/* ─── Navegación ────────────────────────────────────────── */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-2);
+  flex: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--p-text-muted-color);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.sidebar-link .pi {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.sidebar-link:hover {
+  background-color: var(--p-content-hover-background);
+  color: var(--p-text-color);
+}
+
+.sidebar-link.active {
+  background-color: var(--p-primary-50);
+  color: var(--p-primary-color);
+  font-weight: var(--font-semibold);
+}
+
+/* ─── Responsive: ocultar en móvil ─────────────────────── */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
 }

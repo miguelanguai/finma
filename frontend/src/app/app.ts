@@ -10,5 +10,5 @@ import { Header } from './core/header/header';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('frontend');
+  collapsed = signal(false);
 }

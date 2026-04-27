@@ -1,3 +1,26 @@
-.body {
-    margin-top: 2rem;
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns var(--sidebar-transition);
+}
+
+.app-shell.collapsed {
+  grid-template-columns: var(--sidebar-width-collapsed) 1fr;
+}
+
+.app-main {
+  padding: var(--page-padding);
+  overflow-y: auto;
+  min-width: 0; /* evita que el contenido desborde el grid */
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .app-main {
+    padding: var(--space-4);
+  }
 }
