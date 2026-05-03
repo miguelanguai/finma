@@ -43,8 +43,8 @@ export class MovimientoService {
       "fecha": movimiento.fecha,
       "recurrente": movimiento.recurrente,
       "notas": movimiento.notas,
-      "periodo": movimiento.periodo,
-      "categoria": movimiento.categoria
+      "periodo": movimiento.periodo?.id ?? null,
+      "categoria": movimiento.categoria?.id ?? null
     }
     if (movimiento.id) {
       return this.http.put<Movimiento>(this.appUrl + movimiento.id, body);

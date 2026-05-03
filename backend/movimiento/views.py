@@ -94,7 +94,10 @@ class MovimientoView(APIView):
         Returns:
             Response: _description_
         """
-        serializer = MovimientoWriteSerializer(data=request.data)
+        instance = self.service.find_by_id(movimiento_id=movimiento_id)
+        if not instance:
+            return Response({"error": "movimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = MovimientoWriteSerializer(instance, data=request.data)
         if serializer.is_valid():
             movimiento = self.service.update(
                 movimiento=serializer.validated_data,
