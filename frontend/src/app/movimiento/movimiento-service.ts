@@ -12,6 +12,7 @@ export interface FiltrosMovimiento {
   categoria_id?: number | null;
   is_gasto?: boolean | null;
   concepto?: string;
+  periodo_id?: number | null;
 }
 
 @Injectable({
@@ -33,6 +34,7 @@ export class MovimientoService {
     if (filtros.categoria_id != null) params = params.set('categoria_id', filtros.categoria_id.toString());
     if (filtros.is_gasto != null) params = params.set('is_gasto', filtros.is_gasto.toString());
     if (filtros.concepto) params = params.set('concepto', filtros.concepto);
+    if (filtros.periodo_id != null) params = params.set('periodo_id', filtros.periodo_id.toString());
     return this.http.get<Movimiento[]>(this.appUrl, { params });
   }
 
@@ -71,6 +73,7 @@ export class MovimientoService {
       if (filtros.categoria_id != null) params = params.set('categoria_id', filtros.categoria_id.toString());
       if (filtros.is_gasto != null) params = params.set('is_gasto', filtros.is_gasto.toString());
       if (filtros.concepto) params = params.set('concepto', filtros.concepto);
+      if (filtros.periodo_id != null) params = params.set('periodo_id', filtros.periodo_id.toString());
     }
     return this.http.get(this.appUrl + 'exportar/', { params, responseType: 'blob' });
   }

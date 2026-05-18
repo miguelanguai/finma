@@ -50,8 +50,10 @@ class MovimientoView(APIView):
         categoria_id_param = request.query_params.get("categoria_id")
         is_gasto_param = request.query_params.get("is_gasto")
         concepto = request.query_params.get("concepto")
+        periodo_id_param = request.query_params.get("periodo_id")
 
         categoria_id = int(categoria_id_param) if categoria_id_param else None
+        periodo_id = int(periodo_id_param) if periodo_id_param else None
         is_gasto = None
         if is_gasto_param is not None:
             is_gasto = is_gasto_param.lower() == "true"
@@ -62,6 +64,7 @@ class MovimientoView(APIView):
             categoria_id=categoria_id,
             is_gasto=is_gasto,
             concepto=concepto,
+            periodo_id=periodo_id,
         )
         serializer = MovimientoReadSerializer(movimientos_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -140,8 +143,10 @@ class ExportarView(APIView):
         categoria_id_param = request.query_params.get("categoria_id")
         is_gasto_param = request.query_params.get("is_gasto")
         concepto = request.query_params.get("concepto")
+        periodo_id_param = request.query_params.get("periodo_id")
 
         categoria_id = int(categoria_id_param) if categoria_id_param else None
+        periodo_id = int(periodo_id_param) if periodo_id_param else None
         is_gasto = None
         if is_gasto_param is not None:
             is_gasto = is_gasto_param.lower() == "true"
@@ -152,6 +157,7 @@ class ExportarView(APIView):
             categoria_id=categoria_id,
             is_gasto=is_gasto,
             concepto=concepto,
+            periodo_id=periodo_id,
         )
         xlsx_bytes = self.exportar_service.generar_xlsx(movimientos)
         filename = f"movimientos_{date.today().isoformat()}.xlsx"

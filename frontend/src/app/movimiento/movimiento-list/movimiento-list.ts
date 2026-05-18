@@ -17,6 +17,26 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Categoria } from '../../categoria/Categoria';
 import { CategoriaService } from '../../categoria/categoria-service';
+import { Periodo } from '../../periodo/periodo';
+import { PeriodoService } from '../../periodo/periodo-service';
+import { MapPeriodoCategoria } from '../../periodo/MapPeriodoCategoria';
+import { MapCatPerService } from '../../periodo/map-cat-per-service';
+
+export interface FilaDesglose {
+  categoria: Categoria;
+  real: number;
+  fijo: number | null;
+  estimado: number | null;
+  subcategorias: FilaSubdesglose[];
+  expandido: boolean;
+}
+
+export interface FilaSubdesglose {
+  categoria: Categoria;
+  real: number;
+  fijo: number | null;
+  estimado: number | null;
+}
 
 @Component({
   selector: 'app-movimiento-list',
@@ -43,11 +63,14 @@ export class MovimientoList {
   movimientos: Movimiento[] = [];
   movimientosSeleccionados: Movimiento[] = [];
   categorias: Categoria[] = [];
+  periodos: Periodo[] = [];
+  mapeosPeriodo: MapPeriodoCategoria[] = [];
   ref: DynamicDialogRef | null = null;
 
   fechaDesde: Date | null = null;
   fechaHasta: Date | null = null;
   categoriaSeleccionada: Categoria | null = null;
+  periodoSeleccionado: Periodo | null = null;
   tipoSeleccionado: boolean | null = null;
   conceptoBusqueda: string = '';
 
@@ -64,10 +87,13 @@ export class MovimientoList {
     private messageService: MessageService,
     private movimientoService: MovimientoService,
     private categoriaService: CategoriaService,
+    private periodoService: PeriodoService,
+    private mapCatPerService: MapCatPerService,
   ) { }
 
   ngOnInit() {
     this.getCategorias();
+    this.getPeriodos();
     this.getMovimientos();
   };
 
@@ -77,6 +103,34 @@ export class MovimientoList {
         this.categorias = data.map(
           d => new Categoria(d.id, d.nombre, d.is_gasto, d.padre ?? undefined)
         );
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  getPeriodos() {
+    this.periodoService.getPeriodos().subscribe({
+      next: (data) => {
+        this.periodos = data.map(
+          d => new Periodo(d.id, d.nombre, d.fecha, d.ingreso_fijo, d.ingreso_estimado)
+        ).sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  getMapeosPeriodo() {
+    if (!this.periodoSeleccionado) {
+      this.mapeosPeriodo = [];
+      return;
+    }
+    const filtro = new MapPeriodoCategoria(null, undefined, undefined, undefined,
+      this.periodoSeleccionado, undefined);
+    this.mapCatPerService.getMapPeriodoCategoriasFiltered(filtro).subscribe({
+      next: (data) => {
+        this.mapeosPeriodo = data;
         this.cdr.detectChanges();
       },
       error: (err) => console.error(err),
@@ -97,6 +151,7 @@ export class MovimientoList {
   }
 
   aplicarFiltros() {
+    this.getMapeosPeriodo();
     this.getMovimientos();
   }
 
@@ -104,13 +159,16 @@ export class MovimientoList {
     this.fechaDesde = null;
     this.fechaHasta = null;
     this.categoriaSeleccionada = null;
+    this.periodoSeleccionado = null;
     this.tipoSeleccionado = null;
     this.conceptoBusqueda = '';
+    this.mapeosPeriodo = [];
     this.getMovimientos();
   }
 
   private buildFiltros(): FiltrosMovimiento | undefined {
-    const hay = this.fechaDesde || this.fechaHasta || this.categoriaSeleccionada || this.tipoSeleccionado != null || this.conceptoBusqueda;
+    const hay = this.fechaDesde || this.fechaHasta || this.categoriaSeleccionada
+      || this.tipoSeleccionado != null || this.conceptoBusqueda || this.periodoSeleccionado;
     if (!hay) return undefined;
 
     const filtros: FiltrosMovimiento = {};
@@ -119,8 +177,11 @@ export class MovimientoList {
     if (this.categoriaSeleccionada) filtros.categoria_id = this.categoriaSeleccionada.id;
     if (this.tipoSeleccionado != null) filtros.is_gasto = this.tipoSeleccionado;
     if (this.conceptoBusqueda) filtros.concepto = this.conceptoBusqueda;
+    if (this.periodoSeleccionado) filtros.periodo_id = this.periodoSeleccionado.id;
     return filtros;
   }
+
+  // --- Resumen totales (existente) ---
 
   get gastosCategorizados(): number {
     return this.movimientos
@@ -158,6 +219,83 @@ export class MovimientoList {
 
   get ingresosTotal(): number {
     return this.ingresosCategorizados + this.ingresosSinCategorizar;
+  }
+
+  // --- Desglose por categoría ---
+
+  get hayPeriodo(): boolean {
+    return this.periodoSeleccionado !== null;
+  }
+
+  get desgloseGastos(): FilaDesglose[] {
+    return this.calcularDesglose(true);
+  }
+
+  get desgloseIngresos(): FilaDesglose[] {
+    return this.calcularDesglose(false);
+  }
+
+  toggleDesglose(fila: FilaDesglose) {
+    fila.expandido = !fila.expandido;
+  }
+
+  private calcularDesglose(isGasto: boolean): FilaDesglose[] {
+    const movsFiltrados = this.movimientos.filter(m => m.categoria && m.categoria.is_gasto === isGasto);
+    const mapaFilas = new Map<number, FilaDesglose>();
+
+    for (const mov of movsFiltrados) {
+      const cat = mov.categoria!;
+      const catPadreId = cat.padre?.id ?? cat.id!;
+      const catPadre = cat.padre ?? cat;
+
+      if (!mapaFilas.has(catPadreId)) {
+        mapaFilas.set(catPadreId, {
+          categoria: catPadre,
+          real: 0,
+          fijo: null,
+          estimado: null,
+          subcategorias: [],
+          expandido: false,
+        });
+      }
+
+      const fila = mapaFilas.get(catPadreId)!;
+      const monto = Math.abs(mov.monto ?? 0);
+      fila.real += monto;
+
+      if (cat.padre) {
+        let sub = fila.subcategorias.find(s => s.categoria.id === cat.id);
+        if (!sub) {
+          sub = { categoria: cat, real: 0, fijo: null, estimado: null };
+          fila.subcategorias.push(sub);
+        }
+        sub.real += monto;
+      }
+    }
+
+    if (this.periodoSeleccionado && this.mapeosPeriodo.length > 0) {
+      const ingFijo = this.periodoSeleccionado.ingreso_fijo ?? 0;
+      const ingEst = this.periodoSeleccionado.ingreso_estimado ?? 0;
+
+      for (const fila of mapaFilas.values()) {
+        const mapeo = this.mapeosPeriodo.find(m => m.categoria?.id === fila.categoria.id);
+        if (mapeo) {
+          fila.fijo = mapeo.porc_ideal_fijo != null ? ingFijo * mapeo.porc_ideal_fijo / 100 : null;
+          fila.estimado = mapeo.porc_ideal_estimado != null ? ingEst * mapeo.porc_ideal_estimado / 100 : null;
+        }
+
+        for (const sub of fila.subcategorias) {
+          const mapeoSub = this.mapeosPeriodo.find(m => m.categoria?.id === sub.categoria.id);
+          if (mapeoSub) {
+            sub.fijo = mapeoSub.porc_ideal_fijo != null ? ingFijo * mapeoSub.porc_ideal_fijo / 100 : null;
+            sub.estimado = mapeoSub.porc_ideal_estimado != null ? ingEst * mapeoSub.porc_ideal_estimado / 100 : null;
+          }
+        }
+      }
+    }
+
+    return Array.from(mapaFilas.values())
+      .sort((a, b) => b.real - a.real);
   }
 
   private toISODate(date: Date): string {

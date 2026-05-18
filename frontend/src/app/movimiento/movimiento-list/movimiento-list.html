@@ -10,6 +10,11 @@
 <div class="filtros">
     <div class="filtros-campos">
         <div class="filtro-campo">
+            <label>Periodo</label>
+            <p-select [(ngModel)]="periodoSeleccionado" [options]="periodos" optionLabel="nombre"
+                [showClear]="true" placeholder="Todos" />
+        </div>
+        <div class="filtro-campo">
             <label>Fecha desde</label>
             <p-datepicker [(ngModel)]="fechaDesde" dateFormat="dd/mm/yy" [showClear]="true" placeholder="dd/mm/aaaa" />
         </div>
@@ -70,6 +75,104 @@
         </div>
     </div>
 </div>
+
+@if (desgloseGastos.length > 0 || desgloseIngresos.length > 0) {
+<div class="desglose">
+    @if (desgloseGastos.length > 0) {
+    <div class="desglose-bloque">
+        <h3 class="desglose-titulo gastos-titulo">Desglose gastos</h3>
+        <table class="desglose-tabla">
+            <thead>
+                <tr>
+                    <th class="col-categoria">Categoría</th>
+                    @if (hayPeriodo) {
+                    <th class="col-num">Fijo</th>
+                    <th class="col-num">Estimado</th>
+                    }
+                    <th class="col-num">Real</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (fila of desgloseGastos; track fila.categoria.id) {
+                <tr class="fila-padre" (click)="toggleDesglose(fila)" [class.expandible]="fila.subcategorias.length > 0">
+                    <td class="col-categoria">
+                        @if (fila.subcategorias.length > 0) {
+                        <span class="toggle-icon">{{ fila.expandido ? '▾' : '▸' }}</span>
+                        }
+                        {{ fila.categoria.nombre }}
+                    </td>
+                    @if (hayPeriodo) {
+                    <td class="col-num">{{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}</td>
+                    <td class="col-num">{{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                    }
+                    <td class="col-num">{{ fila.real | number:'1.2-2' }} €</td>
+                </tr>
+                @if (fila.expandido) {
+                    @for (sub of fila.subcategorias; track sub.categoria.id) {
+                    <tr class="fila-sub">
+                        <td class="col-categoria col-sub">↳ {{ sub.categoria.nombre }}</td>
+                        @if (hayPeriodo) {
+                        <td class="col-num">{{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}</td>
+                        <td class="col-num">{{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                        }
+                        <td class="col-num">{{ sub.real | number:'1.2-2' }} €</td>
+                    </tr>
+                    }
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    @if (desgloseIngresos.length > 0) {
+    <div class="desglose-bloque">
+        <h3 class="desglose-titulo ingresos-titulo">Desglose ingresos</h3>
+        <table class="desglose-tabla">
+            <thead>
+                <tr>
+                    <th class="col-categoria">Categoría</th>
+                    @if (hayPeriodo) {
+                    <th class="col-num">Fijo</th>
+                    <th class="col-num">Estimado</th>
+                    }
+                    <th class="col-num">Real</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (fila of desgloseIngresos; track fila.categoria.id) {
+                <tr class="fila-padre" (click)="toggleDesglose(fila)" [class.expandible]="fila.subcategorias.length > 0">
+                    <td class="col-categoria">
+                        @if (fila.subcategorias.length > 0) {
+                        <span class="toggle-icon">{{ fila.expandido ? '▾' : '▸' }}</span>
+                        }
+                        {{ fila.categoria.nombre }}
+                    </td>
+                    @if (hayPeriodo) {
+                    <td class="col-num">{{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}</td>
+                    <td class="col-num">{{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                    }
+                    <td class="col-num">{{ fila.real | number:'1.2-2' }} €</td>
+                </tr>
+                @if (fila.expandido) {
+                    @for (sub of fila.subcategorias; track sub.categoria.id) {
+                    <tr class="fila-sub">
+                        <td class="col-categoria col-sub">↳ {{ sub.categoria.nombre }}</td>
+                        @if (hayPeriodo) {
+                        <td class="col-num">{{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}</td>
+                        <td class="col-num">{{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                        }
+                        <td class="col-num">{{ sub.real | number:'1.2-2' }} €</td>
+                    </tr>
+                    }
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>
+}
 
 <div class="table">
     <p-table dataKey="id" [value]="movimientos" [(selection)]="movimientosSeleccionados"

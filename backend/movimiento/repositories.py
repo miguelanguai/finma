@@ -85,6 +85,7 @@ class MovimientoRepository:
         categoria_id=None,
         is_gasto=None,
         concepto=None,
+        periodo_id=None,
     ) -> list[Movimiento]:
         qs = Movimiento.objects.all()
         if fecha_desde:
@@ -97,6 +98,8 @@ class MovimientoRepository:
             qs = qs.filter(categoria__is_gasto=is_gasto)
         if concepto:
             qs = qs.filter(concepto__icontains=concepto)
+        if periodo_id is not None:
+            qs = qs.filter(periodo_id=periodo_id)
         return qs
 
     def save(self, movimiento: Movimiento) -> Movimiento:

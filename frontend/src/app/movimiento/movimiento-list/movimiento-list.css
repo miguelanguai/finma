@@ -95,6 +95,94 @@
     font-variant-numeric: tabular-nums;
 }
 
+.desglose {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.desglose-bloque {
+    flex: 1;
+    min-width: 280px;
+    border: 1px solid var(--p-surface-200, #dee2e6);
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.desglose-titulo {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.gastos-titulo {
+    color: var(--p-red-500, #ef4444);
+}
+
+.ingresos-titulo {
+    color: var(--p-green-600, #16a34a);
+}
+
+.desglose-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.desglose-tabla thead th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--p-text-muted-color, #6c757d);
+    padding: 0.25rem 0.5rem 0.5rem;
+    border-bottom: 2px solid var(--p-surface-200, #dee2e6);
+}
+
+.desglose-tabla thead th.col-num {
+    text-align: right;
+}
+
+.col-categoria {
+    padding: 0.35rem 0.5rem;
+}
+
+.col-num {
+    text-align: right;
+    padding: 0.35rem 0.5rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.col-sub {
+    padding-left: 1.5rem;
+    color: var(--p-text-muted-color, #6c757d);
+    font-size: 0.825rem;
+}
+
+.fila-padre {
+    border-bottom: 1px solid var(--p-surface-100, #f1f5f9);
+    font-weight: 500;
+}
+
+.fila-padre.expandible {
+    cursor: pointer;
+}
+
+.fila-padre.expandible:hover {
+    background: var(--p-surface-50, #f8f9fa);
+}
+
+.fila-sub {
+    border-bottom: 1px solid var(--p-surface-50, #f8f9fa);
+}
+
+.toggle-icon {
+    display: inline-block;
+    width: 1rem;
+    font-size: 0.75rem;
+    color: var(--p-text-muted-color, #6c757d);
+}
+
 .table {
     margin-top: 0.5rem;
 }

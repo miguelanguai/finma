@@ -61,6 +61,7 @@ class MovimientoService:
         categoria_id=None,
         is_gasto=None,
         concepto=None,
+        periodo_id=None,
     ) -> list[Movimiento]:
         return self.repo.find_with_filters(
             fecha_desde=fecha_desde,
@@ -68,6 +69,7 @@ class MovimientoService:
             categoria_id=categoria_id,
             is_gasto=is_gasto,
             concepto=concepto,
+            periodo_id=periodo_id,
         )
 
     def find_all_by_periodo_and_category(
