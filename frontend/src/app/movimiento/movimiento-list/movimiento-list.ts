@@ -65,6 +65,8 @@ export class MovimientoList {
   categorias: Categoria[] = [];
   periodos: Periodo[] = [];
   mapeosPeriodo: MapPeriodoCategoria[] = [];
+  desgloseGastos: FilaDesglose[] = [];
+  desgloseIngresos: FilaDesglose[] = [];
   ref: DynamicDialogRef | null = null;
 
   fechaDesde: Date | null = null;
@@ -124,6 +126,7 @@ export class MovimientoList {
   getMapeosPeriodo() {
     if (!this.periodoSeleccionado) {
       this.mapeosPeriodo = [];
+      this.recalcularDesglose();
       return;
     }
     const filtro = new MapPeriodoCategoria(null, undefined, undefined, undefined,
@@ -131,6 +134,7 @@ export class MovimientoList {
     this.mapCatPerService.getMapPeriodoCategoriasFiltered(filtro).subscribe({
       next: (data) => {
         this.mapeosPeriodo = data;
+        this.recalcularDesglose();
         this.cdr.detectChanges();
       },
       error: (err) => console.error(err),
@@ -144,10 +148,16 @@ export class MovimientoList {
         this.movimientos = data.map(
           d => new Movimiento(d.id, d.concepto, d.monto, d.fecha, d.recurrente, d.notas ?? undefined, d.periodo ?? undefined, d.categoria ?? undefined)
         );
+        this.recalcularDesglose();
         this.cdr.detectChanges();
       },
       error: (err) => console.error(err),
     });
+  }
+
+  private recalcularDesglose() {
+    this.desgloseGastos = this.calcularDesglose(true);
+    this.desgloseIngresos = this.calcularDesglose(false);
   }
 
   aplicarFiltros() {
@@ -181,44 +191,18 @@ export class MovimientoList {
     return filtros;
   }
 
-  // --- Resumen totales (existente) ---
-
-  get gastosCategorizados(): number {
-    return this.movimientos
-      .filter(m => m.categoria && m.categoria.is_gasto === true)
-      .reduce((sum, m) => sum + Math.abs(m.monto ?? 0), 0);
-  }
-
-  get gastosSinCategorizar(): number {
-    return this.movimientos
-      .filter(m => !m.categoria)
-      .reduce((sum, m) => {
-        const v = m.monto ?? 0;
-        return sum + (v < 0 ? Math.abs(v) : 0);
-      }, 0);
-  }
+  // --- Resumen totales ---
 
   get gastosTotal(): number {
-    return this.gastosCategorizados + this.gastosSinCategorizar;
-  }
-
-  get ingresosCategorizados(): number {
     return this.movimientos
-      .filter(m => m.categoria && m.categoria.is_gasto === false)
+      .filter(m => (m.monto ?? 0) < 0)
       .reduce((sum, m) => sum + Math.abs(m.monto ?? 0), 0);
-  }
-
-  get ingresosSinCategorizar(): number {
-    return this.movimientos
-      .filter(m => !m.categoria)
-      .reduce((sum, m) => {
-        const v = m.monto ?? 0;
-        return sum + (v > 0 ? v : 0);
-      }, 0);
   }
 
   get ingresosTotal(): number {
-    return this.ingresosCategorizados + this.ingresosSinCategorizar;
+    return this.movimientos
+      .filter(m => (m.monto ?? 0) > 0)
+      .reduce((sum, m) => sum + (m.monto ?? 0), 0);
   }
 
   // --- Desglose por categoría ---
@@ -227,12 +211,12 @@ export class MovimientoList {
     return this.periodoSeleccionado !== null;
   }
 
-  get desgloseGastos(): FilaDesglose[] {
-    return this.calcularDesglose(true);
+  get totalDesgloseGastos(): number {
+    return this.desgloseGastos.reduce((sum, f) => sum + f.real, 0);
   }
 
-  get desgloseIngresos(): FilaDesglose[] {
-    return this.calcularDesglose(false);
+  get totalDesgloseIngresos(): number {
+    return this.desgloseIngresos.reduce((sum, f) => sum + f.real, 0);
   }
 
   toggleDesglose(fila: FilaDesglose) {
@@ -240,7 +224,9 @@ export class MovimientoList {
   }
 
   private calcularDesglose(isGasto: boolean): FilaDesglose[] {
-    const movsFiltrados = this.movimientos.filter(m => m.categoria && m.categoria.is_gasto === isGasto);
+    const movsFiltrados = this.movimientos.filter(m =>
+      m.categoria && (isGasto ? (m.monto ?? 0) < 0 : (m.monto ?? 0) > 0)
+    );
     const mapaFilas = new Map<number, FilaDesglose>();
 
     for (const mov of movsFiltrados) {

@@ -46,14 +46,6 @@
 <div class="resumen">
     <div class="resumen-seccion gastos">
         <h3 class="resumen-titulo">Gastos</h3>
-        <div class="resumen-bloque">
-            <span class="resumen-label">Categorizados</span>
-            <span class="resumen-valor">{{ gastosCategorizados | number:'1.2-2' }} €</span>
-        </div>
-        <div class="resumen-bloque">
-            <span class="resumen-label">Sin categorizar</span>
-            <span class="resumen-valor">{{ gastosSinCategorizar | number:'1.2-2' }} €</span>
-        </div>
         <div class="resumen-bloque total">
             <span class="resumen-label">Total</span>
             <span class="resumen-valor">{{ gastosTotal | number:'1.2-2' }} €</span>
@@ -61,14 +53,6 @@
     </div>
     <div class="resumen-seccion ingresos">
         <h3 class="resumen-titulo">Ingresos</h3>
-        <div class="resumen-bloque">
-            <span class="resumen-label">Categorizados</span>
-            <span class="resumen-valor">{{ ingresosCategorizados | number:'1.2-2' }} €</span>
-        </div>
-        <div class="resumen-bloque">
-            <span class="resumen-label">Sin categorizar</span>
-            <span class="resumen-valor">{{ ingresosSinCategorizar | number:'1.2-2' }} €</span>
-        </div>
         <div class="resumen-bloque total">
             <span class="resumen-label">Total</span>
             <span class="resumen-valor">{{ ingresosTotal | number:'1.2-2' }} €</span>
@@ -121,6 +105,16 @@
                 }
                 }
             </tbody>
+            <tfoot>
+                <tr class="fila-total">
+                    <td class="col-categoria">Total categorizados</td>
+                    @if (hayPeriodo) {
+                    <td class="col-num"></td>
+                    <td class="col-num"></td>
+                    }
+                    <td class="col-num">{{ totalDesgloseGastos | number:'1.2-2' }} €</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     }
@@ -168,6 +162,16 @@
                 }
                 }
             </tbody>
+            <tfoot>
+                <tr class="fila-total">
+                    <td class="col-categoria">Total categorizados</td>
+                    @if (hayPeriodo) {
+                    <td class="col-num"></td>
+                    <td class="col-num"></td>
+                    }
+                    <td class="col-num">{{ totalDesgloseIngresos | number:'1.2-2' }} €</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     }
@@ -195,10 +199,10 @@
                         <p-sortIcon field="concepto" />
                     </div>
                 </th>
-                <th pSortableColumn="categoria">
+                <th pSortableColumn="categoria.nombre">
                     <div class="flex items-center justify-between">
                         Categoría
-                        <p-sortIcon field="categoria" />
+                        <p-sortIcon field="categoria.nombre" />
                     </div>
                 </th>
                 <th pSortableColumn="notas">

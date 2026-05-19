@@ -183,6 +183,13 @@
     color: var(--p-text-muted-color, #6c757d);
 }
 
+.fila-total td {
+    font-weight: 700;
+    border-top: 2px solid var(--p-surface-200, #dee2e6);
+    padding: 0.4rem 0.5rem;
+    font-size: 0.875rem;
+}
+
 .table {
     margin-top: 0.5rem;
 }
