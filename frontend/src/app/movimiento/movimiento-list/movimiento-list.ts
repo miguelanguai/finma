@@ -424,6 +424,19 @@ export class MovimientoList {
     });
   }
 
+  estadoReal(fila: FilaDesglose | FilaSubdesglose, isGasto: boolean): string {
+    if (fila.estimado == null) return '';
+    if (isGasto) {
+      if (fila.suma > fila.estimado) return 'estado-exceso';
+      if (fila.suma > fila.estimado * 0.85) return 'estado-alerta';
+      return 'estado-ok';
+    } else {
+      if (fila.suma < fila.estimado) return 'estado-exceso';
+      if (fila.suma < fila.estimado * 0.85) return 'estado-alerta';
+      return 'estado-ok';
+    }
+  }
+
   private toISODate(date: Date): string {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
