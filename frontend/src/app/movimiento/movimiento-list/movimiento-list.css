@@ -225,3 +225,6 @@
 .estado-ok     { color: var(--p-green-600); }
 .estado-alerta { color: var(--p-orange-500); }
 .estado-exceso { color: var(--p-red-600); font-weight: 600; }
+
+.mini-bar { height: 4px; margin-top: 3px; }
+.mini-bar .p-progressbar-value { transition: none; }

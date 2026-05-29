@@ -104,7 +104,11 @@
                     </td>
                     <td class="col-num">{{ fila.real != null ? (fila.real | number:'1.2-2') + ' €' : '—' }}</td>
                     }
-                    <td class="col-num" [ngClass]="estadoReal(fila, true)">{{ fila.suma | number:'1.2-2' }} €</td>
+                    <td class="col-num" [ngClass]="estadoReal(fila, true)">{{ fila.suma | number:'1.2-2' }} €
+                        @if (porcentajeReal(fila) != null) {
+                        <p-progressbar [value]="porcentajeReal(fila)!" [showValue]="false" styleClass="mini-bar" />
+                        }
+                    </td>
                     @if (hayPeriodo) {
                     <td class="col-acciones">
                         @if (fila.editando) {
@@ -137,7 +141,11 @@
                         </td>
                         <td class="col-num">{{ sub.real != null ? (sub.real | number:'1.2-2') + ' €' : '—' }}</td>
                         }
-                        <td class="col-num" [ngClass]="estadoReal(sub, true)">{{ sub.suma | number:'1.2-2' }} €</td>
+                        <td class="col-num" [ngClass]="estadoReal(sub, true)">{{ sub.suma | number:'1.2-2' }} €
+                            @if (porcentajeReal(sub) != null) {
+                            <p-progressbar [value]="porcentajeReal(sub)!" [showValue]="false" styleClass="mini-bar" />
+                            }
+                        </td>
                         @if (hayPeriodo) {
                         <td class="col-acciones">
                             @if (sub.editando) {
@@ -226,7 +234,11 @@
                     </td>
                     <td class="col-num">{{ fila.real != null ? (fila.real | number:'1.2-2') + ' €' : '—' }}</td>
                     }
-                    <td class="col-num" [ngClass]="estadoReal(fila, false)">{{ fila.suma | number:'1.2-2' }} €</td>
+                    <td class="col-num" [ngClass]="estadoReal(fila, false)">{{ fila.suma | number:'1.2-2' }} €
+                        @if (porcentajeReal(fila) != null) {
+                        <p-progressbar [value]="porcentajeReal(fila)!" [showValue]="false" styleClass="mini-bar" />
+                        }
+                    </td>
                     @if (hayPeriodo) {
                     <td class="col-acciones">
                         @if (fila.editando) {
@@ -259,7 +271,11 @@
                         </td>
                         <td class="col-num">{{ sub.real != null ? (sub.real | number:'1.2-2') + ' €' : '—' }}</td>
                         }
-                        <td class="col-num" [ngClass]="estadoReal(sub, false)">{{ sub.suma | number:'1.2-2' }} €</td>
+                        <td class="col-num" [ngClass]="estadoReal(sub, false)">{{ sub.suma | number:'1.2-2' }} €
+                            @if (porcentajeReal(sub) != null) {
+                            <p-progressbar [value]="porcentajeReal(sub)!" [showValue]="false" styleClass="mini-bar" />
+                            }
+                        </td>
                         @if (hayPeriodo) {
                         <td class="col-acciones">
                             @if (sub.editando) {

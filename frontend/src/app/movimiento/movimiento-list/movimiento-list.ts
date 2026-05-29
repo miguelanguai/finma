@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
@@ -57,6 +58,7 @@ export interface FilaSubdesglose {
     DecimalPipe,
     FormsModule,
     InputTextModule,
+    ProgressBarModule,
     SelectModule,
     TableModule,
     ToastModule,
@@ -422,6 +424,11 @@ export class MovimientoList {
       next: () => this.getMapeosPeriodo(),
       error: (err) => console.error(err),
     });
+  }
+
+  porcentajeReal(fila: FilaDesglose | FilaSubdesglose): number | null {
+    if (fila.estimado == null || fila.estimado === 0) return null;
+    return Math.min(fila.suma / fila.estimado * 100, 100);
   }
 
   estadoReal(fila: FilaDesglose | FilaSubdesglose, isGasto: boolean): string {
