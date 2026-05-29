@@ -24,18 +24,28 @@ import { MapCatPerService } from '../../periodo/map-cat-per-service';
 
 export interface FilaDesglose {
   categoria: Categoria;
-  real: number;
+  suma: number;
+  real: number | null;
   fijo: number | null;
   estimado: number | null;
+  mapeo: MapPeriodoCategoria | null;
   subcategorias: FilaSubdesglose[];
   expandido: boolean;
+  editando: boolean;
+  fijoEdit: number | null;
+  estimadoEdit: number | null;
 }
 
 export interface FilaSubdesglose {
   categoria: Categoria;
-  real: number;
+  suma: number;
+  real: number | null;
   fijo: number | null;
   estimado: number | null;
+  mapeo: MapPeriodoCategoria | null;
+  editando: boolean;
+  fijoEdit: number | null;
+  estimadoEdit: number | null;
 }
 
 @Component({
@@ -68,6 +78,11 @@ export class MovimientoList {
   desgloseGastos: FilaDesglose[] = [];
   desgloseIngresos: FilaDesglose[] = [];
   ref: DynamicDialogRef | null = null;
+
+  mostrandoNuevaCatGastos = false;
+  mostrandoNuevaCatIngresos = false;
+  categoriaNuevaGastos: Categoria | null = null;
+  categoriaNuevaIngresos: Categoria | null = null;
 
   fechaDesde: Date | null = null;
   fechaHasta: Date | null = null;
@@ -211,12 +226,30 @@ export class MovimientoList {
     return this.periodoSeleccionado !== null;
   }
 
+  get categoriasDisponiblesGastos(): Categoria[] {
+    const ids = new Set<number>();
+    for (const f of this.desgloseGastos) {
+      ids.add(f.categoria.id!);
+      for (const s of f.subcategorias) ids.add(s.categoria.id!);
+    }
+    return this.categorias.filter(c => c.is_gasto && !ids.has(c.id!));
+  }
+
+  get categoriasDisponiblesIngresos(): Categoria[] {
+    const ids = new Set<number>();
+    for (const f of this.desgloseIngresos) {
+      ids.add(f.categoria.id!);
+      for (const s of f.subcategorias) ids.add(s.categoria.id!);
+    }
+    return this.categorias.filter(c => !c.is_gasto && !ids.has(c.id!));
+  }
+
   get totalDesgloseGastos(): number {
-    return this.desgloseGastos.reduce((sum, f) => sum + f.real, 0);
+    return this.desgloseGastos.reduce((sum, f) => sum + f.suma, 0);
   }
 
   get totalDesgloseIngresos(): number {
-    return this.desgloseIngresos.reduce((sum, f) => sum + f.real, 0);
+    return this.desgloseIngresos.reduce((sum, f) => sum + f.suma, 0);
   }
 
   toggleDesglose(fila: FilaDesglose) {
@@ -237,37 +270,70 @@ export class MovimientoList {
       if (!mapaFilas.has(catPadreId)) {
         mapaFilas.set(catPadreId, {
           categoria: catPadre,
-          real: 0,
+          suma: 0,
+          real: null,
           fijo: null,
           estimado: null,
+          mapeo: null,
           subcategorias: [],
           expandido: false,
+          editando: false,
+          fijoEdit: null,
+          estimadoEdit: null,
         });
       }
 
       const fila = mapaFilas.get(catPadreId)!;
       const monto = Math.abs(mov.monto ?? 0);
-      fila.real += monto;
+      fila.suma += monto;
 
       if (cat.padre) {
         let sub = fila.subcategorias.find(s => s.categoria.id === cat.id);
         if (!sub) {
-          sub = { categoria: cat, real: 0, fijo: null, estimado: null };
+          sub = { categoria: cat, suma: 0, real: null, fijo: null, estimado: null, mapeo: null, editando: false, fijoEdit: null, estimadoEdit: null };
           fila.subcategorias.push(sub);
         }
-        sub.real += monto;
+        sub.suma += monto;
+      }
+    }
+
+    if (this.periodoSeleccionado && this.mapeosPeriodo.length > 0) {
+      for (const mapeo of this.mapeosPeriodo) {
+        if (!mapeo.categoria || (mapeo.categoria as any).is_gasto !== isGasto) continue;
+        const cat = mapeo.categoria as unknown as Categoria;
+        const catPadreId = cat.padre?.id ?? cat.id!;
+        if (!mapaFilas.has(catPadreId)) {
+          const catPadre = (cat.padre as unknown as Categoria) ?? cat;
+          mapaFilas.set(catPadreId, {
+            categoria: catPadre, suma: 0, real: null, fijo: null, estimado: null,
+            mapeo: null, subcategorias: [], expandido: false,
+            editando: false, fijoEdit: null, estimadoEdit: null,
+          });
+        }
+        if (cat.padre) {
+          const fila = mapaFilas.get(catPadreId)!;
+          if (!fila.subcategorias.find(s => s.categoria.id === cat.id)) {
+            fila.subcategorias.push({
+              categoria: cat, suma: 0, real: null, fijo: null, estimado: null,
+              mapeo: null, editando: false, fijoEdit: null, estimadoEdit: null,
+            });
+          }
+        }
       }
     }
 
     if (this.periodoSeleccionado && this.mapeosPeriodo.length > 0) {
       const ingFijo = this.periodoSeleccionado.ingreso_fijo ?? 0;
       const ingEst = this.periodoSeleccionado.ingreso_estimado ?? 0;
+      const ingReal = this.ingresosTotal;
 
       for (const fila of mapaFilas.values()) {
         const mapeo = this.mapeosPeriodo.find(m => m.categoria?.id === fila.categoria.id);
         if (mapeo) {
           fila.fijo = mapeo.porc_ideal_fijo != null ? ingFijo * mapeo.porc_ideal_fijo / 100 : null;
           fila.estimado = mapeo.porc_ideal_estimado != null ? ingEst * mapeo.porc_ideal_estimado / 100 : null;
+          fila.real = mapeo.porc_ideal_obtenido != null ? ingReal * mapeo.porc_ideal_obtenido / 100 : null;
+          fila.mapeo = mapeo;
         }
 
         for (const sub of fila.subcategorias) {
@@ -275,13 +341,71 @@ export class MovimientoList {
           if (mapeoSub) {
             sub.fijo = mapeoSub.porc_ideal_fijo != null ? ingFijo * mapeoSub.porc_ideal_fijo / 100 : null;
             sub.estimado = mapeoSub.porc_ideal_estimado != null ? ingEst * mapeoSub.porc_ideal_estimado / 100 : null;
+            sub.real = mapeoSub.porc_ideal_obtenido != null ? ingReal * mapeoSub.porc_ideal_obtenido / 100 : null;
+            sub.mapeo = mapeoSub;
           }
         }
       }
     }
 
     return Array.from(mapaFilas.values())
-      .sort((a, b) => b.real - a.real);
+      .sort((a, b) => b.suma - a.suma);
+  }
+
+  mostrarNuevaCat(isGasto: boolean) {
+    if (isGasto) { this.mostrandoNuevaCatGastos = true; this.categoriaNuevaGastos = null; }
+    else { this.mostrandoNuevaCatIngresos = true; this.categoriaNuevaIngresos = null; }
+  }
+
+  cancelarNuevaCat(isGasto: boolean) {
+    if (isGasto) { this.mostrandoNuevaCatGastos = false; this.categoriaNuevaGastos = null; }
+    else { this.mostrandoNuevaCatIngresos = false; this.categoriaNuevaIngresos = null; }
+  }
+
+  confirmarNuevaCat(isGasto: boolean) {
+    const cat = isGasto ? this.categoriaNuevaGastos : this.categoriaNuevaIngresos;
+    if (!cat || !this.periodoSeleccionado) return;
+    const mapeo = new MapPeriodoCategoria(null, undefined, undefined, undefined,
+      this.periodoSeleccionado, cat);
+    this.mapCatPerService.saveMapPeriodoCategoria(mapeo).subscribe({
+      next: () => {
+        if (isGasto) { this.mostrandoNuevaCatGastos = false; this.categoriaNuevaGastos = null; }
+        else { this.mostrandoNuevaCatIngresos = false; this.categoriaNuevaIngresos = null; }
+        this.getMapeosPeriodo();
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  iniciarEdicion(fila: FilaDesglose | FilaSubdesglose, event: Event) {
+    event.stopPropagation();
+    fila.fijoEdit = fila.fijo;
+    fila.estimadoEdit = fila.estimado;
+    fila.editando = true;
+  }
+
+  cancelarEdicion(fila: FilaDesglose | FilaSubdesglose, event: Event) {
+    event.stopPropagation();
+    fila.editando = false;
+  }
+
+  guardarEdicion(fila: FilaDesglose | FilaSubdesglose, event: Event) {
+    event.stopPropagation();
+    const ingFijo = this.periodoSeleccionado!.ingreso_fijo ?? 0;
+    const ingEst = this.periodoSeleccionado!.ingreso_estimado ?? 0;
+    const porcFijo = (fila.fijoEdit != null && ingFijo > 0) ? fila.fijoEdit / ingFijo * 100 : null;
+    const porcEst = (fila.estimadoEdit != null && ingEst > 0) ? fila.estimadoEdit / ingEst * 100 : null;
+
+    const mapeo = new MapPeriodoCategoria(
+      fila.mapeo?.id ?? null,
+      porcFijo ?? undefined, porcEst ?? undefined, undefined,
+      this.periodoSeleccionado!,
+      fila.categoria as Categoria,
+    );
+    this.mapCatPerService.saveMapPeriodoCategoria(mapeo).subscribe({
+      next: () => this.getMapeosPeriodo(),
+      error: (err) => console.error(err),
+    });
   }
 
   private toISODate(date: Date): string {

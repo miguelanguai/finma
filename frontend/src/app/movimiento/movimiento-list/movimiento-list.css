@@ -190,6 +190,34 @@
     font-size: 0.875rem;
 }
 
+.col-acciones {
+    width: 5.5rem;
+    text-align: right;
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+}
+
+.edit-input {
+    width: 80px;
+    text-align: right;
+    font-size: 0.875rem;
+}
+
+.fila-nueva-cat td {
+    padding: 0.4rem 0.5rem;
+    border-top: 1px dashed var(--p-surface-200, #dee2e6);
+}
+
+.col-nueva-cat {
+    text-align: left;
+}
+
+.nueva-cat-form {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .table {
     margin-top: 0.5rem;
 }

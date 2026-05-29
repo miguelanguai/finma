@@ -60,9 +60,9 @@
     </div>
 </div>
 
-@if (desgloseGastos.length > 0 || desgloseIngresos.length > 0) {
+@if (desgloseGastos.length > 0 || desgloseIngresos.length > 0 || hayPeriodo) {
 <div class="desglose">
-    @if (desgloseGastos.length > 0) {
+    @if (desgloseGastos.length > 0 || hayPeriodo) {
     <div class="desglose-bloque">
         <h3 class="desglose-titulo gastos-titulo">Desglose gastos</h3>
         <table class="desglose-tabla">
@@ -72,8 +72,10 @@
                     @if (hayPeriodo) {
                     <th class="col-num">Fijo</th>
                     <th class="col-num">Estimado</th>
-                    }
                     <th class="col-num">Real</th>
+                    }
+                    <th class="col-num">Suma</th>
+                    @if (hayPeriodo) { <th class="col-acciones"></th> }
                 </tr>
             </thead>
             <tbody>
@@ -86,20 +88,66 @@
                         {{ fila.categoria.nombre }}
                     </td>
                     @if (hayPeriodo) {
-                    <td class="col-num">{{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}</td>
-                    <td class="col-num">{{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                    <td class="col-num">
+                        @if (fila.editando) {
+                        <input pInputText type="number" [(ngModel)]="fila.fijoEdit" class="edit-input" />
+                        } @else {
+                        {{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}
+                        }
+                    </td>
+                    <td class="col-num">
+                        @if (fila.editando) {
+                        <input pInputText type="number" [(ngModel)]="fila.estimadoEdit" class="edit-input" />
+                        } @else {
+                        {{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}
+                        }
+                    </td>
+                    <td class="col-num">{{ fila.real != null ? (fila.real | number:'1.2-2') + ' €' : '—' }}</td>
                     }
-                    <td class="col-num">{{ fila.real | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ fila.suma | number:'1.2-2' }} €</td>
+                    @if (hayPeriodo) {
+                    <td class="col-acciones">
+                        @if (fila.editando) {
+                        <p-button icon="pi pi-check" size="small" severity="success" (click)="guardarEdicion(fila, $event)" />
+                        <p-button icon="pi pi-times" size="small" severity="danger" (click)="cancelarEdicion(fila, $event)" />
+                        } @else {
+                        <p-button icon="pi pi-pencil" size="small" severity="secondary" (click)="iniciarEdicion(fila, $event)" />
+                        }
+                    </td>
+                    }
                 </tr>
                 @if (fila.expandido) {
                     @for (sub of fila.subcategorias; track sub.categoria.id) {
                     <tr class="fila-sub">
                         <td class="col-categoria col-sub">↳ {{ sub.categoria.nombre }}</td>
                         @if (hayPeriodo) {
-                        <td class="col-num">{{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}</td>
-                        <td class="col-num">{{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                        <td class="col-num">
+                            @if (sub.editando) {
+                            <input pInputText type="number" [(ngModel)]="sub.fijoEdit" class="edit-input" />
+                            } @else {
+                            {{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}
+                            }
+                        </td>
+                        <td class="col-num">
+                            @if (sub.editando) {
+                            <input pInputText type="number" [(ngModel)]="sub.estimadoEdit" class="edit-input" />
+                            } @else {
+                            {{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}
+                            }
+                        </td>
+                        <td class="col-num">{{ sub.real != null ? (sub.real | number:'1.2-2') + ' €' : '—' }}</td>
                         }
-                        <td class="col-num">{{ sub.real | number:'1.2-2' }} €</td>
+                        <td class="col-num">{{ sub.suma | number:'1.2-2' }} €</td>
+                        @if (hayPeriodo) {
+                        <td class="col-acciones">
+                            @if (sub.editando) {
+                            <p-button icon="pi pi-check" size="small" severity="success" (click)="guardarEdicion(sub, $event)" />
+                            <p-button icon="pi pi-times" size="small" severity="danger" (click)="cancelarEdicion(sub, $event)" />
+                            } @else {
+                            <p-button icon="pi pi-pencil" size="small" severity="secondary" (click)="iniciarEdicion(sub, $event)" />
+                            }
+                        </td>
+                        }
                     </tr>
                     }
                 }
@@ -111,15 +159,32 @@
                     @if (hayPeriodo) {
                     <td class="col-num"></td>
                     <td class="col-num"></td>
+                    <td class="col-num"></td>
                     }
                     <td class="col-num">{{ totalDesgloseGastos | number:'1.2-2' }} €</td>
+                    @if (hayPeriodo) { <td class="col-acciones"></td> }
                 </tr>
+                @if (hayPeriodo) {
+                <tr class="fila-nueva-cat">
+                    <td colspan="6" class="col-nueva-cat">
+                        @if (!mostrandoNuevaCatGastos) {
+                        <p-button icon="pi pi-plus" label="Añadir categoría" size="small" severity="secondary" (click)="mostrarNuevaCat(true)" />
+                        } @else {
+                        <div class="nueva-cat-form">
+                            <p-select [(ngModel)]="categoriaNuevaGastos" [options]="categoriasDisponiblesGastos" optionLabel="nombre" placeholder="Seleccionar..." />
+                            <p-button icon="pi pi-check" size="small" severity="success" [disabled]="!categoriaNuevaGastos" (click)="confirmarNuevaCat(true)" />
+                            <p-button icon="pi pi-times" size="small" severity="danger" (click)="cancelarNuevaCat(true)" />
+                        </div>
+                        }
+                    </td>
+                </tr>
+                }
             </tfoot>
         </table>
     </div>
     }
 
-    @if (desgloseIngresos.length > 0) {
+    @if (desgloseIngresos.length > 0 || hayPeriodo) {
     <div class="desglose-bloque">
         <h3 class="desglose-titulo ingresos-titulo">Desglose ingresos</h3>
         <table class="desglose-tabla">
@@ -129,8 +194,10 @@
                     @if (hayPeriodo) {
                     <th class="col-num">Fijo</th>
                     <th class="col-num">Estimado</th>
-                    }
                     <th class="col-num">Real</th>
+                    }
+                    <th class="col-num">Suma</th>
+                    @if (hayPeriodo) { <th class="col-acciones"></th> }
                 </tr>
             </thead>
             <tbody>
@@ -143,20 +210,66 @@
                         {{ fila.categoria.nombre }}
                     </td>
                     @if (hayPeriodo) {
-                    <td class="col-num">{{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}</td>
-                    <td class="col-num">{{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                    <td class="col-num">
+                        @if (fila.editando) {
+                        <input pInputText type="number" [(ngModel)]="fila.fijoEdit" class="edit-input" />
+                        } @else {
+                        {{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}
+                        }
+                    </td>
+                    <td class="col-num">
+                        @if (fila.editando) {
+                        <input pInputText type="number" [(ngModel)]="fila.estimadoEdit" class="edit-input" />
+                        } @else {
+                        {{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}
+                        }
+                    </td>
+                    <td class="col-num">{{ fila.real != null ? (fila.real | number:'1.2-2') + ' €' : '—' }}</td>
                     }
-                    <td class="col-num">{{ fila.real | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ fila.suma | number:'1.2-2' }} €</td>
+                    @if (hayPeriodo) {
+                    <td class="col-acciones">
+                        @if (fila.editando) {
+                        <p-button icon="pi pi-check" size="small" severity="success" (click)="guardarEdicion(fila, $event)" />
+                        <p-button icon="pi pi-times" size="small" severity="danger" (click)="cancelarEdicion(fila, $event)" />
+                        } @else {
+                        <p-button icon="pi pi-pencil" size="small" severity="secondary" (click)="iniciarEdicion(fila, $event)" />
+                        }
+                    </td>
+                    }
                 </tr>
                 @if (fila.expandido) {
                     @for (sub of fila.subcategorias; track sub.categoria.id) {
                     <tr class="fila-sub">
                         <td class="col-categoria col-sub">↳ {{ sub.categoria.nombre }}</td>
                         @if (hayPeriodo) {
-                        <td class="col-num">{{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}</td>
-                        <td class="col-num">{{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}</td>
+                        <td class="col-num">
+                            @if (sub.editando) {
+                            <input pInputText type="number" [(ngModel)]="sub.fijoEdit" class="edit-input" />
+                            } @else {
+                            {{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}
+                            }
+                        </td>
+                        <td class="col-num">
+                            @if (sub.editando) {
+                            <input pInputText type="number" [(ngModel)]="sub.estimadoEdit" class="edit-input" />
+                            } @else {
+                            {{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}
+                            }
+                        </td>
+                        <td class="col-num">{{ sub.real != null ? (sub.real | number:'1.2-2') + ' €' : '—' }}</td>
                         }
-                        <td class="col-num">{{ sub.real | number:'1.2-2' }} €</td>
+                        <td class="col-num">{{ sub.suma | number:'1.2-2' }} €</td>
+                        @if (hayPeriodo) {
+                        <td class="col-acciones">
+                            @if (sub.editando) {
+                            <p-button icon="pi pi-check" size="small" severity="success" (click)="guardarEdicion(sub, $event)" />
+                            <p-button icon="pi pi-times" size="small" severity="danger" (click)="cancelarEdicion(sub, $event)" />
+                            } @else {
+                            <p-button icon="pi pi-pencil" size="small" severity="secondary" (click)="iniciarEdicion(sub, $event)" />
+                            }
+                        </td>
+                        }
                     </tr>
                     }
                 }
@@ -168,9 +281,26 @@
                     @if (hayPeriodo) {
                     <td class="col-num"></td>
                     <td class="col-num"></td>
+                    <td class="col-num"></td>
                     }
                     <td class="col-num">{{ totalDesgloseIngresos | number:'1.2-2' }} €</td>
+                    @if (hayPeriodo) { <td class="col-acciones"></td> }
                 </tr>
+                @if (hayPeriodo) {
+                <tr class="fila-nueva-cat">
+                    <td colspan="6" class="col-nueva-cat">
+                        @if (!mostrandoNuevaCatIngresos) {
+                        <p-button icon="pi pi-plus" label="Añadir categoría" size="small" severity="secondary" (click)="mostrarNuevaCat(false)" />
+                        } @else {
+                        <div class="nueva-cat-form">
+                            <p-select [(ngModel)]="categoriaNuevaIngresos" [options]="categoriasDisponiblesIngresos" optionLabel="nombre" placeholder="Seleccionar..." />
+                            <p-button icon="pi pi-check" size="small" severity="success" [disabled]="!categoriaNuevaIngresos" (click)="confirmarNuevaCat(false)" />
+                            <p-button icon="pi pi-times" size="small" severity="danger" (click)="cancelarNuevaCat(false)" />
+                        </div>
+                        }
+                    </td>
+                </tr>
+                }
             </tfoot>
         </table>
     </div>
