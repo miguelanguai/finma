@@ -228,3 +228,11 @@
 
 .mini-bar { height: 4px; margin-top: 3px; }
 .mini-bar .p-progressbar-value { transition: none; }
+
+.desglose-titulo-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+.desglose-titulo-row .desglose-titulo { margin: 0; }

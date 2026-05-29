@@ -81,6 +81,7 @@ export class MovimientoList {
   desgloseIngresos: FilaDesglose[] = [];
   ref: DynamicDialogRef | null = null;
 
+  modoPorc = false;
   mostrandoNuevaCatGastos = false;
   mostrandoNuevaCatIngresos = false;
   categoriaNuevaGastos: Categoria | null = null;
@@ -102,6 +103,7 @@ export class MovimientoList {
   constructor(
     private cdr: ChangeDetectorRef,
     private confirmationService: ConfirmationService,
+    private decimalPipe: DecimalPipe,
     public dialogService: DialogService,
     private messageService: MessageService,
     private movimientoService: MovimientoService,
@@ -424,6 +426,20 @@ export class MovimientoList {
       next: () => this.getMapeosPeriodo(),
       error: (err) => console.error(err),
     });
+  }
+
+  fmtVal(euros: number | null, mapeoPorc: number | null | undefined, isReal = false): string {
+    if (!this.hayPeriodo || !this.modoPorc) {
+      return euros != null ? (this.decimalPipe.transform(euros, '1.2-2') ?? '—') + ' €' : '—';
+    }
+    if (!isReal && mapeoPorc != null) {
+      return (this.decimalPipe.transform(mapeoPorc, '1.1-1') ?? '—') + ' %';
+    }
+    const ingFijo = this.periodoSeleccionado?.ingreso_fijo ?? 0;
+    if (euros != null && ingFijo > 0) {
+      return (this.decimalPipe.transform(euros / ingFijo * 100, '1.1-1') ?? '—') + ' %';
+    }
+    return '—';
   }
 
   porcentajeReal(fila: FilaDesglose | FilaSubdesglose): number | null {

@@ -64,7 +64,10 @@
 <div class="desglose">
     @if (desgloseGastos.length > 0 || hayPeriodo) {
     <div class="desglose-bloque">
+        <div class="desglose-titulo-row">
         <h3 class="desglose-titulo gastos-titulo">Desglose gastos</h3>
+        @if (hayPeriodo) { <p-button [label]="modoPorc ? 'Ver en €' : 'Ver en %'" size="small" severity="secondary" (click)="modoPorc = !modoPorc" /> }
+    </div>
         <table class="desglose-tabla">
             <thead>
                 <tr>
@@ -92,19 +95,19 @@
                         @if (fila.editando) {
                         <input pInputText type="number" [(ngModel)]="fila.fijoEdit" class="edit-input" />
                         } @else {
-                        {{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}
+                        {{ fmtVal(fila.fijo, fila.mapeo?.porc_ideal_fijo) }}
                         }
                     </td>
                     <td class="col-num">
                         @if (fila.editando) {
                         <input pInputText type="number" [(ngModel)]="fila.estimadoEdit" class="edit-input" />
                         } @else {
-                        {{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}
+                        {{ fmtVal(fila.estimado, fila.mapeo?.porc_ideal_estimado) }}
                         }
                     </td>
-                    <td class="col-num">{{ fila.real != null ? (fila.real | number:'1.2-2') + ' €' : '—' }}</td>
+                    <td class="col-num">{{ fmtVal(fila.real, null, true) }}</td>
                     }
-                    <td class="col-num" [ngClass]="estadoReal(fila, true)">{{ fila.suma | number:'1.2-2' }} €
+                    <td class="col-num" [ngClass]="estadoReal(fila, true)">{{ fmtVal(fila.suma, null, true) }}
                         @if (porcentajeReal(fila) != null) {
                         <p-progressbar [value]="porcentajeReal(fila)!" [showValue]="false" styleClass="mini-bar" />
                         }
@@ -129,19 +132,19 @@
                             @if (sub.editando) {
                             <input pInputText type="number" [(ngModel)]="sub.fijoEdit" class="edit-input" />
                             } @else {
-                            {{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}
+                            {{ fmtVal(sub.fijo, sub.mapeo?.porc_ideal_fijo) }}
                             }
                         </td>
                         <td class="col-num">
                             @if (sub.editando) {
                             <input pInputText type="number" [(ngModel)]="sub.estimadoEdit" class="edit-input" />
                             } @else {
-                            {{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}
+                            {{ fmtVal(sub.estimado, sub.mapeo?.porc_ideal_estimado) }}
                             }
                         </td>
-                        <td class="col-num">{{ sub.real != null ? (sub.real | number:'1.2-2') + ' €' : '—' }}</td>
+                        <td class="col-num">{{ fmtVal(sub.real, null, true) }}</td>
                         }
-                        <td class="col-num" [ngClass]="estadoReal(sub, true)">{{ sub.suma | number:'1.2-2' }} €
+                        <td class="col-num" [ngClass]="estadoReal(sub, true)">{{ fmtVal(sub.suma, null, true) }}
                             @if (porcentajeReal(sub) != null) {
                             <p-progressbar [value]="porcentajeReal(sub)!" [showValue]="false" styleClass="mini-bar" />
                             }
@@ -165,11 +168,11 @@
                 <tr class="fila-total">
                     <td class="col-categoria">Total categorizados</td>
                     @if (hayPeriodo) {
-                    <td class="col-num">{{ totalDesgloseGastosFijo | number:'1.2-2' }} €</td>
-                    <td class="col-num">{{ totalDesgloseGastosEstimado | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ fmtVal(totalDesgloseGastosFijo, null, true) }}</td>
+                    <td class="col-num">{{ fmtVal(totalDesgloseGastosEstimado, null, true) }}</td>
                     <td class="col-num"></td>
                     }
-                    <td class="col-num">{{ totalDesgloseGastos | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ fmtVal(totalDesgloseGastos, null, true) }}</td>
                     @if (hayPeriodo) { <td class="col-acciones"></td> }
                 </tr>
                 @if (hayPeriodo) {
@@ -222,19 +225,19 @@
                         @if (fila.editando) {
                         <input pInputText type="number" [(ngModel)]="fila.fijoEdit" class="edit-input" />
                         } @else {
-                        {{ fila.fijo != null ? (fila.fijo | number:'1.2-2') + ' €' : '—' }}
+                        {{ fmtVal(fila.fijo, fila.mapeo?.porc_ideal_fijo) }}
                         }
                     </td>
                     <td class="col-num">
                         @if (fila.editando) {
                         <input pInputText type="number" [(ngModel)]="fila.estimadoEdit" class="edit-input" />
                         } @else {
-                        {{ fila.estimado != null ? (fila.estimado | number:'1.2-2') + ' €' : '—' }}
+                        {{ fmtVal(fila.estimado, fila.mapeo?.porc_ideal_estimado) }}
                         }
                     </td>
-                    <td class="col-num">{{ fila.real != null ? (fila.real | number:'1.2-2') + ' €' : '—' }}</td>
+                    <td class="col-num">{{ fmtVal(fila.real, null, true) }}</td>
                     }
-                    <td class="col-num" [ngClass]="estadoReal(fila, false)">{{ fila.suma | number:'1.2-2' }} €
+                    <td class="col-num" [ngClass]="estadoReal(fila, false)">{{ fmtVal(fila.suma, null, true) }}
                         @if (porcentajeReal(fila) != null) {
                         <p-progressbar [value]="porcentajeReal(fila)!" [showValue]="false" styleClass="mini-bar" />
                         }
@@ -259,19 +262,19 @@
                             @if (sub.editando) {
                             <input pInputText type="number" [(ngModel)]="sub.fijoEdit" class="edit-input" />
                             } @else {
-                            {{ sub.fijo != null ? (sub.fijo | number:'1.2-2') + ' €' : '—' }}
+                            {{ fmtVal(sub.fijo, sub.mapeo?.porc_ideal_fijo) }}
                             }
                         </td>
                         <td class="col-num">
                             @if (sub.editando) {
                             <input pInputText type="number" [(ngModel)]="sub.estimadoEdit" class="edit-input" />
                             } @else {
-                            {{ sub.estimado != null ? (sub.estimado | number:'1.2-2') + ' €' : '—' }}
+                            {{ fmtVal(sub.estimado, sub.mapeo?.porc_ideal_estimado) }}
                             }
                         </td>
-                        <td class="col-num">{{ sub.real != null ? (sub.real | number:'1.2-2') + ' €' : '—' }}</td>
+                        <td class="col-num">{{ fmtVal(sub.real, null, true) }}</td>
                         }
-                        <td class="col-num" [ngClass]="estadoReal(sub, false)">{{ sub.suma | number:'1.2-2' }} €
+                        <td class="col-num" [ngClass]="estadoReal(sub, false)">{{ fmtVal(sub.suma, null, true) }}
                             @if (porcentajeReal(sub) != null) {
                             <p-progressbar [value]="porcentajeReal(sub)!" [showValue]="false" styleClass="mini-bar" />
                             }
@@ -295,11 +298,11 @@
                 <tr class="fila-total">
                     <td class="col-categoria">Total categorizados</td>
                     @if (hayPeriodo) {
-                    <td class="col-num">{{ totalDesgloseIngresosFijo | number:'1.2-2' }} €</td>
-                    <td class="col-num">{{ totalDesgloseIngresosEstimado | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ fmtVal(totalDesgloseIngresosFijo, null, true) }}</td>
+                    <td class="col-num">{{ fmtVal(totalDesgloseIngresosEstimado, null, true) }}</td>
                     <td class="col-num"></td>
                     }
-                    <td class="col-num">{{ totalDesgloseIngresos | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ fmtVal(totalDesgloseIngresos, null, true) }}</td>
                     @if (hayPeriodo) { <td class="col-acciones"></td> }
                 </tr>
                 @if (hayPeriodo) {
