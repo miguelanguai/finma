@@ -157,8 +157,8 @@
                 <tr class="fila-total">
                     <td class="col-categoria">Total categorizados</td>
                     @if (hayPeriodo) {
-                    <td class="col-num"></td>
-                    <td class="col-num"></td>
+                    <td class="col-num">{{ totalDesgloseGastosFijo | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ totalDesgloseGastosEstimado | number:'1.2-2' }} €</td>
                     <td class="col-num"></td>
                     }
                     <td class="col-num">{{ totalDesgloseGastos | number:'1.2-2' }} €</td>
@@ -279,8 +279,8 @@
                 <tr class="fila-total">
                     <td class="col-categoria">Total categorizados</td>
                     @if (hayPeriodo) {
-                    <td class="col-num"></td>
-                    <td class="col-num"></td>
+                    <td class="col-num">{{ totalDesgloseIngresosFijo | number:'1.2-2' }} €</td>
+                    <td class="col-num">{{ totalDesgloseIngresosEstimado | number:'1.2-2' }} €</td>
                     <td class="col-num"></td>
                     }
                     <td class="col-num">{{ totalDesgloseIngresos | number:'1.2-2' }} €</td>

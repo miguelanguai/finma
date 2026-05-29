@@ -248,8 +248,24 @@ export class MovimientoList {
     return this.desgloseGastos.reduce((sum, f) => sum + f.suma, 0);
   }
 
+  get totalDesgloseGastosFijo(): number {
+    return this.desgloseGastos.reduce((sum, f) => sum + (f.fijo ?? 0), 0);
+  }
+
+  get totalDesgloseGastosEstimado(): number {
+    return this.desgloseGastos.reduce((sum, f) => sum + (f.estimado ?? 0), 0);
+  }
+
   get totalDesgloseIngresos(): number {
     return this.desgloseIngresos.reduce((sum, f) => sum + f.suma, 0);
+  }
+
+  get totalDesgloseIngresosFijo(): number {
+    return this.desgloseIngresos.reduce((sum, f) => sum + (f.fijo ?? 0), 0);
+  }
+
+  get totalDesgloseIngresosEstimado(): number {
+    return this.desgloseIngresos.reduce((sum, f) => sum + (f.estimado ?? 0), 0);
   }
 
   toggleDesglose(fila: FilaDesglose) {
