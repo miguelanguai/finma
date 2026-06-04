@@ -1,12 +1,7 @@
 #!/bin/bash
 
-# Activar el entorno de Conda
 source /opt/conda/bin/activate finma
 
-# Ejemplo para una imagen basada en python:3.12-slim
-#RUN apt-get update && apt-get install -y postgresql-server-dev-all
-
-# Esperar a que la base de datos esté lista
 echo "Esperando a que PostgreSQL inicie..."
 until nc -z -v -w30 postgres 5432
 do
@@ -15,14 +10,14 @@ do
 done
 echo "PostgreSQL está disponible."
 
-# Exportando variable del profile
-export PROFILE=prod
+export PROFILE=local
 
-# Aplicar migraciones
 echo "Aplicando migraciones..."
 python manage.py makemigrations
 python manage.py migrate
 
-# Iniciar Gunicorn para servir Django
+echo "Recopilando archivos estáticos..."
+python manage.py collectstatic --noinput
+
 echo "Iniciando el servidor..."
 exec gunicorn root.wsgi:application --bind 0.0.0.0:8000 --access-logfile - --error-logfile -
