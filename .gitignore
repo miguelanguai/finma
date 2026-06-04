@@ -67,6 +67,7 @@ Thumbs.db
 __pycache__
 db.sqlite3
 media
+backend/staticfiles/
 
 # Backup files
 *.bak
