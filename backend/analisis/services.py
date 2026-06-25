@@ -5,7 +5,7 @@ from decimal import Decimal
 from categoria.models import Categoria
 from movimiento.models import Movimiento
 from objetivo.models import MapCategoriaObjetivo, Objetivo
-from periodo.models import Periodo
+from periodo.models import MapPeriodoCategoria, Periodo
 
 
 class ObjetivosAnalisisService:
@@ -262,6 +262,87 @@ class ComparativaAnalisisService:
             "periodo1": {"id": p1.id, "nombre": p1.nombre},
             "periodo2": {"id": p2.id, "nombre": p2.nombre},
             "categorias": categorias,
+        }
+
+
+class BalanceRollingService:
+    def get_balance_rolling(self) -> dict:
+        """Devuelve los últimos 6 meses reales y la previsión para los próximos 6.
+
+        Para los meses pasados calcula ingreso_fijo - gastos reales.
+        Para los meses futuros usa los porcentajes de MapPeriodoCategoria si existen;
+        si no, usa la media de los meses pasados como fallback.
+
+        Returns:
+            dict: meses_pasados y meses_futuros con balances reales y previstos.
+        """
+        hoy = date.today()
+
+        periodos_pasados = list(
+            Periodo.objects.filter(fecha__lt=hoy).order_by("-fecha")[:6]
+        )
+        periodos_pasados.reverse()
+
+        periodos_futuros = list(
+            Periodo.objects.filter(fecha__gte=hoy).order_by("fecha")[:6]
+        )
+
+        meses_pasados = []
+        for periodo in periodos_pasados:
+            movimientos_gasto = Movimiento.objects.filter(
+                periodo=periodo, categoria__is_gasto=True
+            )
+            gastos = float(sum(abs(m.monto) for m in movimientos_gasto))
+            ingresos = float(periodo.ingreso_fijo or 0)
+            meses_pasados.append({
+                "periodo": periodo.nombre,
+                "balance": round(ingresos - gastos, 2),
+                "ingresos": ingresos,
+                "gastos": round(gastos, 2),
+            })
+
+        balances_hist = [m["balance"] for m in meses_pasados]
+        avg_hist = sum(balances_hist) / len(balances_hist) if balances_hist else 0
+
+        meses_futuros = []
+        for periodo in periodos_futuros:
+            mapeos = list(
+                MapPeriodoCategoria.objects.filter(
+                    periodo=periodo,
+                    porc_ideal_fijo__isnull=False,
+                ).select_related("categoria")
+            )
+            mapeos_gasto = [m for m in mapeos if m.categoria and m.categoria.is_gasto]
+
+            ingresos_fijo = float(periodo.ingreso_fijo or 0)
+            ingresos_estimado = float(periodo.ingreso_estimado or 0)
+
+            if mapeos_gasto:
+                gastos_fijo = sum(
+                    ingresos_fijo * float(m.porc_ideal_fijo) / 100
+                    for m in mapeos_gasto
+                )
+                gastos_estimado = sum(
+                    ingresos_estimado * float(m.porc_ideal_estimado or 0) / 100
+                    for m in mapeos_gasto
+                )
+                balance_fijo = round(ingresos_fijo - gastos_fijo, 2)
+                balance_estimado = round(ingresos_estimado - gastos_estimado, 2)
+            else:
+                balance_fijo = round(avg_hist, 2)
+                balance_estimado = round(avg_hist, 2)
+
+            meses_futuros.append({
+                "periodo": periodo.nombre,
+                "balance_fijo": balance_fijo,
+                "balance_estimado": balance_estimado,
+                "ingresos_fijo": ingresos_fijo,
+                "ingresos_estimado": ingresos_estimado,
+            })
+
+        return {
+            "meses_pasados": meses_pasados,
+            "meses_futuros": meses_futuros,
         }
 
 

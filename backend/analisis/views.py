@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .services import BalanceAnalisisService, CategoriasAnalisisService, ComparativaAnalisisService, ObjetivosAnalisisService, ResumenLandingService
+from .services import BalanceAnalisisService, BalanceRollingService, CategoriasAnalisisService, ComparativaAnalisisService, ObjetivosAnalisisService, ResumenLandingService
 
 
 class ResumenLandingView(APIView):
@@ -86,3 +86,10 @@ class BalanceAnalisisView(APIView):
             self.service.get_balance(anio=anio),
             status=status.HTTP_200_OK,
         )
+
+
+class BalanceRollingView(APIView):
+    service = BalanceRollingService()
+
+    def get(self, request: Request) -> Response:
+        return Response(self.service.get_balance_rolling(), status=status.HTTP_200_OK)

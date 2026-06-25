@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   BalanceAnualResponse,
+  BalanceRollingResponse,
   ComparativaResponse,
   GastoCategoriaResponse,
   ProgresoObjetivoResponse,
@@ -32,6 +33,10 @@ export class AnalisisService {
     return this.http.get<BalanceAnualResponse>(
       `${this.baseUrl}balance/?anio=${anio}`
     );
+  }
+
+  getBalanceRolling(): Observable<BalanceRollingResponse> {
+    return this.http.get<BalanceRollingResponse>(`${this.baseUrl}balance-rolling/`);
   }
 
   getResumen(): Observable<ResumenLandingResponse> {

@@ -1,4 +1,40 @@
+<!-- Rolling: últimos 6 + próximos 6 -->
+@if (balanceRolling) {
+    <div class="rolling-section">
+        <h3 class="rolling-titulo">Últimos 6 meses → Próximos 6 (previsión)</h3>
+
+        @if (rollingChartData) {
+            <p-chart type="line" [data]="rollingChartData" [options]="rollingChartOptions" />
+        }
+
+        @if (balanceRolling.meses_futuros.length > 0) {
+            <div class="resumen">
+                <table class="resumen-tabla">
+                    <thead>
+                        <tr>
+                            <th>Previsión fijo ({{ balanceRolling.meses_futuros.length }} meses)</th>
+                            <th>Previsión estimado ({{ balanceRolling.meses_futuros.length }} meses)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td [ngClass]="{ 'positivo': totalPrevFijo >= 0, 'negativo': totalPrevFijo < 0 }">
+                                {{ totalPrevFijo | number:'1.2-2' }} €
+                            </td>
+                            <td [ngClass]="{ 'positivo': totalPrevEstimado >= 0, 'negativo': totalPrevEstimado < 0 }">
+                                {{ totalPrevEstimado | number:'1.2-2' }} €
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+}
+
+<!-- Anual (por año seleccionado) -->
 @if (chartData && balance && balance.balance_por_mes.length > 0) {
+    <h3 class="rolling-titulo anual-titulo">Balance anual {{ anio }}</h3>
     <p-chart type="line" [data]="chartData" [options]="chartOptions" />
 } @else if (balance) {
     <p class="sin-datos">No hay datos mensuales para el año {{ anio }}.</p>

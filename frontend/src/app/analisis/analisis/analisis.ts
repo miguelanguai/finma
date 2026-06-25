@@ -8,7 +8,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { AnalisisService } from '../analisis-service';
-import { ProgresoObjetivoResponse, GastoCategoriaResponse, BalanceAnualResponse } from '../analisis-response';
+import { ProgresoObjetivoResponse, GastoCategoriaResponse, BalanceAnualResponse, BalanceRollingResponse } from '../analisis-response';
 import { ObjetivoAnalisis } from '../objetivo-analisis/objetivo-analisis';
 import { CategoriaAnalisis } from '../categoria-analisis/categoria-analisis';
 import { BalanceAnalisis } from '../balance-analisis/balance-analisis';
@@ -37,6 +37,7 @@ export class Analisis implements OnInit {
   objetivos: ProgresoObjetivoResponse[] | null = null;
   categorias: GastoCategoriaResponse[] | null = null;
   balance: BalanceAnualResponse | null = null;
+  balanceRolling: BalanceRollingResponse | null = null;
   periodos: Periodo[] = [];
 
   cargando = false;
@@ -66,11 +67,13 @@ export class Analisis implements OnInit {
       objetivos: this.analisisService.getProgresoObjetivos(),
       categorias: this.analisisService.getGastosCategorias(this.anio),
       balance: this.analisisService.getBalance(this.anio),
+      balanceRolling: this.analisisService.getBalanceRolling(),
     }).subscribe({
-      next: ({ objetivos, categorias, balance }) => {
+      next: ({ objetivos, categorias, balance, balanceRolling }) => {
         this.objetivos = objetivos;
         this.categorias = categorias;
         this.balance = balance;
+        this.balanceRolling = balanceRolling;
         this.computarKpis();
         this.cargando = false;
         this.cdr.detectChanges();

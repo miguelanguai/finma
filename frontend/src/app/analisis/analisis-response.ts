@@ -54,6 +54,26 @@ export interface BalanceAnualResponse {
   balance_por_mes: BalanceMesResponse[];
 }
 
+export interface BalanceMesPasadoResponse {
+  periodo: string;
+  balance: number;
+  ingresos: number;
+  gastos: number;
+}
+
+export interface BalanceMesFuturoResponse {
+  periodo: string;
+  balance_fijo: number;
+  balance_estimado: number;
+  ingresos_fijo: number;
+  ingresos_estimado: number;
+}
+
+export interface BalanceRollingResponse {
+  meses_pasados: BalanceMesPasadoResponse[];
+  meses_futuros: BalanceMesFuturoResponse[];
+}
+
 export interface ComparativaCategoriaItem {
   categoria: { id: number; nombre: string };
   gasto_periodo1: number;
