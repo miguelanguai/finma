@@ -154,7 +154,6 @@ export class MapeoEdit {
           null,
           this.mapeo.porc_ideal_fijo ?? undefined,
           this.mapeo.porc_ideal_estimado ?? undefined,
-          this.mapeo.porc_ideal_obtenido ?? undefined,
           this.mapeo.periodo ?? undefined,
           cat
         )

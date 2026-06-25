@@ -62,7 +62,6 @@ class MapPeriodoCategoriaReadSerializer(serializers.ModelSerializer):
             "id",
             "porc_ideal_fijo",
             "porc_ideal_estimado",
-            "porc_ideal_obtenido",
             "periodo",
             "categoria",
         ]
@@ -85,7 +84,6 @@ class MapPeriodoCategoriaWriteSerializer(serializers.ModelSerializer):
         fields = [
             "porc_ideal_fijo",
             "porc_ideal_estimado",
-            "porc_ideal_obtenido",
             "periodo",
             "categoria",
         ]

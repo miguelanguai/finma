@@ -35,8 +35,6 @@ class MapPeriodoCategoria(models.Model):
     porc_ideal_fijo (float): porcentaje ideal respecto a fijo de este período. Ejemplo: 12.725
     porc_ideal_estimado (float): porcentaje ideal respecto a estimado de este período.
     Ejemplo: 12.725
-    porc_ideal_obtenido (float): porcentaje ideal respecto a obtenido de este período.
-    Ejemplo: 12.725
     periodo (Periodo): periodo que tiene el mapeo. Si se borra el periodo, el mapeo también.
     categoria (Categoria): categoria que tiene el mapeo. Si se borra la categoría, el mapeo tambien.
 
@@ -49,7 +47,6 @@ class MapPeriodoCategoria(models.Model):
 
     porc_ideal_fijo = models.DecimalField(max_digits=5, decimal_places=3, null=True)
     porc_ideal_estimado = models.DecimalField(max_digits=5, decimal_places=3, null=True)
-    porc_ideal_obtenido = models.DecimalField(max_digits=5, decimal_places=3, null=True)
     periodo = models.ForeignKey(Periodo, null=True, on_delete=models.CASCADE)
     categoria = models.ForeignKey(Categoria, null=True, on_delete=models.CASCADE)
 
@@ -57,7 +54,6 @@ class MapPeriodoCategoria(models.Model):
         return f"""
         porcentaje ideal respecto a fijo: {self.porc_ideal_fijo}
         porcentaje ideal respecto a estimado: {self.porc_ideal_estimado}
-        porcentaje ideal respecto a obtenido: {self.porc_ideal_obtenido}
         categoria: {self.categoria}
         periodo: {self.periodo}
         """

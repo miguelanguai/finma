@@ -26,7 +26,6 @@ export class MapCatPerService {
     const BODY = {
       "porc_ideal_fijo": map_filter.porc_ideal_fijo,
       "porc_ideal_estimado": map_filter.porc_ideal_estimado,
-      "porc_ideal_obtenido": map_filter.porc_ideal_obtenido,
       "periodo": map_filter.periodo?.id || null,
       "categoria": map_filter.categoria?.id || null
     }    
@@ -37,7 +36,6 @@ export class MapCatPerService {
     const BODY = {
       "porc_ideal_fijo": map.porc_ideal_fijo,
       "porc_ideal_estimado": map.porc_ideal_estimado,
-      "porc_ideal_obtenido": map.porc_ideal_obtenido,
       "periodo": map.periodo?.id || null,
       "categoria": map.categoria?.id || null
     }

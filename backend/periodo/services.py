@@ -168,7 +168,6 @@ class MapPeriodoCategoriaService:
         mapeo_to_save = MapPeriodoCategoria(
             porc_ideal_fijo=mapeo["porc_ideal_fijo"],
             porc_ideal_estimado=mapeo["porc_ideal_estimado"],
-            porc_ideal_obtenido=mapeo["porc_ideal_obtenido"],
             periodo=mapeo["periodo"],
             categoria=mapeo["categoria"],
         )
@@ -193,7 +192,6 @@ class MapPeriodoCategoriaService:
         if mapeo_to_update:
             mapeo_to_update.porc_ideal_fijo = updated_mapeo["porc_ideal_fijo"]
             mapeo_to_update.porc_ideal_estimado = updated_mapeo["porc_ideal_estimado"]
-            mapeo_to_update.porc_ideal_obtenido = updated_mapeo["porc_ideal_obtenido"]
             mapeo_to_update.periodo = updated_mapeo["periodo"]
             mapeo_to_update.categoria = updated_mapeo["categoria"]
             mapeo = self.repo.save(mapeo=mapeo_to_update)

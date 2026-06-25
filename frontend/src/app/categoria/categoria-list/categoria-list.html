@@ -132,22 +132,6 @@
                                     Diferencia Gasto Estimado - Gasto Real (€)
                                 </div>
                             </th>
-                            <th pSortableColumn="porc_ideal_obtenido">
-                                <div class="flex items-center justify-between">
-                                    Gasto Obtenido (%)
-                                    <p-columnFilter type="text" field="porc_ideal_estimado" display="menu" />
-                                </div>
-                            </th>
-                            <th>
-                                <div class="flex items-center justify-between">
-                                    Valor Gasto Obtenido (€)
-                                </div>
-                            </th>
-                            <th>
-                                <div class="flex items-center justify-between">
-                                    Diferencia Gasto Obtenido - Gasto Real (€)
-                                </div>
-                            </th>
                             <th>
                                 <div class="flex items-center justify-between">
                                     Periodo
@@ -179,9 +163,6 @@
                             <td>{{ map.porc_ideal_estimado }}</td>
                             <td>{{ (map.periodo.ingreso_estimado * map.porc_ideal_estimado)/100 }}</td>
                             <td>{{ getGastoTotal(map) != null ? (map.periodo.ingreso_estimado * map.porc_ideal_estimado / 100) - getGastoTotal(map)! : '-' }}</td>
-                            <td>{{ map.porc_ideal_obtenido }}</td>
-                            <td>{{ getGastoTotal(map) }}</td>
-                            <td>{{ getGastoTotal(map) != null ? getGastoTotal(map)! - getGastoTotal(map)! : '-' }}</td>
                             <td>{{ map.periodo?.nombre }}</td>
                             <td>
                                 <p-button icon="pi pi-pencil" severity="info" (click)="showCreateMapeoDialog(map)"

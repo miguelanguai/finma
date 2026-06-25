@@ -118,8 +118,6 @@ class MapPeriodoCategoriaRepository:
             filters["porc_ideal_fijo"]=instance_filter["porc_ideal_fijo"]
         if instance_filter["porc_ideal_estimado"]:
             filters["porc_ideal_estimado"]=instance_filter["porc_ideal_estimado"]
-        if instance_filter["porc_ideal_obtenido"]:
-            filters["porc_ideal_obtenido"]=instance_filter["porc_ideal_obtenido"]
         if instance_filter["categoria"]:
             filters["categoria"]=instance_filter["categoria"]
         if instance_filter["periodo"]:

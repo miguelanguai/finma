@@ -75,7 +75,6 @@
                     @if (hayPeriodo) {
                     <th class="col-num">Fijo</th>
                     <th class="col-num">Estimado</th>
-                    <th class="col-num">Real</th>
                     <th class="col-num">Queda</th>
                     }
                     <th class="col-num">Suma</th>
@@ -106,7 +105,6 @@
                         {{ fmtVal(fila.estimado, fila.mapeo?.porc_ideal_estimado) }}
                         }
                     </td>
-                    <td class="col-num">{{ fmtVal(fila.real, null, true) }}</td>
                     <td class="col-num" [ngClass]="quedanClass(fila, true)">
                         {{ quedan(fila) != null ? (quedan(fila)! | number:'1.2-2') + ' €' : '—' }}
                     </td>
@@ -146,7 +144,6 @@
                             {{ fmtVal(sub.estimado, sub.mapeo?.porc_ideal_estimado) }}
                             }
                         </td>
-                        <td class="col-num">{{ fmtVal(sub.real, null, true) }}</td>
                         <td class="col-num" [ngClass]="quedanClass(sub, true)">
                             {{ quedan(sub) != null ? (quedan(sub)! | number:'1.2-2') + ' €' : '—' }}
                         </td>
@@ -177,7 +174,6 @@
                     @if (hayPeriodo) {
                     <td class="col-num">{{ fmtVal(totalDesgloseGastosFijo, null, true) }}</td>
                     <td class="col-num">{{ fmtVal(totalDesgloseGastosEstimado, null, true) }}</td>
-                    <td class="col-num"></td>
                     <td class="col-num" [ngClass]="totalDesgloseGastosQueda >= 0 ? 'estado-ok' : 'estado-exceso'">
                         {{ totalDesgloseGastosEstimado > 0 ? (totalDesgloseGastosQueda | number:'1.2-2') + ' €' : '—' }}
                     </td>
@@ -243,7 +239,6 @@
                     @if (hayPeriodo) {
                     <th class="col-num">Fijo</th>
                     <th class="col-num">Estimado</th>
-                    <th class="col-num">Real</th>
                     <th class="col-num">Queda</th>
                     }
                     <th class="col-num">Suma</th>
@@ -274,7 +269,6 @@
                         {{ fmtVal(fila.estimado, fila.mapeo?.porc_ideal_estimado) }}
                         }
                     </td>
-                    <td class="col-num">{{ fmtVal(fila.real, null, true) }}</td>
                     <td class="col-num" [ngClass]="quedanClass(fila, false)">
                         {{ quedan(fila) != null ? (quedan(fila)! | number:'1.2-2') + ' €' : '—' }}
                     </td>
@@ -314,7 +308,6 @@
                             {{ fmtVal(sub.estimado, sub.mapeo?.porc_ideal_estimado) }}
                             }
                         </td>
-                        <td class="col-num">{{ fmtVal(sub.real, null, true) }}</td>
                         <td class="col-num" [ngClass]="quedanClass(sub, false)">
                             {{ quedan(sub) != null ? (quedan(sub)! | number:'1.2-2') + ' €' : '—' }}
                         </td>
@@ -345,7 +338,6 @@
                     @if (hayPeriodo) {
                     <td class="col-num">{{ fmtVal(totalDesgloseIngresosFijo, null, true) }}</td>
                     <td class="col-num">{{ fmtVal(totalDesgloseIngresosEstimado, null, true) }}</td>
-                    <td class="col-num"></td>
                     <td class="col-num" [ngClass]="totalDesgloseIngresosQueda <= 0 ? 'estado-ok' : 'estado-exceso'">
                         {{ totalDesgloseIngresosEstimado > 0 ? (totalDesgloseIngresosQueda | number:'1.2-2') + ' €' : '—' }}
                     </td>

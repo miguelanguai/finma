@@ -26,7 +26,6 @@ import { MapCatPerService } from '../../periodo/map-cat-per-service';
 export interface FilaDesglose {
   categoria: Categoria;
   suma: number;
-  real: number | null;
   fijo: number | null;
   estimado: number | null;
   mapeo: MapPeriodoCategoria | null;
@@ -40,7 +39,6 @@ export interface FilaDesglose {
 export interface FilaSubdesglose {
   categoria: Categoria;
   suma: number;
-  real: number | null;
   fijo: number | null;
   estimado: number | null;
   mapeo: MapPeriodoCategoria | null;
@@ -153,7 +151,7 @@ export class MovimientoList {
       this.recalcularDesglose();
       return;
     }
-    const filtro = new MapPeriodoCategoria(null, undefined, undefined, undefined,
+    const filtro = new MapPeriodoCategoria(null, undefined, undefined,
       this.periodoSeleccionado, undefined);
     this.mapCatPerService.getMapPeriodoCategoriasFiltered(filtro).subscribe({
       next: (data) => {
@@ -323,7 +321,6 @@ export class MovimientoList {
         mapaFilas.set(catPadreId, {
           categoria: catPadre,
           suma: 0,
-          real: null,
           fijo: null,
           estimado: null,
           mapeo: null,
@@ -342,7 +339,7 @@ export class MovimientoList {
       if (cat.padre) {
         let sub = fila.subcategorias.find(s => s.categoria.id === cat.id);
         if (!sub) {
-          sub = { categoria: cat, suma: 0, real: null, fijo: null, estimado: null, mapeo: null, editando: false, fijoEdit: null, estimadoEdit: null };
+          sub = { categoria: cat, suma: 0, fijo: null, estimado: null, mapeo: null, editando: false, fijoEdit: null, estimadoEdit: null };
           fila.subcategorias.push(sub);
         }
         sub.suma += monto;
@@ -357,7 +354,7 @@ export class MovimientoList {
         if (!mapaFilas.has(catPadreId)) {
           const catPadre = (cat.padre as unknown as Categoria) ?? cat;
           mapaFilas.set(catPadreId, {
-            categoria: catPadre, suma: 0, real: null, fijo: null, estimado: null,
+            categoria: catPadre, suma: 0, fijo: null, estimado: null,
             mapeo: null, subcategorias: [], expandido: false,
             editando: false, fijoEdit: null, estimadoEdit: null,
           });
@@ -366,7 +363,7 @@ export class MovimientoList {
           const fila = mapaFilas.get(catPadreId)!;
           if (!fila.subcategorias.find(s => s.categoria.id === cat.id)) {
             fila.subcategorias.push({
-              categoria: cat, suma: 0, real: null, fijo: null, estimado: null,
+              categoria: cat, suma: 0, fijo: null, estimado: null,
               mapeo: null, editando: false, fijoEdit: null, estimadoEdit: null,
             });
           }
@@ -384,7 +381,6 @@ export class MovimientoList {
         if (mapeo) {
           fila.fijo = mapeo.porc_ideal_fijo != null ? ingFijo * mapeo.porc_ideal_fijo / 100 : null;
           fila.estimado = mapeo.porc_ideal_estimado != null ? ingEst * mapeo.porc_ideal_estimado / 100 : null;
-          fila.real = mapeo.porc_ideal_obtenido != null ? ingReal * mapeo.porc_ideal_obtenido / 100 : null;
           fila.mapeo = mapeo;
         }
 
@@ -393,7 +389,6 @@ export class MovimientoList {
           if (mapeoSub) {
             sub.fijo = mapeoSub.porc_ideal_fijo != null ? ingFijo * mapeoSub.porc_ideal_fijo / 100 : null;
             sub.estimado = mapeoSub.porc_ideal_estimado != null ? ingEst * mapeoSub.porc_ideal_estimado / 100 : null;
-            sub.real = mapeoSub.porc_ideal_obtenido != null ? ingReal * mapeoSub.porc_ideal_obtenido / 100 : null;
             sub.mapeo = mapeoSub;
           }
         }
@@ -425,7 +420,7 @@ export class MovimientoList {
   confirmarNuevaCat(isGasto: boolean) {
     const cat = isGasto ? this.categoriaNuevaGastos : this.categoriaNuevaIngresos;
     if (!cat || !this.periodoSeleccionado) return;
-    const mapeo = new MapPeriodoCategoria(null, undefined, undefined, undefined,
+    const mapeo = new MapPeriodoCategoria(null, undefined, undefined,
       this.periodoSeleccionado, cat);
     this.mapCatPerService.saveMapPeriodoCategoria(mapeo).subscribe({
       next: () => {
@@ -458,7 +453,7 @@ export class MovimientoList {
 
     const mapeo = new MapPeriodoCategoria(
       fila.mapeo?.id ?? null,
-      porcFijo ?? undefined, porcEst ?? undefined, undefined,
+      porcFijo ?? undefined, porcEst ?? undefined,
       this.periodoSeleccionado!,
       fila.categoria as Categoria,
     );

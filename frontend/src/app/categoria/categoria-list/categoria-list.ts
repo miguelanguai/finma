@@ -93,8 +93,7 @@ export class CategoriaList {
   checkAllMapsAreAssigned(): void {
     this.isAllCategoriasAssigned = this.maps.every(mapeo => {
       return mapeo?.porc_ideal_fijo != null
-        && mapeo?.porc_ideal_estimado != null
-        && mapeo?.porc_ideal_obtenido != null;
+        && mapeo?.porc_ideal_estimado != null;
     });
   }
 
@@ -122,7 +121,6 @@ export class CategoriaList {
             d.id,
             d.porc_ideal_fijo ?? undefined,
             d.porc_ideal_estimado ?? undefined,
-            d.porc_ideal_obtenido ?? undefined,
             d.periodo ?? undefined,
             d.categoria ?? undefined
           )
