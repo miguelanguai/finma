@@ -218,8 +218,39 @@
     gap: 0.4rem;
 }
 
-.table {
+.tabla-secciones {
     margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.seccion-tabla {
+    border: 1px solid var(--p-surface-200, #dee2e6);
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.seccion-tabla.sin-categoria {
+    border-left: 4px solid var(--p-orange-400, #fb923c);
+}
+
+.seccion-tabla.gastos-seccion {
+    border-left: 4px solid var(--p-red-400, #f87171);
+}
+
+.seccion-tabla.ingresos-seccion {
+    border-left: 4px solid var(--p-green-400, #4ade80);
+}
+
+.seccion-titulo {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.no-dispuesta-titulo {
+    color: var(--p-orange-600, #ea580c);
 }
 
 .estado-ok     { color: var(--p-green-600); }
@@ -236,3 +267,35 @@
     margin-bottom: 0.25rem;
 }
 .desglose-titulo-row .desglose-titulo { margin: 0; }
+
+.desglose-cruzado {
+    margin-top: 0.75rem;
+    border-top: 1px dashed var(--p-surface-300, #cbd5e1);
+    padding-top: 0.5rem;
+}
+
+.desglose-cruzado-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--p-text-muted-color, #6c757d);
+    padding: 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.desglose-cruzado-toggle:hover {
+    color: var(--p-text-color, #212529);
+}
+
+.desglose-tabla-cruzado {
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
+.cat-select-inline {
+    width: 160px;
+    font-size: 0.85rem;
+}

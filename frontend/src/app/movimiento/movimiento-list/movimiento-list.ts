@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -57,6 +57,7 @@ export interface FilaSubdesglose {
     DatePickerModule,
     DecimalPipe,
     FormsModule,
+    NgClass,
     InputTextModule,
     ProgressBarModule,
     SelectModule,
@@ -65,6 +66,7 @@ export interface FilaSubdesglose {
   ],
   providers: [
     ConfirmationService,
+    DecimalPipe,
     DialogService,
     MessageService,
   ],
@@ -73,17 +75,20 @@ export interface FilaSubdesglose {
 })
 export class MovimientoList {
   movimientos: Movimiento[] = [];
-  movimientosSeleccionados: Movimiento[] = [];
   categorias: Categoria[] = [];
   periodos: Periodo[] = [];
   mapeosPeriodo: MapPeriodoCategoria[] = [];
-  desgloseGastos: FilaDesglose[] = [];
-  desgloseIngresos: FilaDesglose[] = [];
+  desgloseGastosNormal: FilaDesglose[] = [];
+  desgloseGastosCruzado: FilaDesglose[] = [];
+  desgloseIngresosNormal: FilaDesglose[] = [];
+  desgloseIngresosCruzado: FilaDesglose[] = [];
   ref: DynamicDialogRef | null = null;
 
   modoPorc = false;
   mostrandoNuevaCatGastos = false;
   mostrandoNuevaCatIngresos = false;
+  mostrandoDesgloseGastosCruzado = false;
+  mostrandoDesgloseIngresosCruzado = false;
   categoriaNuevaGastos: Categoria | null = null;
   categoriaNuevaIngresos: Categoria | null = null;
 
@@ -175,8 +180,10 @@ export class MovimientoList {
   }
 
   private recalcularDesglose() {
-    this.desgloseGastos = this.calcularDesglose(true);
-    this.desgloseIngresos = this.calcularDesglose(false);
+    this.desgloseGastosNormal = this.calcularDesglose(true, true);
+    this.desgloseGastosCruzado = this.calcularDesglose(true, false);
+    this.desgloseIngresosNormal = this.calcularDesglose(false, false);
+    this.desgloseIngresosCruzado = this.calcularDesglose(false, true);
   }
 
   aplicarFiltros() {
@@ -210,6 +217,20 @@ export class MovimientoList {
     return filtros;
   }
 
+  // --- Secciones tabla ---
+
+  get movimientosSinCategoria(): Movimiento[] {
+    return this.movimientos.filter(m => !m.categoria);
+  }
+
+  get movimientosGastos(): Movimiento[] {
+    return this.movimientos.filter(m => m.categoria && (m.monto ?? 0) < 0);
+  }
+
+  get movimientosIngresos(): Movimiento[] {
+    return this.movimientos.filter(m => m.categoria && (m.monto ?? 0) > 0);
+  }
+
   // --- Resumen totales ---
 
   get gastosTotal(): number {
@@ -232,7 +253,7 @@ export class MovimientoList {
 
   get categoriasDisponiblesGastos(): Categoria[] {
     const ids = new Set<number>();
-    for (const f of this.desgloseGastos) {
+    for (const f of this.desgloseGastosNormal) {
       ids.add(f.categoria.id!);
       for (const s of f.subcategorias) ids.add(s.categoria.id!);
     }
@@ -241,7 +262,7 @@ export class MovimientoList {
 
   get categoriasDisponiblesIngresos(): Categoria[] {
     const ids = new Set<number>();
-    for (const f of this.desgloseIngresos) {
+    for (const f of this.desgloseIngresosNormal) {
       ids.add(f.categoria.id!);
       for (const s of f.subcategorias) ids.add(s.categoria.id!);
     }
@@ -249,37 +270,48 @@ export class MovimientoList {
   }
 
   get totalDesgloseGastos(): number {
-    return this.desgloseGastos.reduce((sum, f) => sum + f.suma, 0);
+    return this.desgloseGastosNormal.reduce((sum, f) => sum + f.suma, 0);
   }
 
   get totalDesgloseGastosFijo(): number {
-    return this.desgloseGastos.reduce((sum, f) => sum + (f.fijo ?? 0), 0);
+    return this.desgloseGastosNormal.reduce((sum, f) => sum + (f.fijo ?? 0), 0);
   }
 
   get totalDesgloseGastosEstimado(): number {
-    return this.desgloseGastos.reduce((sum, f) => sum + (f.estimado ?? 0), 0);
+    return this.desgloseGastosNormal.reduce((sum, f) => sum + (f.estimado ?? 0), 0);
+  }
+
+  get totalDesgloseGastosQueda(): number {
+    return this.totalDesgloseGastosEstimado - this.totalDesgloseGastos;
   }
 
   get totalDesgloseIngresos(): number {
-    return this.desgloseIngresos.reduce((sum, f) => sum + f.suma, 0);
+    return this.desgloseIngresosNormal.reduce((sum, f) => sum + f.suma, 0);
   }
 
   get totalDesgloseIngresosFijo(): number {
-    return this.desgloseIngresos.reduce((sum, f) => sum + (f.fijo ?? 0), 0);
+    return this.desgloseIngresosNormal.reduce((sum, f) => sum + (f.fijo ?? 0), 0);
   }
 
   get totalDesgloseIngresosEstimado(): number {
-    return this.desgloseIngresos.reduce((sum, f) => sum + (f.estimado ?? 0), 0);
+    return this.desgloseIngresosNormal.reduce((sum, f) => sum + (f.estimado ?? 0), 0);
+  }
+
+  get totalDesgloseIngresosQueda(): number {
+    return this.totalDesgloseIngresosEstimado - this.totalDesgloseIngresos;
   }
 
   toggleDesglose(fila: FilaDesglose) {
     fila.expandido = !fila.expandido;
   }
 
-  private calcularDesglose(isGasto: boolean): FilaDesglose[] {
-    const movsFiltrados = this.movimientos.filter(m =>
-      m.categoria && (isGasto ? (m.monto ?? 0) < 0 : (m.monto ?? 0) > 0)
-    );
+  private calcularDesglose(isGasto: boolean, catIsGasto: boolean): FilaDesglose[] {
+    const movsFiltrados = this.movimientos.filter(m => {
+      if (!m.categoria) return false;
+      const montoOk = isGasto ? (m.monto ?? 0) < 0 : (m.monto ?? 0) > 0;
+      const catRootIsGasto = m.categoria.padre?.is_gasto ?? m.categoria.is_gasto;
+      return montoOk && catRootIsGasto === catIsGasto;
+    });
     const mapaFilas = new Map<number, FilaDesglose>();
 
     for (const mov of movsFiltrados) {
@@ -319,7 +351,7 @@ export class MovimientoList {
 
     if (this.periodoSeleccionado && this.mapeosPeriodo.length > 0) {
       for (const mapeo of this.mapeosPeriodo) {
-        if (!mapeo.categoria || (mapeo.categoria as any).is_gasto !== isGasto) continue;
+        if (!mapeo.categoria || (mapeo.categoria as any).is_gasto !== catIsGasto) continue;
         const cat = mapeo.categoria as unknown as Categoria;
         const catPadreId = cat.padre?.id ?? cat.id!;
         if (!mapaFilas.has(catPadreId)) {
@@ -370,6 +402,14 @@ export class MovimientoList {
 
     return Array.from(mapaFilas.values())
       .sort((a, b) => b.suma - a.suma);
+  }
+
+  asignarCategoria(movimiento: Movimiento, categoria: Categoria) {
+    movimiento.categoria = categoria;
+    this.movimientoService.saveMovimiento(movimiento).subscribe({
+      next: () => this.getMovimientos(),
+      error: (err) => console.error(err),
+    });
   }
 
   mostrarNuevaCat(isGasto: boolean) {
@@ -445,6 +485,18 @@ export class MovimientoList {
   porcentajeReal(fila: FilaDesglose | FilaSubdesglose): number | null {
     if (fila.estimado == null || fila.estimado === 0) return null;
     return Math.min(fila.suma / fila.estimado * 100, 100);
+  }
+
+  quedan(fila: FilaDesglose | FilaSubdesglose): number | null {
+    if (fila.estimado == null) return null;
+    return fila.estimado - fila.suma;
+  }
+
+  quedanClass(fila: FilaDesglose | FilaSubdesglose, isGasto: boolean): string {
+    const q = this.quedan(fila);
+    if (q == null) return '';
+    if (isGasto) return q >= 0 ? 'estado-ok' : 'estado-exceso';
+    return q <= 0 ? 'estado-ok' : 'estado-exceso';
   }
 
   estadoReal(fila: FilaDesglose | FilaSubdesglose, isGasto: boolean): string {

@@ -60,9 +60,9 @@
     </div>
 </div>
 
-@if (desgloseGastos.length > 0 || desgloseIngresos.length > 0 || hayPeriodo) {
+@if (desgloseGastosNormal.length > 0 || desgloseIngresosNormal.length > 0 || hayPeriodo) {
 <div class="desglose">
-    @if (desgloseGastos.length > 0 || hayPeriodo) {
+    @if (desgloseGastosNormal.length > 0 || hayPeriodo) {
     <div class="desglose-bloque">
         <div class="desglose-titulo-row">
         <h3 class="desglose-titulo gastos-titulo">Desglose gastos</h3>
@@ -76,13 +76,14 @@
                     <th class="col-num">Fijo</th>
                     <th class="col-num">Estimado</th>
                     <th class="col-num">Real</th>
+                    <th class="col-num">Queda</th>
                     }
                     <th class="col-num">Suma</th>
                     @if (hayPeriodo) { <th class="col-acciones"></th> }
                 </tr>
             </thead>
             <tbody>
-                @for (fila of desgloseGastos; track fila.categoria.id) {
+                @for (fila of desgloseGastosNormal; track fila.categoria.id) {
                 <tr class="fila-padre" (click)="toggleDesglose(fila)" [class.expandible]="fila.subcategorias.length > 0">
                     <td class="col-categoria">
                         @if (fila.subcategorias.length > 0) {
@@ -106,6 +107,9 @@
                         }
                     </td>
                     <td class="col-num">{{ fmtVal(fila.real, null, true) }}</td>
+                    <td class="col-num" [ngClass]="quedanClass(fila, true)">
+                        {{ quedan(fila) != null ? (quedan(fila)! | number:'1.2-2') + ' €' : '—' }}
+                    </td>
                     }
                     <td class="col-num" [ngClass]="estadoReal(fila, true)">{{ fmtVal(fila.suma, null, true) }}
                         @if (porcentajeReal(fila) != null) {
@@ -143,6 +147,9 @@
                             }
                         </td>
                         <td class="col-num">{{ fmtVal(sub.real, null, true) }}</td>
+                        <td class="col-num" [ngClass]="quedanClass(sub, true)">
+                            {{ quedan(sub) != null ? (quedan(sub)! | number:'1.2-2') + ' €' : '—' }}
+                        </td>
                         }
                         <td class="col-num" [ngClass]="estadoReal(sub, true)">{{ fmtVal(sub.suma, null, true) }}
                             @if (porcentajeReal(sub) != null) {
@@ -171,13 +178,16 @@
                     <td class="col-num">{{ fmtVal(totalDesgloseGastosFijo, null, true) }}</td>
                     <td class="col-num">{{ fmtVal(totalDesgloseGastosEstimado, null, true) }}</td>
                     <td class="col-num"></td>
+                    <td class="col-num" [ngClass]="totalDesgloseGastosQueda >= 0 ? 'estado-ok' : 'estado-exceso'">
+                        {{ totalDesgloseGastosEstimado > 0 ? (totalDesgloseGastosQueda | number:'1.2-2') + ' €' : '—' }}
+                    </td>
                     }
                     <td class="col-num">{{ fmtVal(totalDesgloseGastos, null, true) }}</td>
                     @if (hayPeriodo) { <td class="col-acciones"></td> }
                 </tr>
                 @if (hayPeriodo) {
                 <tr class="fila-nueva-cat">
-                    <td colspan="6" class="col-nueva-cat">
+                    <td colspan="7" class="col-nueva-cat">
                         @if (!mostrandoNuevaCatGastos) {
                         <p-button icon="pi pi-plus" label="Añadir categoría" size="small" severity="secondary" (click)="mostrarNuevaCat(true)" />
                         } @else {
@@ -192,12 +202,40 @@
                 }
             </tfoot>
         </table>
+        @if (desgloseGastosCruzado.length > 0) {
+        <div class="desglose-cruzado">
+            <button class="desglose-cruzado-toggle" (click)="mostrandoDesgloseGastosCruzado = !mostrandoDesgloseGastosCruzado">
+                <span class="toggle-icon">{{ mostrandoDesgloseGastosCruzado ? '▾' : '▸' }}</span>
+                Otros gastos en categorías de ingreso ({{ desgloseGastosCruzado.length }})
+            </button>
+            @if (mostrandoDesgloseGastosCruzado) {
+            <table class="desglose-tabla desglose-tabla-cruzado">
+                <thead>
+                    <tr>
+                        <th class="col-categoria">Categoría</th>
+                        <th class="col-num">Suma</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (fila of desgloseGastosCruzado; track fila.categoria.id) {
+                    <tr class="fila-padre">
+                        <td class="col-categoria">{{ fila.categoria.nombre }}</td>
+                        <td class="col-num">{{ fmtVal(fila.suma, null, true) }}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            }
+        </div>
+        }
     </div>
     }
 
-    @if (desgloseIngresos.length > 0 || hayPeriodo) {
+    @if (desgloseIngresosNormal.length > 0 || hayPeriodo) {
     <div class="desglose-bloque">
+        <div class="desglose-titulo-row">
         <h3 class="desglose-titulo ingresos-titulo">Desglose ingresos</h3>
+        </div>
         <table class="desglose-tabla">
             <thead>
                 <tr>
@@ -206,13 +244,14 @@
                     <th class="col-num">Fijo</th>
                     <th class="col-num">Estimado</th>
                     <th class="col-num">Real</th>
+                    <th class="col-num">Queda</th>
                     }
                     <th class="col-num">Suma</th>
                     @if (hayPeriodo) { <th class="col-acciones"></th> }
                 </tr>
             </thead>
             <tbody>
-                @for (fila of desgloseIngresos; track fila.categoria.id) {
+                @for (fila of desgloseIngresosNormal; track fila.categoria.id) {
                 <tr class="fila-padre" (click)="toggleDesglose(fila)" [class.expandible]="fila.subcategorias.length > 0">
                     <td class="col-categoria">
                         @if (fila.subcategorias.length > 0) {
@@ -236,6 +275,9 @@
                         }
                     </td>
                     <td class="col-num">{{ fmtVal(fila.real, null, true) }}</td>
+                    <td class="col-num" [ngClass]="quedanClass(fila, false)">
+                        {{ quedan(fila) != null ? (quedan(fila)! | number:'1.2-2') + ' €' : '—' }}
+                    </td>
                     }
                     <td class="col-num" [ngClass]="estadoReal(fila, false)">{{ fmtVal(fila.suma, null, true) }}
                         @if (porcentajeReal(fila) != null) {
@@ -273,6 +315,9 @@
                             }
                         </td>
                         <td class="col-num">{{ fmtVal(sub.real, null, true) }}</td>
+                        <td class="col-num" [ngClass]="quedanClass(sub, false)">
+                            {{ quedan(sub) != null ? (quedan(sub)! | number:'1.2-2') + ' €' : '—' }}
+                        </td>
                         }
                         <td class="col-num" [ngClass]="estadoReal(sub, false)">{{ fmtVal(sub.suma, null, true) }}
                             @if (porcentajeReal(sub) != null) {
@@ -301,13 +346,16 @@
                     <td class="col-num">{{ fmtVal(totalDesgloseIngresosFijo, null, true) }}</td>
                     <td class="col-num">{{ fmtVal(totalDesgloseIngresosEstimado, null, true) }}</td>
                     <td class="col-num"></td>
+                    <td class="col-num" [ngClass]="totalDesgloseIngresosQueda <= 0 ? 'estado-ok' : 'estado-exceso'">
+                        {{ totalDesgloseIngresosEstimado > 0 ? (totalDesgloseIngresosQueda | number:'1.2-2') + ' €' : '—' }}
+                    </td>
                     }
                     <td class="col-num">{{ fmtVal(totalDesgloseIngresos, null, true) }}</td>
                     @if (hayPeriodo) { <td class="col-acciones"></td> }
                 </tr>
                 @if (hayPeriodo) {
                 <tr class="fila-nueva-cat">
-                    <td colspan="6" class="col-nueva-cat">
+                    <td colspan="7" class="col-nueva-cat">
                         @if (!mostrandoNuevaCatIngresos) {
                         <p-button icon="pi pi-plus" label="Añadir categoría" size="small" severity="secondary" (click)="mostrarNuevaCat(false)" />
                         } @else {
@@ -322,74 +370,130 @@
                 }
             </tfoot>
         </table>
+        @if (desgloseIngresosCruzado.length > 0) {
+        <div class="desglose-cruzado">
+            <button class="desglose-cruzado-toggle" (click)="mostrandoDesgloseIngresosCruzado = !mostrandoDesgloseIngresosCruzado">
+                <span class="toggle-icon">{{ mostrandoDesgloseIngresosCruzado ? '▾' : '▸' }}</span>
+                Otros ingresos en categorías de gasto ({{ desgloseIngresosCruzado.length }})
+            </button>
+            @if (mostrandoDesgloseIngresosCruzado) {
+            <table class="desglose-tabla desglose-tabla-cruzado">
+                <thead>
+                    <tr>
+                        <th class="col-categoria">Categoría</th>
+                        <th class="col-num">Suma</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (fila of desgloseIngresosCruzado; track fila.categoria.id) {
+                    <tr class="fila-padre">
+                        <td class="col-categoria">{{ fila.categoria.nombre }}</td>
+                        <td class="col-num">{{ fmtVal(fila.suma, null, true) }}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            }
+        </div>
+        }
     </div>
     }
 </div>
 }
 
-<div class="table">
-    <p-table dataKey="id" [value]="movimientos" [(selection)]="movimientosSeleccionados"
-        selectionMode="multiple" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
-        [rows]="25" [rowsPerPageOptions]="[25, 50, 100]">
-        <ng-template #header>
-            <tr>
-                <th style="width: 3rem">
-                    <p-tableHeaderCheckbox />
-                </th>
-                <th pSortableColumn="fecha">
-                    <div class="flex items-center justify-between">
-                        Fecha
-                        <p-sortIcon field="fecha" />
-                    </div>
-                </th>
-                <th pSortableColumn="concepto">
-                    <div class="flex items-center justify-between">
-                        Concepto
-                        <p-sortIcon field="concepto" />
-                    </div>
-                </th>
-                <th pSortableColumn="categoria.nombre">
-                    <div class="flex items-center justify-between">
-                        Categoría
-                        <p-sortIcon field="categoria.nombre" />
-                    </div>
-                </th>
-                <th pSortableColumn="notas">
-                    <div class="flex items-center justify-between">
-                        Notas
-                        <p-sortIcon field="notas" />
-                    </div>
-                </th>
-                <th pSortableColumn="monto">
-                    <div class="flex items-center justify-between">
-                        Monto
-                        <p-sortIcon field="monto" />
-                    </div>
-                </th>
-                <th></th>
-                <th></th>
-            </tr>
-        </ng-template>
-        <ng-template #body let-movimiento>
-            <tr>
-                <td>
-                    <p-tableCheckbox [value]="movimiento" />
-                </td>
-                <td>{{ movimiento.fecha.getDate() }}/{{ movimiento.fecha.getMonth()+1 }}/{{
-                    movimiento.fecha.getFullYear()
-                    }}</td>
-                <td>{{ movimiento.concepto }}</td>
-                <td>{{ movimiento.categoria?.nombre }}</td>
-                <td>{{ movimiento.notas }}</td>
-                <td>{{ movimiento.monto | number:'1.2-2' }} €</td>
-                <td>
-                    <p-button icon="pi pi-pencil" severity="info" (click)="showCreateMovimientoDialog(movimiento)" />
-                </td>
-                <td>
-                    <p-button icon="pi pi-trash" severity="danger"
-                        (click)="showDeleteMovimientoDialog(movimiento, $event)" />
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+<div class="tabla-secciones">
+    @if (movimientosSinCategoria.length > 0) {
+    <div class="seccion-tabla sin-categoria">
+        <h3 class="seccion-titulo no-dispuesta-titulo">Sin categoría ({{ movimientosSinCategoria.length }})</h3>
+        <p-table dataKey="id" [value]="movimientosSinCategoria"
+            [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
+            [rows]="25" [rowsPerPageOptions]="[25, 50, 100]">
+            <ng-template #header>
+                <tr>
+                    <th pSortableColumn="fecha"><div class="flex items-center justify-between">Fecha<p-sortIcon field="fecha" /></div></th>
+                    <th pSortableColumn="concepto"><div class="flex items-center justify-between">Concepto<p-sortIcon field="concepto" /></div></th>
+                    <th pSortableColumn="notas"><div class="flex items-center justify-between">Notas<p-sortIcon field="notas" /></div></th>
+                    <th pSortableColumn="monto"><div class="flex items-center justify-between">Monto<p-sortIcon field="monto" /></div></th>
+                    <th>Categoría</th>
+                    <th></th><th></th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-movimiento>
+                <tr>
+                    <td>{{ movimiento.fecha.getDate() }}/{{ movimiento.fecha.getMonth()+1 }}/{{ movimiento.fecha.getFullYear() }}</td>
+                    <td>{{ movimiento.concepto }}</td>
+                    <td>{{ movimiento.notas }}</td>
+                    <td>{{ movimiento.monto | number:'1.2-2' }} €</td>
+                    <td><p-select [options]="categorias" optionLabel="nombre" placeholder="Asignar..."
+                                  styleClass="cat-select-inline"
+                                  (onChange)="asignarCategoria(movimiento, $event.value)" /></td>
+                    <td><p-button icon="pi pi-pencil" severity="info" (click)="showCreateMovimientoDialog(movimiento)" /></td>
+                    <td><p-button icon="pi pi-trash" severity="danger" (click)="showDeleteMovimientoDialog(movimiento, $event)" /></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    }
+
+    @if (movimientosGastos.length > 0) {
+    <div class="seccion-tabla gastos-seccion">
+        <h3 class="seccion-titulo gastos-titulo">Gastos ({{ movimientosGastos.length }})</h3>
+        <p-table dataKey="id" [value]="movimientosGastos"
+            [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
+            [rows]="25" [rowsPerPageOptions]="[25, 50, 100]">
+            <ng-template #header>
+                <tr>
+                    <th pSortableColumn="fecha"><div class="flex items-center justify-between">Fecha<p-sortIcon field="fecha" /></div></th>
+                    <th pSortableColumn="concepto"><div class="flex items-center justify-between">Concepto<p-sortIcon field="concepto" /></div></th>
+                    <th pSortableColumn="categoria.nombre"><div class="flex items-center justify-between">Categoría<p-sortIcon field="categoria.nombre" /></div></th>
+                    <th pSortableColumn="notas"><div class="flex items-center justify-between">Notas<p-sortIcon field="notas" /></div></th>
+                    <th pSortableColumn="monto"><div class="flex items-center justify-between">Monto<p-sortIcon field="monto" /></div></th>
+                    <th></th><th></th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-movimiento>
+                <tr>
+                    <td>{{ movimiento.fecha.getDate() }}/{{ movimiento.fecha.getMonth()+1 }}/{{ movimiento.fecha.getFullYear() }}</td>
+                    <td>{{ movimiento.concepto }}</td>
+                    <td>{{ movimiento.categoria?.nombre }}</td>
+                    <td>{{ movimiento.notas }}</td>
+                    <td>{{ movimiento.monto | number:'1.2-2' }} €</td>
+                    <td><p-button icon="pi pi-pencil" severity="info" (click)="showCreateMovimientoDialog(movimiento)" /></td>
+                    <td><p-button icon="pi pi-trash" severity="danger" (click)="showDeleteMovimientoDialog(movimiento, $event)" /></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    }
+
+    @if (movimientosIngresos.length > 0) {
+    <div class="seccion-tabla ingresos-seccion">
+        <h3 class="seccion-titulo ingresos-titulo">Ingresos ({{ movimientosIngresos.length }})</h3>
+        <p-table dataKey="id" [value]="movimientosIngresos"
+            [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
+            [rows]="25" [rowsPerPageOptions]="[25, 50, 100]">
+            <ng-template #header>
+                <tr>
+                    <th pSortableColumn="fecha"><div class="flex items-center justify-between">Fecha<p-sortIcon field="fecha" /></div></th>
+                    <th pSortableColumn="concepto"><div class="flex items-center justify-between">Concepto<p-sortIcon field="concepto" /></div></th>
+                    <th pSortableColumn="categoria.nombre"><div class="flex items-center justify-between">Categoría<p-sortIcon field="categoria.nombre" /></div></th>
+                    <th pSortableColumn="notas"><div class="flex items-center justify-between">Notas<p-sortIcon field="notas" /></div></th>
+                    <th pSortableColumn="monto"><div class="flex items-center justify-between">Monto<p-sortIcon field="monto" /></div></th>
+                    <th></th><th></th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-movimiento>
+                <tr>
+                    <td>{{ movimiento.fecha.getDate() }}/{{ movimiento.fecha.getMonth()+1 }}/{{ movimiento.fecha.getFullYear() }}</td>
+                    <td>{{ movimiento.concepto }}</td>
+                    <td>{{ movimiento.categoria?.nombre }}</td>
+                    <td>{{ movimiento.notas }}</td>
+                    <td>{{ movimiento.monto | number:'1.2-2' }} €</td>
+                    <td><p-button icon="pi pi-pencil" severity="info" (click)="showCreateMovimientoDialog(movimiento)" /></td>
+                    <td><p-button icon="pi pi-trash" severity="danger" (click)="showDeleteMovimientoDialog(movimiento, $event)" /></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    }
 </div>
