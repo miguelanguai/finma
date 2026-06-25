@@ -25,7 +25,10 @@
                         <tr>
                             <td>{{ categoria.id }}</td>
                             <td>{{ categoria.nombre }}</td>
-                            <td>{{ categoria.is_gasto }}</td>
+                            <td>
+                                <p-chip [label]="categoria.is_gasto ? 'Gasto' : 'Ingreso'"
+                                        [styleClass]="categoria.is_gasto ? 'chip-gasto' : 'chip-ingreso'" />
+                            </td>
                             <td>{{ categoria.padre?.nombre }}</td>
                             <td>
                                 <p-button icon="pi pi-pencil" severity="info"

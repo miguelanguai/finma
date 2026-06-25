@@ -12,8 +12,8 @@
         </p-floatlabel>
     </div>
     <div>
-        <p>Gasto</p>
-        <p-toggleswitch [(ngModel)]="categoria.is_gasto" />
+        <p>Tipo</p>
+        <p-selectbutton [options]="tipoOpciones" [(ngModel)]="categoria.is_gasto" optionLabel="label" optionValue="value" />
     </div>
     <div>
         <p-select [options]="categoriaList" [(ngModel)]="selectedPadreId" optionLabel="nombre" optionValue="id" placeholder="Elige una categoria padre" [showClear]="true" class="w-full md:w-56" />

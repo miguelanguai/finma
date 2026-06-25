@@ -30,3 +30,13 @@
         padding-right: 1rem;
     }
 }
+
+:host ::ng-deep .chip-gasto {
+    background-color: rgb(255, 225, 225);
+    color: rgb(185, 28, 28);
+}
+
+:host ::ng-deep .chip-ingreso {
+    background-color: rgb(220, 252, 231);
+    color: rgb(21, 128, 61);
+}

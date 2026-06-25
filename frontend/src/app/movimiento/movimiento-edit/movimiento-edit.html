@@ -28,7 +28,9 @@
         <textarea rows="5" cols="30" pTextarea [(ngModel)]="movimiento.notas"></textarea>
     </div>
     <div>
-        <p-select [options]="categoriaList" [(ngModel)]="movimiento.categoria" optionLabel="nombre" placeholder="Elige la categoria" class="w-full md:w-56" />
+        <p-select [options]="categoriasAgrupadas" [(ngModel)]="movimiento.categoria"
+                  optionLabel="nombre" optionGroupLabel="label" optionGroupChildren="items"
+                  [group]="true" placeholder="Elige la categoría" class="w-full md:w-56" />
     </div>
     <div>
         <p-select [options]="periodoList" [(ngModel)]="movimiento.periodo" optionLabel="nombre" placeholder="Elige el periodo" class="w-full md:w-56" />

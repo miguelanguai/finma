@@ -85,16 +85,21 @@ export class MovimientoEdit {
   getCategorias() {
     this.categoriaService.getCategorias().subscribe({
       next: (data) => {
-
         this.categoriaList = data.map(
           d => new Categoria(d.id, d.nombre, d.is_gasto, d.padre ?? undefined)
         );
-
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
       }
     });
+  }
+
+  get categoriasAgrupadas() {
+    return [
+      { label: 'Gastos', items: this.categoriaList.filter(c => c.is_gasto) },
+      { label: 'Ingresos', items: this.categoriaList.filter(c => !c.is_gasto) },
+    ].filter(g => g.items.length > 0);
   }
 }

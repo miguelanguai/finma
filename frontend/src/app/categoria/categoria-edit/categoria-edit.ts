@@ -7,8 +7,8 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { SelectModule } from 'primeng/select';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { Categoria } from '../Categoria';
 
@@ -20,8 +20,8 @@ import { Categoria } from '../Categoria';
     DatePickerModule,
     FloatLabelModule,
     InputTextModule,
+    SelectButtonModule,
     SelectModule,
-    ToggleSwitchModule,
   ],
   templateUrl: './categoria-edit.html',
   styleUrl: './categoria-edit.css',
@@ -30,6 +30,11 @@ export class CategoriaEdit {
   categoria: Categoria = new Categoria();
   categoriaList: Categoria[] = [];
   selectedPadreId: number | null = null;
+
+  tipoOpciones = [
+    { label: 'Gasto', value: true },
+    { label: 'Ingreso', value: false },
+  ];
 
   constructor(
     private config: DynamicDialogConfig,
